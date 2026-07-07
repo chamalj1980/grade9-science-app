@@ -1,4 +1,4 @@
-﻿# Grade 9 Science Learning App
+# Grade 9 Science Learning App
 
 A single web-based learning app for Grade 9 Science.
 
@@ -24,9 +24,37 @@ Curriculum-specific facts, formulas, labels, and compatibility rules are tracked
 - React
 - Vite
 - TypeScript
-- CSS / Tailwind CSS
+- CSS
 - Vitest
-- Playwright
+
+## Run Locally
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Start the development server:
+
+```bash
+npm run dev
+```
+
+Build the app:
+
+```bash
+npm run build
+```
+
+Run unit tests:
+
+```bash
+npm test
+```
+
+The app is fully client-side. Progress for the initial shell is saved in browser
+local storage.
 
 ## Development Approach
 

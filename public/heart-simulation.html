@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>The Beating Heart — Explore a 3D Human Heart</title>
+<style>
+  :root{
+    --bg1:#eef3fb; --bg2:#f7ecec;
+    --card:#ffffff; --ink:#2a2f45; --muted:#6a7186;
+    --red:#e63946; --redsoft:#f6d5d6;
+    --blue:#3a86ff; --bluesoft:#d6e4ff;
+    --accent:#d0453f; --accent2:#4a78c4;
+    --ok:#2a9d8f; --warn:#e9a23b;
+    --shadow:0 10px 30px rgba(40,50,80,.14);
+    --radius:18px;
+    font-size:16px;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0; height:100%; overflow:hidden;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink);
+    background:radial-gradient(1200px 800px at 30% 20%, var(--bg2), var(--bg1));}
+  #stage{position:fixed; inset:0;}
+  canvas{display:block; touch-action:none;}
+
+  /* ---------- Labels floating over 3D ---------- */
+  #labels{position:fixed; inset:0; pointer-events:none; z-index:5;}
+  .lbl{position:absolute; transform:translate(-50%,-120%);
+    background:rgba(255,255,255,.92); border:1px solid rgba(0,0,0,.06);
+    padding:4px 9px; border-radius:999px; font-size:12.5px; font-weight:600;
+    color:var(--ink); white-space:nowrap; box-shadow:var(--shadow);
+    pointer-events:auto; cursor:pointer; transition:transform .12s ease, background .15s;}
+  .lbl:hover{background:#fff; transform:translate(-50%,-130%) scale(1.05);}
+  .lbl .dot{display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:5px; vertical-align:middle;}
+  .lbl.blue .dot{background:var(--blue);} .lbl.red .dot{background:var(--red);}
+  .lbl.muscle .dot{background:var(--accent);}
+  .lbl.lung .dot{background:#e879a6;}
+  .lbl.hidden{display:none;}
+
+  /* ---------- Side panel ---------- */
+  #panel{position:fixed; top:14px; right:14px; width:320px; max-width:calc(100vw - 28px);
+    background:rgba(255,255,255,.86); backdrop-filter:blur(10px);
+    border-radius:var(--radius); box-shadow:var(--shadow); z-index:20;
+    padding:14px 16px; max-height:calc(100vh - 28px); overflow:auto;}
+  #panel h1{font-size:17px; margin:2px 0 2px;}
+  #panel .sub{font-size:12px; color:var(--muted); margin-bottom:10px;}
+  .grp{background:#fff; border-radius:14px; padding:11px 12px; margin-bottom:10px; box-shadow:0 2px 8px rgba(40,50,80,.05);}
+  .grp .t{font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); margin-bottom:8px;}
+  .row{display:flex; gap:8px; flex-wrap:wrap;}
+  .btn{flex:1; min-width:0; border:none; border-radius:11px; padding:11px 10px; font-size:13.5px; font-weight:650;
+    background:#eef1f8; color:var(--ink); cursor:pointer; transition:.15s; min-height:44px;}
+  .btn:hover{background:#e4e9f5;}
+  .btn.active{background:var(--accent); color:#fff;}
+  .btn.blueish.active{background:var(--accent2);}
+  .btn.full{width:100%; flex:none;}
+  .btn.big{font-size:15px; padding:13px;}
+  input[type=range]{width:100%; accent-color:var(--accent); height:30px;}
+  .bpmline{display:flex; align-items:baseline; justify-content:space-between; margin-bottom:2px;}
+  .bpmval{font-size:26px; font-weight:800; color:var(--accent);}
+  .bpmval small{font-size:13px; font-weight:600; color:var(--muted);}
+  .hint{font-size:11.5px; color:var(--muted); margin-top:7px; line-height:1.35;}
+
+  /* ---------- Mini map ---------- */
+  #minimap{position:fixed; left:14px; bottom:14px; width:230px; z-index:20;
+    background:rgba(255,255,255,.9); backdrop-filter:blur(8px);
+    border-radius:var(--radius); box-shadow:var(--shadow); padding:11px 12px; max-height:calc(100vh - 28px); overflow:auto;}
+  #minimap .t{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); margin-bottom:8px;}
+  .stage{display:flex; align-items:center; gap:8px; font-size:12px; padding:4px 6px; border-radius:9px; color:var(--muted); transition:.2s;}
+  .stage .d{width:10px; height:10px; border-radius:50%; background:#cfd6e6; flex:none;}
+  .stage.on{background:#fff6f6; color:var(--ink); font-weight:700;}
+  .stage.on .d{box-shadow:0 0 0 4px rgba(230,57,70,.15);}
+
+  /* ---------- Info card (hotspot) ---------- */
+  #info{position:fixed; left:50%; bottom:16px; transform:translateX(-50%) translateY(130%);
+    width:min(560px, calc(100vw - 28px)); background:var(--card); border-radius:var(--radius);
+    box-shadow:var(--shadow); z-index:30; padding:16px 18px; transition:transform .35s cubic-bezier(.2,.8,.2,1);}
+  #info.show{transform:translateX(-50%) translateY(0);}
+  #info h2{margin:0 0 4px; font-size:18px;}
+  #info .tag{display:inline-block; font-size:11px; font-weight:700; padding:3px 9px; border-radius:999px; margin-bottom:8px;}
+  #info p{margin:0 0 8px; font-size:14.5px; line-height:1.5; color:#3c425c;}
+  #info .term{font-size:12.5px; color:var(--muted); background:#f5f7fc; border-radius:10px; padding:8px 10px; line-height:1.45;}
+  #info .x{position:absolute; top:12px; right:14px; border:none; background:#eef1f8; width:34px; height:34px; border-radius:50%; cursor:pointer; font-size:16px; color:var(--muted);}
+
+  /* ---------- Intro modal ---------- */
+  #overlay{position:fixed; inset:0; background:rgba(30,36,58,.45); backdrop-filter:blur(4px); z-index:60;
+    display:flex; align-items:center; justify-content:center; padding:18px;}
+  #overlay.hidden{display:none;}
+  .modal{background:#fff; border-radius:22px; max-width:520px; width:100%; padding:26px 26px 22px; box-shadow:var(--shadow);}
+  .modal h1{margin:0 0 2px; font-size:24px;}
+  .modal .lead{color:var(--muted); font-size:14px; margin-bottom:14px;}
+  .heartsplit{display:flex; gap:12px; margin:14px 0 6px;}
+  .side{flex:1; border-radius:14px; padding:12px 13px; font-size:13px; line-height:1.45;}
+  .side.r{background:var(--bluesoft);} .side.l{background:var(--redsoft);}
+  .side b{display:block; margin-bottom:3px; font-size:13.5px;}
+  .modal ul{margin:10px 0 4px; padding-left:18px; font-size:13.5px; color:#3c425c; line-height:1.55;}
+  .modal .go{margin-top:16px;}
+
+  /* ---------- Tour captions ---------- */
+  #tourcap{position:fixed; top:16px; left:50%; transform:translateX(-50%) translateY(-140%);
+    background:rgba(42,47,69,.92); color:#fff; padding:12px 20px; border-radius:14px; z-index:40;
+    max-width:min(620px,calc(100vw - 200px)); text-align:center; font-size:15px; line-height:1.4; box-shadow:var(--shadow);
+    transition:transform .4s cubic-bezier(.2,.8,.2,1);}
+  #tourcap.show{transform:translateX(-50%) translateY(0);}
+  #tourcap .step{font-size:11px; opacity:.7; text-transform:uppercase; letter-spacing:.08em; margin-bottom:3px;}
+  #tourcap button{margin-top:9px; border:none; background:#fff; color:var(--ink); border-radius:9px; padding:6px 14px; font-weight:700; cursor:pointer;}
+
+  .credit{position:fixed; left:50%; top:8px; transform:translateX(-50%); font-size:11px; color:var(--muted); z-index:4; pointer-events:none;}
+
+  @media (max-width:760px){
+    #panel{width:270px; top:8px; right:8px; padding:11px;}
+    #minimap{display:none;}
+    .bpmval{font-size:22px;}
+    .credit{display:none;}
+  }
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<div id="labels"></div>
+<div class="credit">Drag to rotate · scroll / pinch to zoom · tap a label to explore</div>
+
+<!-- ===================== SIDE PANEL ===================== -->
+<div id="panel">
+  <h1>❤️ The Beating Heart</h1>
+  <div class="sub">A 3D tour of the four-chambered pump — Grade 9 Science</div>
+
+  <div class="grp">
+    <div class="bpmline"><div class="t" style="margin:0">Heart rate</div><div class="bpmval" id="bpmVal">70<small> bpm</small></div></div>
+    <input type="range" id="bpm" min="40" max="180" value="70" step="1" />
+    <div class="hint">How many times the heart beats each minute. Faster beats = faster blood flow.</div>
+  </div>
+
+  <div class="grp">
+    <div class="t">View mode</div>
+    <div class="row">
+      <button class="btn active" id="viewWhole">Whole heart</button>
+      <button class="btn" id="viewCut">Cutaway section</button>
+    </div>
+    <div class="hint">Cutaway removes the front wall so you can see all four chambers and the valves working — like the textbook diagram.</div>
+  </div>
+
+  <div class="grp">
+    <div class="t">Blood flow</div>
+    <div class="row">
+      <button class="btn blueish active" id="flowPlay">⏸ Pause</button>
+      <button class="btn blueish" id="slowmo">🐢 Slow‑mo</button>
+    </div>
+    <div class="row" style="margin-top:8px">
+      <button class="btn active" id="lblToggle">🏷️ Labels: On</button>
+    </div>
+  </div>
+
+  <div class="grp">
+    <div class="t">Activity</div>
+    <div class="row">
+      <button class="btn active" id="rest">🛋️ Rest</button>
+      <button class="btn" id="exercise">🏃 Exercise</button>
+    </div>
+    <div class="hint" id="activityNote">At rest the heart beats gently (~70 bpm). During exercise your muscles need more oxygen, so the heart beats faster to deliver blood more quickly.</div>
+  </div>
+
+  <div class="grp">
+    <div class="t">Tools</div>
+    <div class="row">
+      <button class="btn full big" id="tour">🎬 Follow one blood cell</button>
+    </div>
+    <div class="row" style="margin-top:8px">
+      <button class="btn" id="soundBtn">🔇 Sound: Off</button>
+      <button class="btn" id="resetView">🎯 Reset view</button>
+    </div>
+    <div class="row" style="margin-top:8px">
+      <button class="btn full" id="helpBtn">ℹ️ How it works</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== MINI MAP ===================== -->
+<div id="minimap">
+  <div class="t">Follow the blood</div>
+  <div id="stages"></div>
+</div>
+
+<!-- ===================== INFO CARD ===================== -->
+<div id="info">
+  <button class="x" id="infoX">✕</button>
+  <span class="tag" id="infoTag"></span>
+  <h2 id="infoTitle"></h2>
+  <p id="infoText"></p>
+  <div class="term" id="infoTerm"></div>
+</div>
+
+<!-- ===================== TOUR CAPTION ===================== -->
+<div id="tourcap">
+  <div class="step" id="tourStep"></div>
+  <div id="tourText"></div>
+  <button id="tourStop">Stop tour</button>
+</div>
+
+<!-- ===================== INTRO ===================== -->
+<div id="overlay">
+  <div class="modal">
+    <h1>How your heart works</h1>
+    <div class="lead">Your heart is a muscle about the size of your fist. It is a <b>four‑chambered pump</b> that never stops.</div>
+    <div class="heartsplit">
+      <div class="side r"><b>🫁 Right side</b>Collects <b>deoxygenated</b> blood (blue) from the body and pumps it to the <b>lungs</b> to pick up oxygen.</div>
+      <div class="side l"><b>💪 Left side</b>Receives <b>oxygenated</b> blood (red) from the lungs and pumps it out to the whole <b>body</b>.</div>
+    </div>
+    <ul>
+      <li>The two upper chambers are the <b>atria</b> (they receive blood).</li>
+      <li>The two lower chambers are the <b>ventricles</b> (they pump blood out).</li>
+      <li><b>Valves</b> are one‑way doors that stop blood flowing backwards — the "lub‑dub" sound is valves snapping shut.</li>
+    </ul>
+    <div class="row go">
+      <button class="btn full big active" id="startBtn">Start exploring →</button>
+    </div>
+  </div>
+</div>
+
+<!-- Three.js from cdnjs (only external dependency; everything else is self-contained) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+/* =========================================================================
+   THE BEATING HEART — single-file 3D educational app
+   -------------------------------------------------------------------------
+   Anatomy note for teachers:
+   The heart is shown in standard anatomical orientation. The RIGHT side of the
+   heart (right atrium + right ventricle) is drawn on the VIEWER'S LEFT, and the
+   LEFT side (left atrium + left ventricle) on the VIEWER'S RIGHT — exactly as in
+   a longitudinal-section textbook figure.
+
+   Blood pathway (the loop the particles follow):
+     body → vena cavae → RIGHT ATRIUM → (tricuspid valve) → RIGHT VENTRICLE
+        → (pulmonary semilunar valve) → pulmonary artery → LUNGS  [blue→red]
+        → pulmonary veins → LEFT ATRIUM → (bicuspid/mitral valve) → LEFT VENTRICLE
+        → (aortic semilunar valve) → aorta → body  [red→blue in the tissues]
+   ========================================================================= */
+
+const THREEr = THREE;
+
+/* ---- helpers ---- */
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const lerp=(a,b,t)=>a+(b-a)*t;
+const smooth=t=>{t=clamp(t,0,1);return t*t*(3-2*t);};
+// a smooth 0→1→0 "pulse" between [s,e] used for muscle contraction envelopes
+function pulse(x,s,e){ if(x<s||x>e) return 0; const m=(s+e)/2; return x<m? smooth((x-s)/(m-s)) : smooth((e-x)/(e-m)); }
+
+/* =========================================================================
+   SCENE
+   ========================================================================= */
+const stage=document.getElementById('stage');
+const renderer=new THREEr.WebGLRenderer({antialias:true, alpha:true});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+renderer.setSize(innerWidth,innerHeight);
+renderer.shadowMap.enabled=true;
+renderer.shadowMap.type=THREEr.PCFSoftShadowMap;
+renderer.localClippingEnabled=true; // needed for the cutaway view
+stage.appendChild(renderer.domElement);
+
+const scene=new THREEr.Scene();
+
+const camera=new THREEr.PerspectiveCamera(45,innerWidth/innerHeight,0.1,100);
+
+/* soft, warm-friendly lighting */
+scene.add(new THREEr.HemisphereLight(0xffffff,0xd9c6c0,0.85));
+const key=new THREEr.DirectionalLight(0xfff2ec,1.05);
+key.position.set(5,8,6); key.castShadow=true;
+key.shadow.mapSize.set(1024,1024);
+key.shadow.camera.left=-8;key.shadow.camera.right=8;key.shadow.camera.top=8;key.shadow.camera.bottom=-8;
+key.shadow.radius=6;
+scene.add(key);
+const fill=new THREEr.DirectionalLight(0xdfe8ff,0.5); fill.position.set(-6,2,-4); scene.add(fill);
+const rim=new THREEr.PointLight(0xffd5cf,0.5,40); rim.position.set(0,3,-6); scene.add(rim);
+
+/* soft stage floor to catch shadow */
+const floorMat=new THREEr.ShadowMaterial({opacity:0.14});
+const floor=new THREEr.Mesh(new THREEr.CircleGeometry(14,48),floorMat);
+floor.rotation.x=-Math.PI/2; floor.position.y=-4.1; floor.receiveShadow=true;
+scene.add(floor);
+
+/* =========================================================================
+   MATERIALS  (vessels are coloured by the blood they carry, to reinforce
+   the oxygenated/deoxygenated idea)
+   ========================================================================= */
+const clipPlane=new THREEr.Plane(new THREEr.Vector3(0,0,-1),0.15); // hides everything with z>0.15
+const clippableMats=[];
+function tissue(color, opts={}){
+  const m=new THREEr.MeshStandardMaterial({color, roughness:0.55, metalness:0.02,
+    side:THREEr.DoubleSide, ...opts});
+  clippableMats.push(m); return m;
+}
+const muscleMat   = tissue(0xcf4b4b, {roughness:0.5});
+const muscleDark  = tissue(0xb84646, {roughness:0.5});
+const veinMat     = tissue(0x4a78c4);              // deoxygenated (blue) vessels
+const arteryMat   = tissue(0xd6473f);              // oxygenated (red) vessels
+const membraneMat = new THREEr.MeshStandardMaterial({color:0xf3d7d5, roughness:0.4, side:THREEr.DoubleSide, transparent:true, opacity:0.95});
+clippableMats.push(membraneMat);
+
+function setClipping(on){ clippableMats.forEach(m=>{ m.clippingPlanes = on?[clipPlane]:[]; }); }
+
+/* =========================================================================
+   HEART GEOMETRY
+   ========================================================================= */
+const heart=new THREEr.Group();
+heart.position.y=-0.2;
+scene.add(heart);
+
+// helper to make an ellipsoid chamber
+function chamber(mat, pos, scale){
+  const g=new THREEr.SphereGeometry(0.9,40,32);
+  const m=new THREEr.Mesh(g,mat);
+  m.position.set(...pos); m.scale.set(...scale);
+  m.castShadow=true; m.receiveShadow=true;
+  heart.add(m); return m;
+}
+// tube vessel from a list of points
+function vessel(points, radius, mat){
+  const curve=new THREEr.CatmullRomCurve3(points.map(p=>new THREEr.Vector3(...p)));
+  const g=new THREEr.TubeGeometry(curve,40,radius,16,false);
+  const m=new THREEr.Mesh(g,mat); m.castShadow=true; heart.add(m); return m;
+}
+
+/* --- four chambers --- */
+const RA=chamber(muscleDark,[-1.05, 0.95, 0.15],[0.92,0.82,0.92]);  // right atrium (upper, viewer-left)
+const LA=chamber(muscleDark,[ 1.05, 1.02,-0.10],[0.86,0.76,0.86]);  // left atrium  (upper, viewer-right)
+const RV=chamber(muscleMat ,[-0.72,-0.75, 0.30],[1.02,1.12,1.02]);  // right ventricle (lower)
+const LV=chamber(muscleMat ,[ 0.82,-0.92, 0.00],[1.12,1.42,1.06]);  // left ventricle (lower, thick, forms apex)
+
+/* --- great vessels, correctly connected --- */
+// Superior & inferior vena cava → right atrium (deoxygenated, blue)
+const SVC=vessel([[-1.05,1.6,0.15],[-1.0,2.4,0.2],[-0.95,3.2,0.2]],0.26,veinMat);
+const IVC=vessel([[-1.15,0.2,0.15],[-1.25,-0.8,0.2],[-1.3,-1.7,0.2]],0.28,veinMat);
+// Pulmonary artery: from RIGHT VENTRICLE up to the lungs (carries deoxygenated blood, blue)
+const PA =vessel([[-0.45,0.15,0.35],[-0.35,1.0,0.15],[-0.15,1.9,-0.1],[0.15,2.6,-0.35]],0.24,veinMat);
+// Aorta: from LEFT VENTRICLE, arches over, down to the body (oxygenated, red)
+const AO =vessel([[0.45,-0.1,0.10],[0.35,0.9,0.12],[0.3,1.9,0.05],[0.55,2.7,0.0],[1.6,2.5,0.0],[2.5,1.4,0.0],[2.9,0.5,0.0]],0.26,arteryMat);
+// Pulmonary veins → LEFT ATRIUM (oxygenated, red)
+const PV1=vessel([[1.7,1.7,-0.5],[1.35,1.4,-0.3],[1.05,1.15,-0.15]],0.16,arteryMat);
+const PV2=vessel([[2.0,0.9,-0.5],[1.5,0.95,-0.3],[1.1,1.0,-0.1]],0.16,arteryMat);
+
+/* =========================================================================
+   VALVES  (iris-style discs inside a ring; disc closes to block backflow)
+   ========================================================================= */
+function makeValve(radius){
+  const grp=new THREEr.Group();
+  const ring=new THREEr.Mesh(new THREEr.TorusGeometry(radius,0.045,10,28), muscleDark);
+  ring.rotation.x=Math.PI/2; grp.add(ring);
+  const disc=new THREEr.Mesh(new THREEr.CircleGeometry(radius*0.96,24), membraneMat.clone());
+  clippableMats.push(disc.material);
+  disc.rotation.x=-Math.PI/2; grp.add(disc);
+  grp.userData.disc=disc;
+  grp.setOpen=(o)=>{ // o=0 closed, o=1 fully open
+    const s=lerp(1.0,0.12,smooth(o));
+    disc.scale.set(s,s,s);
+    disc.material.opacity=lerp(0.95,0.15,smooth(o));
+  };
+  heart.add(grp); return grp;
+}
+const tricuspid=makeValve(0.34); tricuspid.position.set(-0.85,0.02,0.28);           // RA → RV
+const bicuspid =makeValve(0.30); bicuspid.position.set(0.9,0.05,0.0);               // LA → LV
+const pulmSL   =makeValve(0.20); pulmSL.position.set(-0.45,0.30,0.32);              // RV → pulmonary artery
+const aortaSL  =makeValve(0.20); aortaSL.position.set(0.45,0.12,0.10);              // LV → aorta
+
+/* -------------------------------------------------------------------------
+   LUNGS — sit at the top of the circuit, where blood changes from blue
+   (deoxygenated) to red (oxygenated). Built as identifiable lobed lungs:
+   the right lung has 3 lobes and the left lung has 2, as in real anatomy.
+   Kept semi-transparent so students can see the blood recolour inside them.
+   ------------------------------------------------------------------------- */
+function buildLungs(){
+  const g=new THREEr.Group();
+  const lungMat=new THREEr.MeshStandardMaterial({color:0xf2a0b2, roughness:0.85, transparent:true, opacity:0.5, side:THREEr.DoubleSide});
+  const bronMat=new THREEr.MeshStandardMaterial({color:0xe9d6bd, roughness:0.7});
+  const lobe=(x,y,z,rx,ry,rz)=>{ const m=new THREEr.Mesh(new THREEr.SphereGeometry(1,20,16),lungMat);
+    m.position.set(x,y,z); m.scale.set(rx,ry,rz); m.castShadow=true; return m; };
+
+  // right lung (viewer's LEFT, −x): 3 lobes, tapering to a rounded apex at the top
+  const R=new THREEr.Group();
+  R.add(lobe(0,   0.00,0, 0.62,0.72,0.5));  // lower lobe — widest base
+  R.add(lobe(0.06,0.70,0, 0.52,0.55,0.45)); // middle lobe
+  R.add(lobe(0.14,1.24,0, 0.38,0.46,0.36)); // upper lobe — apex
+  R.position.set(-1.15,0,0);
+
+  // left lung (viewer's RIGHT, +x): 2 lobes (smaller — the heart sits on this side)
+  const L=new THREEr.Group();
+  L.add(lobe(0,    0.05,0, 0.6,0.74,0.5));
+  L.add(lobe(-0.12,0.86,0, 0.44,0.56,0.4));
+  L.position.set(1.15,0,0);
+
+  g.add(R,L);
+
+  // trachea (windpipe) + two bronchi forming a little Y between the lungs
+  const trachea=new THREEr.Mesh(new THREEr.CylinderGeometry(0.1,0.1,0.9,12),bronMat);
+  trachea.position.set(0,1.55,0); g.add(trachea);
+  const bR=new THREEr.Mesh(new THREEr.CylinderGeometry(0.07,0.07,1.05,10),bronMat);
+  bR.position.set(-0.5,1.02,0); bR.rotation.z=Math.PI/5; g.add(bR);
+  const bL=new THREEr.Mesh(new THREEr.CylinderGeometry(0.07,0.07,0.95,10),bronMat);
+  bL.position.set(0.52,1.06,0); bL.rotation.z=-Math.PI/5; g.add(bL);
+  return g;
+}
+const lungs=buildLungs();
+lungs.position.set(0.15,2.85,-0.7);   // centred on the blue→red colour-change point
+scene.add(lungs);
+
+/* =========================================================================
+   BLOOD FLOW PATH  (a single closed loop through the whole circulation)
+   Waypoint indices are used to decide colour: blue from the body up to the
+   lungs, red from the lungs back out to the body.
+   ========================================================================= */
+const wp=[
+  [-3.2,-1.6,0.0],   //0 from body
+  [-2.0,-0.4,0.15],  //1
+  [-1.15,1.9,0.15],  //2 vena cava into RA
+  [-1.05,0.95,0.15], //3 RIGHT ATRIUM
+  [-0.9,0.05,0.35],  //4 tricuspid
+  [-0.75,-0.85,0.35],//5 RIGHT VENTRICLE
+  [-0.45,-0.2,0.4],  //6 RV outflow
+  [-0.45,0.35,0.32], //7 pulmonary semilunar
+  [-0.2,1.4,0.0],    //8 pulmonary artery
+  [0.1,2.7,-0.45],   //9 toward lungs
+  [0.15,3.4,-0.6],   //10 LUNGS  <-- blue→red
+  [1.3,1.9,-0.35],   //11 pulmonary veins
+  [1.05,1.05,-0.05], //12 LEFT ATRIUM
+  [0.95,0.15,0.05],  //13 bicuspid
+  [0.85,-0.9,0.0],   //14 LEFT VENTRICLE
+  [0.55,-0.1,0.15],  //15 LV outflow
+  [0.45,0.35,0.10],  //16 aortic semilunar
+  [0.3,1.6,0.05],    //17 ascending aorta
+  [0.5,2.7,0.0],     //18 arch
+  [1.6,2.5,0.0],     //19 arch right
+  [2.7,1.0,0.0],     //20 descending aorta
+  [3.2,-1.2,0.0],    //21 to body
+  [3.2,-3.2,0.0],    //22 body
+  [0.0,-3.7,0.0],    //23 BODY (tissues) <-- red→blue
+  [-3.2,-3.2,0.0]    //24 body
+];
+const N=wp.length;
+const flowCurve=new THREEr.CatmullRomCurve3(wp.map(p=>new THREEr.Vector3(...p).add(new THREEr.Vector3(0,-0.2,0))),true,'catmullrom',0.5);
+const SAMPLES=1200;
+const flowPts=flowCurve.getSpacedPoints(SAMPLES); // ARC-LENGTH spaced, so speed is even
+
+// flowPts are spaced by distance, NOT by waypoint index — so we find the real
+// loop-fraction (u) of each waypoint by locating its nearest sample. Everything
+// that depends on "where along the loop" (colour flip, mini-map, tour captions)
+// uses these, so they line up exactly with where the particles actually are.
+const wpWorld = wp.map(p=>new THREEr.Vector3(...p).add(new THREEr.Vector3(0,-0.2,0)));
+const wpU = wpWorld.map(v=>{
+  let best=0,bd=Infinity;
+  for(let i=0;i<SAMPLES;i++){ const d=flowPts[i].distanceToSquared(v); if(d<bd){bd=d;best=i;} }
+  return best/SAMPLES;
+});
+// loop fraction of a waypoint index (0 and last clamp to the loop ends)
+const segU = i => i<=0 ? 0 : i>=N-1 ? 1 : wpU[i];
+
+const U_LUNGS = wpU[10];  // blue → red happens AT the lungs
+const U_BODY  = wpU[23];  // red → blue happens AT the body tissues
+function bloodColor(u){ // blue between BODY→LUNGS, red between LUNGS→BODY
+  return (u>=U_LUNGS && u<U_BODY) ? 1 : 0; // 1=red, 0=blue
+}
+
+/* particle system */
+const PCOUNT=280;
+const pGeo=new THREEr.BufferGeometry();
+const pPos=new Float32Array(PCOUNT*3);
+const pCol=new Float32Array(PCOUNT*3);
+const pU=new Float32Array(PCOUNT);
+const cBlue=new THREEr.Color(0x3a86ff), cRed=new THREEr.Color(0xe63946);
+for(let i=0;i<PCOUNT;i++){ pU[i]=i/PCOUNT; }
+pGeo.setAttribute('position',new THREEr.BufferAttribute(pPos,3));
+pGeo.setAttribute('color',new THREEr.BufferAttribute(pCol,3));
+const pMat=new THREEr.PointsMaterial({size:0.16, vertexColors:true, transparent:true, opacity:0.95,
+  depthWrite:false, blending:THREEr.NormalBlending});
+const bloodPoints=new THREEr.Points(pGeo,pMat);
+scene.add(bloodPoints);
+
+/* -------------------------------------------------------------------------
+   HERO CELL — a single red blood cell we follow during the guided tour.
+   It has a glowing gold halo + billboard ring so it stands out from the crowd,
+   while its core still changes colour (blue↔red) to show oxygenation.
+   ------------------------------------------------------------------------- */
+const hero=new THREEr.Group();
+const heroCore=new THREEr.Mesh(new THREEr.SphereGeometry(0.26,24,18),
+  new THREEr.MeshStandardMaterial({color:0x3a86ff, emissive:0x1b3a7a, emissiveIntensity:0.6, roughness:0.3}));
+hero.add(heroCore);
+const heroHalo=new THREEr.Mesh(new THREEr.SphereGeometry(0.46,20,16),
+  new THREEr.MeshBasicMaterial({color:0xffe08a, transparent:true, opacity:0.25, depthWrite:false}));
+hero.add(heroHalo);
+const heroRing=new THREEr.Mesh(new THREEr.TorusGeometry(0.55,0.035,8,36),
+  new THREEr.MeshBasicMaterial({color:0xffd24a}));
+hero.add(heroRing);
+hero.visible=false;
+scene.add(hero);
+
+let heroU=0;
+const heroColBlue=new THREEr.Color(0x3a86ff), heroColRed=new THREEr.Color(0xff2d55);
+const pale=new THREEr.Color(0xf0e6d8);
+
+/* faint full-loop guide line (shows the whole route during the tour) */
+const guideLine=new THREEr.Line(new THREEr.BufferGeometry().setFromPoints(flowPts),
+  new THREEr.LineBasicMaterial({color:0x9aa6c4, transparent:true, opacity:0.22}));
+guideLine.visible=false; scene.add(guideLine);
+
+/* rolling comet-trail behind the hero cell, colour-coded & fading */
+const TRAILN=120;
+const trail=[]; // {p:Vector3, ox:0..1}
+const trailGeo=new THREEr.BufferGeometry();
+const trailPos=new Float32Array(TRAILN*3), trailCol=new Float32Array(TRAILN*3);
+trailGeo.setAttribute('position',new THREEr.BufferAttribute(trailPos,3));
+trailGeo.setAttribute('color',new THREEr.BufferAttribute(trailCol,3));
+const trailLine=new THREEr.Line(trailGeo, new THREEr.LineBasicMaterial({vertexColors:true, transparent:true, opacity:0.9}));
+trailLine.visible=false; scene.add(trailLine);
+
+function updateBlood(dU){
+  for(let i=0;i<PCOUNT;i++){
+    let u=(pU[i]+dU)%1; pU[i]=u;
+    const idx=Math.floor(u*SAMPLES)%SAMPLES;
+    const p=flowPts[idx];
+    pPos[i*3]=p.x; pPos[i*3+1]=p.y; pPos[i*3+2]=p.z;
+    const c = bloodColor(u)? cRed : cBlue;
+    pCol[i*3]=c.r; pCol[i*3+1]=c.g; pCol[i*3+2]=c.b;
+  }
+  pGeo.attributes.position.needsUpdate=true;
+  pGeo.attributes.color.needsUpdate=true;
+}
+
+/* =========================================================================
+   CAMERA CONTROLLER  (self-contained orbit: drag / wheel / pinch)
+   ========================================================================= */
+const cam={ target:new THREEr.Vector3(0,-0.3,0), radius:9.5, theta:0.55, phi:1.15,
+            dTarget:new THREEr.Vector3(0,-0.3,0), dRadius:9.5, dTheta:0.55, dPhi:1.15 };
+function applyCam(){
+  const st=Math.sin(cam.phi)*cam.radius;
+  camera.position.set(
+    cam.target.x + st*Math.sin(cam.theta),
+    cam.target.y + Math.cos(cam.phi)*cam.radius,
+    cam.target.z + st*Math.cos(cam.theta));
+  camera.lookAt(cam.target);
+}
+function focusOn(v, radius=4.5){ cam.dTarget.copy(v); cam.dRadius=radius; cam.dTheta=0.35; cam.dPhi=1.2; }
+function resetCam(){ cam.dTarget.set(0,-0.3,0); cam.dRadius=9.5; cam.dTheta=0.55; cam.dPhi=1.15; }
+
+let dragging=false,lastX=0,lastY=0,pinchDist=0;
+const el=renderer.domElement;
+el.addEventListener('pointerdown',e=>{dragging=true;lastX=e.clientX;lastY=e.clientY;el.setPointerCapture(e.pointerId);});
+el.addEventListener('pointermove',e=>{
+  if(!dragging)return;
+  cam.dTheta-=(e.clientX-lastX)*0.007;
+  cam.dPhi=clamp(cam.dPhi-(e.clientY-lastY)*0.007,0.25,Math.PI-0.25);
+  lastX=e.clientX;lastY=e.clientY;
+});
+el.addEventListener('pointerup',()=>dragging=false);
+el.addEventListener('wheel',e=>{e.preventDefault();cam.dRadius=clamp(cam.dRadius+e.deltaY*0.01,3,20);},{passive:false});
+// touch pinch
+el.addEventListener('touchmove',e=>{
+  if(e.touches.length===2){
+    const dx=e.touches[0].clientX-e.touches[1].clientX, dy=e.touches[0].clientY-e.touches[1].clientY;
+    const d=Math.hypot(dx,dy);
+    if(pinchDist) cam.dRadius=clamp(cam.dRadius+(pinchDist-d)*0.02,3,20);
+    pinchDist=d; e.preventDefault();
+  }
+},{passive:false});
+el.addEventListener('touchend',()=>pinchDist=0);
+
+/* =========================================================================
+   PARTS DATA — labels, hotspots & Grade-9 explanations
+   ========================================================================= */
+const parts=[
+ {id:'RA', name:'Right atrium', kind:'muscle', pos:[-1.05,0.95,0.15],
+  tag:'Chamber', text:"The right atrium is the upper right chamber. It collects deoxygenated (low‑oxygen) blood returning from the whole body through the two vena cavae, then pushes it down into the right ventricle.",
+  term:"Atrium = an upper chamber of the heart that receives blood coming in."},
+ {id:'LA', name:'Left atrium', kind:'muscle', pos:[1.05,1.02,-0.10],
+  tag:'Chamber', text:"The left atrium is the upper left chamber. It receives oxygenated (oxygen‑rich) blood from the lungs through the pulmonary veins and passes it into the left ventricle.",
+  term:"Oxygenated = blood that is full of oxygen. We colour it red."},
+ {id:'RV', name:'Right ventricle', kind:'muscle', pos:[-0.72,-0.9,0.30],
+  tag:'Chamber', text:"The right ventricle is a lower pumping chamber. When it squeezes, it sends deoxygenated blood a short distance to the lungs through the pulmonary artery.",
+  term:"Ventricle = a lower chamber that pumps blood out of the heart."},
+ {id:'LV', name:'Left ventricle', kind:'muscle', pos:[0.82,-1.0,0.0],
+  tag:'Chamber', text:"The left ventricle has the thickest, strongest muscle wall. It pumps oxygenated blood all the way around the body through the aorta, so it must push very hard.",
+  term:"Deoxygenated = blood with little oxygen left. We colour it blue."},
+ {id:'tri', name:'Tricuspid valve', kind:'muscle', pos:[-0.85,0.02,0.28],
+  tag:'Valve', text:"The tricuspid valve is a one‑way door between the right atrium and right ventricle. It opens to let blood down, then snaps shut so blood can't flow backwards when the ventricle squeezes.",
+  term:"Valve = a flap that lets blood flow only one way."},
+ {id:'bic', name:'Bicuspid (mitral) valve', kind:'muscle', pos:[0.9,0.05,0.0],
+  tag:'Valve', text:"The bicuspid valve (also called the mitral valve) sits between the left atrium and left ventricle. It opens to fill the ventricle and closes tightly to stop backflow — its closing helps make the 'lub' sound.",
+  term:"Bicuspid = made of two flaps. The tricuspid has three."},
+ {id:'pSL', name:'Pulmonary semilunar valve', kind:'blue', pos:[-0.45,0.30,0.32],
+  tag:'Valve', text:"This valve guards the entrance to the pulmonary artery. It opens when the right ventricle pumps blood toward the lungs, then closes so blood doesn't fall back into the ventricle.",
+  term:"Semilunar = 'half‑moon' shaped. These valves guard the arteries leaving the heart."},
+ {id:'aSL', name:'Aortic semilunar valve', kind:'red', pos:[0.45,0.12,0.10],
+  tag:'Valve', text:"The aortic valve guards the entrance to the aorta. It opens when the left ventricle pumps blood to the body, then snaps shut — its closing helps make the 'dub' sound.",
+  term:"The 'lub‑dub' heartbeat is the sound of valves closing."},
+ {id:'AO', name:'Aorta', kind:'red', pos:[1.6,2.5,0.0],
+  tag:'Artery', text:"The aorta is the body's largest artery. It carries oxygen‑rich blood from the left ventricle and arches over to deliver it to the rest of the body.",
+  term:"Artery = a vessel that carries blood AWAY from the heart."},
+ {id:'PA', name:'Pulmonary artery', kind:'blue', pos:[0.05,2.4,-0.35],
+  tag:'Artery', text:"The pulmonary artery carries deoxygenated blood from the right ventricle to the lungs. It is the only artery that carries low‑oxygen (blue) blood.",
+  term:"Pulmonary = to do with the lungs."},
+ {id:'PV', name:'Pulmonary veins', kind:'red', pos:[1.8,1.4,-0.5],
+  tag:'Vein', text:"The pulmonary veins bring oxygen‑rich blood from the lungs back into the left atrium. They are the only veins that carry high‑oxygen (red) blood.",
+  term:"Vein = a vessel that carries blood TOWARD the heart."},
+ {id:'SVC', name:'Superior vena cava', kind:'blue', pos:[-0.95,3.0,0.2],
+  tag:'Vein', text:"The superior vena cava is a large vein that returns deoxygenated blood from the upper body (head and arms) into the right atrium.",
+  term:"Superior = above. This vein drains the top half of the body."},
+ {id:'IVC', name:'Inferior vena cava', kind:'blue', pos:[-1.3,-1.6,0.2],
+  tag:'Vein', text:"The inferior vena cava returns deoxygenated blood from the lower body (legs and abdomen) into the right atrium.",
+  term:"Inferior = below. This vein drains the bottom half of the body."},
+ {id:'LUNG', name:'Lungs', kind:'lung', pos:[0.15,4.35,-0.6],
+  tag:'Gas exchange', text:"The lungs are where blood meets the air you breathe. Blood arriving from the right side of the heart is deoxygenated (blue). As it flows through the lungs it drops off carbon dioxide, picks up oxygen, and becomes oxygenated (red) before returning to the left side of the heart.",
+  term:"Gas exchange = swapping waste carbon dioxide for fresh oxygen. This is why the blood changes from blue to red here."}
+];
+
+/* label DOM elements */
+const labelsRoot=document.getElementById('labels');
+parts.forEach(p=>{
+  const d=document.createElement('div');
+  d.className='lbl '+p.kind;
+  d.innerHTML='<span class="dot"></span>'+p.name;
+  d.addEventListener('click',()=>selectPart(p.id));
+  p.el=d; p.v=new THREEr.Vector3(...p.pos);
+  labelsRoot.appendChild(d);
+});
+
+/* 3D clickable hotspot dots */
+const hotspots=[];
+parts.forEach(p=>{
+  const m=new THREEr.Mesh(new THREEr.SphereGeometry(0.14,16,12),
+    new THREEr.MeshStandardMaterial({color:0xffffff, emissive:0xffd0c0, emissiveIntensity:0.6}));
+  m.position.set(...p.pos).add(new THREEr.Vector3(0,-0.2,0));
+  m.userData.id=p.id; heart.add(m); hotspots.push(m);
+});
+
+/* raycasting for clicks on the model */
+const ray=new THREEr.Raycaster(), mouse=new THREEr.Vector2();
+let downPos=null;
+el.addEventListener('pointerdown',e=>{downPos=[e.clientX,e.clientY];});
+el.addEventListener('pointerup',e=>{
+  if(!downPos) return;
+  if(Math.hypot(e.clientX-downPos[0],e.clientY-downPos[1])>6) return; // was a drag
+  mouse.x=(e.clientX/innerWidth)*2-1; mouse.y=-(e.clientY/innerHeight)*2+1;
+  ray.setFromCamera(mouse,camera);
+  const hit=ray.intersectObjects(hotspots,false);
+  if(hit.length) selectPart(hit[0].object.userData.id);
+});
+
+/* info card */
+const info=document.getElementById('info');
+const shownTerms=new Set();
+function selectPart(id){
+  const p=parts.find(x=>x.id===id); if(!p)return;
+  document.getElementById('infoTitle').textContent=p.name;
+  const tag=document.getElementById('infoTag');
+  tag.textContent=p.tag;
+  tag.style.background = p.kind==='blue'?'var(--bluesoft)':p.kind==='red'?'var(--redsoft)':p.kind==='lung'?'#fbe0ec':'#eef1f8';
+  tag.style.color = p.kind==='blue'?'#274b8f':p.kind==='red'?'#9c2b30':p.kind==='lung'?'#a83b6b':'#555';
+  document.getElementById('infoText').textContent=p.text;
+  document.getElementById('infoTerm').innerHTML='📖 <b>New word</b> — '+p.term;
+  info.classList.add('show');
+  focusOn(p.v.clone().add(new THREEr.Vector3(0,-0.2,0)), 4.5);
+}
+document.getElementById('infoX').onclick=()=>{info.classList.remove('show'); resetCam();};
+
+/* =========================================================================
+   MINI-MAP stages (light up as the tracer passes)
+   ========================================================================= */
+/* stages given as waypoint-index ranges [s,e); real loop fractions come from segU */
+const stageDefs=[
+  {t:'From body — vena cavae', s:0,  e:3,  c:'b'},
+  {t:'Right atrium',            s:3,  e:4,  c:'b'},
+  {t:'Tricuspid valve',         s:4,  e:5,  c:'b'},
+  {t:'Right ventricle',         s:5,  e:7,  c:'b'},
+  {t:'Pulmonary valve',         s:7,  e:8,  c:'b'},
+  {t:'Pulmonary artery',        s:8,  e:10, c:'b'},
+  {t:'Lungs — pick up O₂',      s:10, e:11, c:'x'},
+  {t:'Pulmonary veins',         s:11, e:12, c:'r'},
+  {t:'Left atrium',             s:12, e:13, c:'r'},
+  {t:'Bicuspid valve',          s:13, e:14, c:'r'},
+  {t:'Left ventricle',          s:14, e:16, c:'r'},
+  {t:'Aortic valve',            s:16, e:17, c:'r'},
+  {t:'Aorta',                   s:17, e:21, c:'r'},
+  {t:'To body — deliver O₂',    s:21, e:25, c:'r'}
+];
+stageDefs.forEach(s=>{ s.a=segU(s.s); s.b=segU(s.e); });
+const stagesRoot=document.getElementById('stages');
+stageDefs.forEach(s=>{
+  const d=document.createElement('div'); d.className='stage';
+  const col=s.c==='b'?'var(--blue)':s.c==='r'?'var(--red)':'#b06fb0';
+  d.innerHTML=`<span class="d" style="background:${col}"></span>${s.t}`;
+  s.el=d; stagesRoot.appendChild(d);
+});
+let tracerU=0;
+function updateMinimap(){
+  stageDefs.forEach(s=>{
+    const on = tracerU>=s.a && tracerU<s.b;
+    s.el.classList.toggle('on',on);
+  });
+}
+
+/* =========================================================================
+   CARDIAC CYCLE  (phase 0..1 of one heartbeat)
+   Timing (fractions of one beat):
+     0.00–0.15  ATRIAL SYSTOLE — atria squeeze, AV valves OPEN, ventricles fill
+     0.15       AV valves close  → "LUB" (first heart sound)
+     0.15–0.45  VENTRICULAR SYSTOLE — ventricles squeeze, semilunar valves OPEN (ejection)
+     0.45       semilunar valves close → "DUB" (second heart sound)
+     0.45–1.00  DIASTOLE — everything relaxes, chambers refill
+   ========================================================================= */
+let phase=0, prevPhase=0;
+
+function updateCycle(dt){
+  prevPhase=phase;
+
+  // atrial contraction: brief squeeze early in the beat
+  const atrCon = pulse(phase,0.0,0.18)*0.10;
+  // ventricular contraction: bigger squeeze in the middle
+  const venCon = pulse(phase,0.15,0.48)*0.15;
+
+  RA.scale.set(0.92*(1-atrCon),0.82*(1-atrCon),0.92*(1-atrCon));
+  LA.scale.set(0.86*(1-atrCon),0.76*(1-atrCon),0.86*(1-atrCon));
+  RV.scale.set(1.02*(1-venCon),1.12*(1-venCon*1.1),1.02*(1-venCon));
+  LV.scale.set(1.12*(1-venCon),1.42*(1-venCon*1.1),1.06*(1-venCon));
+
+  // AV valves: OPEN during filling (phase>0.45 or phase<0.15), CLOSED during ventricular systole
+  const avOpen = (phase<0.13 || phase>0.5) ? 1 : 0;
+  tricuspid.setOpen(avOpen);
+  bicuspid.setOpen(avOpen);
+  // semilunar valves: OPEN during ejection only
+  const slOpen = (phase>0.16 && phase<0.46) ? 1 : 0;
+  pulmSL.setOpen(slOpen);
+  aortaSL.setOpen(slOpen);
+
+  // heart sounds on valve-closure crossings
+  if(soundOn){
+    if(prevPhase<0.14 && phase>=0.14) playThump(70,0.16);   // LUB (AV valves close)
+    if(prevPhase<0.47 && phase>=0.47) playThump(110,0.11);  // DUB (semilunar close)
+    if(phase<prevPhase){ /* wrapped */ }
+  }
+}
+
+/* WebAudio lub-dub */
+let audioCtx=null, soundOn=false;
+function playThump(freq,dur){
+  if(!audioCtx) return;
+  const o=audioCtx.createOscillator(), g=audioCtx.createGain();
+  o.frequency.value=freq; o.type='sine';
+  g.gain.setValueAtTime(0.0001,audioCtx.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.35,audioCtx.currentTime+0.01);
+  g.gain.exponentialRampToValueAtTime(0.0001,audioCtx.currentTime+dur);
+  o.connect(g).connect(audioCtx.destination);
+  o.start(); o.stop(audioCtx.currentTime+dur+0.02);
+}
+
+/* =========================================================================
+   UI STATE + CONTROLS
+   ========================================================================= */
+let bpm=70, flowPlaying=true, slowMode=false, labelsOn=true, cutaway=false;
+let targetBpm=70; // for smooth ramps (exercise mode)
+
+const bpmSlider=document.getElementById('bpm'), bpmVal=document.getElementById('bpmVal');
+bpmSlider.oninput=()=>{ targetBpm=+bpmSlider.value; };
+
+function setActive(id,on){document.getElementById(id).classList.toggle('active',on);}
+
+document.getElementById('viewWhole').onclick=()=>{cutaway=false; setClipping(false); setActive('viewWhole',true); setActive('viewCut',false);};
+document.getElementById('viewCut').onclick=()=>{cutaway=true; setClipping(true); setActive('viewWhole',false); setActive('viewCut',true);};
+
+document.getElementById('flowPlay').onclick=(e)=>{flowPlaying=!flowPlaying; e.target.textContent=flowPlaying?'⏸ Pause':'▶ Play'; setActive('flowPlay',flowPlaying);};
+document.getElementById('slowmo').onclick=(e)=>{slowMode=!slowMode; e.target.textContent=slowMode?'🐢 Slow‑mo: On':'🐢 Slow‑mo'; setActive('slowmo',slowMode);};
+
+document.getElementById('lblToggle').onclick=(e)=>{labelsOn=!labelsOn; e.target.textContent='🏷️ Labels: '+(labelsOn?'On':'Off'); setActive('lblToggle',labelsOn);
+  parts.forEach(p=>p.el.classList.toggle('hidden',!labelsOn));};
+
+const activityNote=document.getElementById('activityNote');
+document.getElementById('rest').onclick=()=>{targetBpm=70; bpmSlider.value=70; setActive('rest',true); setActive('exercise',false);
+  activityNote.textContent="At rest the heart beats gently (~70 bpm). Blood flows calmly around the body.";};
+document.getElementById('exercise').onclick=()=>{targetBpm=150; bpmSlider.value=150; setActive('rest',false); setActive('exercise',true);
+  activityNote.textContent="During exercise your muscles burn oxygen quickly. The heart beats faster (~150 bpm) to deliver oxygen‑rich blood and remove waste faster.";};
+
+document.getElementById('soundBtn').onclick=(e)=>{
+  soundOn=!soundOn;
+  if(soundOn && !audioCtx){ audioCtx=new (window.AudioContext||window.webkitAudioContext)(); }
+  if(soundOn && audioCtx && audioCtx.state==='suspended') audioCtx.resume();
+  e.target.textContent='🔊 Sound: '+(soundOn?'On':'Off'); setActive('soundBtn',soundOn);
+};
+document.getElementById('resetView').onclick=()=>{resetCam(); info.classList.remove('show');};
+
+const overlay=document.getElementById('overlay');
+document.getElementById('startBtn').onclick=()=>overlay.classList.add('hidden');
+document.getElementById('helpBtn').onclick=()=>overlay.classList.remove('hidden');
+
+/* =========================================================================
+   GUIDED TOUR — auto-plays one slow cycle with captions
+   ========================================================================= */
+/* Each station is a stretch of the loop (u range) with a caption + oxygen state.
+   ox: 1 = oxygenated (red), 0 = deoxygenated (blue). */
+/* stations use waypoint-index ranges [s,e); real loop fractions come from segU,
+   so the caption always matches where the followed cell actually is. */
+const journey=[
+ {s:0, e:3,  ox:0, title:"Heading home to the heart", text:"I'm a red blood cell. I dropped my oxygen at the body, so I'm now carrying carbon dioxide. The vena cavae carry me back toward the heart."},
+ {s:3, e:4,  ox:0, title:"Right atrium", text:"I flow into the right atrium — the heart's top‑right collecting chamber."},
+ {s:4, e:5,  ox:0, title:"Through the tricuspid valve", text:"The tricuspid valve swings open and I drop down into the right ventricle."},
+ {s:5, e:7,  ox:0, title:"Right ventricle", text:"The right ventricle squeezes to push me on a short trip to the lungs."},
+ {s:7, e:8,  ox:0, title:"Pulmonary valve", text:"The pulmonary semilunar valve opens and I shoot out of the heart."},
+ {s:8, e:10, ox:0, title:"Pulmonary artery", text:"I ride up the pulmonary artery — the only artery that carries low‑oxygen (blue) blood."},
+ {s:10,e:11, ox:1, title:"In the lungs 🫁", text:"Gas exchange! I let go of carbon dioxide and grab fresh oxygen. Watch me change from blue to red."},
+ {s:11,e:12, ox:1, title:"Pulmonary veins", text:"Full of oxygen now, I travel back to the heart through the pulmonary veins."},
+ {s:12,e:13, ox:1, title:"Left atrium", text:"I arrive in the left atrium — the top‑left collecting chamber."},
+ {s:13,e:14, ox:1, title:"Through the bicuspid valve", text:"The bicuspid (mitral) valve opens and I sink into the left ventricle."},
+ {s:14,e:16, ox:1, title:"Left ventricle", text:"The strongest chamber! Its thick muscle squeezes hard to launch me all around the body."},
+ {s:16,e:17, ox:1, title:"Aortic valve", text:"The aortic valve opens for my big journey out to the body."},
+ {s:17,e:21, ox:1, title:"Aorta", text:"I speed down the aorta — the body's largest artery — toward the organs and muscles."},
+ {s:21,e:25, ox:0, title:"Delivering oxygen 🏃", text:"I hand my oxygen to the body's cells and collect their carbon dioxide. I turn blue again… then the whole journey repeats!"}
+];
+journey.forEach(j=>{ j.a=segU(j.s); j.b=segU(j.e); });
+let tourOn=false, tourStationIdx=-1;
+const tourcap=document.getElementById('tourcap');
+const tourBtn=document.getElementById('tour');
+
+function startTour(){
+  tourOn=true; heroU=0; tourStationIdx=-1; trail.length=0;
+  hero.visible=true; guideLine.visible=true; trailLine.visible=true;
+  pMat.opacity=0.16;                          // dim the crowd so our cell stands out
+  slowMode=true; document.getElementById('slowmo').textContent='🐢 Slow‑mo: On'; setActive('slowmo',true);
+  flowPlaying=true; document.getElementById('flowPlay').textContent='⏸ Pause'; setActive('flowPlay',true);
+  tourBtn.textContent='⏹ Stop the cell journey'; tourBtn.classList.add('active');
+  tourcap.classList.add('show');
+}
+function stopTour(){
+  tourOn=false;
+  hero.visible=false; guideLine.visible=false; trailLine.visible=false;
+  pMat.opacity=0.95;
+  tourcap.classList.remove('show'); info.classList.remove('show'); resetCam();
+  slowMode=false; document.getElementById('slowmo').textContent='🐢 Slow‑mo'; setActive('slowmo',false);
+  tourBtn.textContent='🎬 Follow one blood cell'; tourBtn.classList.remove('active');
+}
+tourBtn.onclick=()=>{ tourOn?stopTour():startTour(); };
+document.getElementById('tourStop').onclick=stopTour;
+
+function stationAt(u){ for(const s of journey){ if(u>=s.a && u<s.b) return s; } return journey[0]; }
+
+// slow, cyclic single-cell simulation — call every frame while the tour runs
+function updateTour(dt){
+  if(!tourOn) return;
+  heroU=(heroU + dt*0.02)%1;                  // ~one full loop every 50 seconds
+  tracerU=heroU; updateMinimap();             // keep the mini-map synced to our cell
+
+  const p=flowPts[Math.floor(heroU*SAMPLES)%SAMPLES];
+  hero.position.copy(p);
+
+  // colour: blue↔red, with a smooth transition band at the lungs and the body
+  const band=0.03;
+  let mix=bloodColor(heroU);                   // 1=red (oxygenated), 0=blue
+  if(heroU>U_LUNGS-band && heroU<U_LUNGS+band) mix=smooth((heroU-(U_LUNGS-band))/(2*band));      // blue→red
+  if(heroU>U_BODY -band && heroU<U_BODY +band) mix=1-smooth((heroU-(U_BODY -band))/(2*band));     // red→blue
+  heroCore.material.color.copy(heroColBlue).lerp(heroColRed,mix);
+  heroCore.material.emissive.copy(heroColBlue).lerp(heroColRed,mix).multiplyScalar(0.4);
+
+  // pulse + billboard ring so the cell is easy to track
+  const t=performance.now()*0.001;
+  heroHalo.scale.setScalar(1+0.12*Math.sin(t*3));
+  heroRing.lookAt(camera.position); heroRing.rotation.z+=dt*1.2;
+
+  // rolling colour-coded trail
+  trail.push({p:p.clone(), ox:mix});
+  if(trail.length>TRAILN) trail.shift();
+  for(let i=0;i<TRAILN;i++){
+    const src=trail[Math.min(i,trail.length-1)] || {p, ox:mix};
+    trailPos[i*3]=src.p.x; trailPos[i*3+1]=src.p.y; trailPos[i*3+2]=src.p.z;
+    const age=trail.length>1 ? i/(trail.length-1) : 1;                 // 0 oldest → 1 newest
+    const c=heroColBlue.clone().lerp(heroColRed,src.ox).lerp(pale,1-age); // fade older points
+    trailCol[i*3]=c.r; trailCol[i*3+1]=c.g; trailCol[i*3+2]=c.b;
+  }
+  trailGeo.setDrawRange(0,Math.max(2,trail.length));
+  trailGeo.attributes.position.needsUpdate=true;
+  trailGeo.attributes.color.needsUpdate=true;
+
+  // camera gently follows the cell
+  cam.dTarget.copy(p); cam.dRadius=4.8;
+
+  // caption changes only when we enter a new station
+  const st=stationAt(heroU), si=journey.indexOf(st);
+  if(si!==tourStationIdx){
+    tourStationIdx=si;
+    document.getElementById('tourStep').innerHTML =
+      `${st.ox?'🔴 carrying oxygen':'🔵 carrying carbon dioxide'} · stop ${si+1} of ${journey.length}`;
+    document.getElementById('tourText').innerHTML = `<b>${st.title}</b><br>${st.text}`;
+  }
+}
+
+/* =========================================================================
+   RENDER LOOP
+   ========================================================================= */
+const clock=new THREEr.Clock();
+function tick(){
+  const dt=Math.min(clock.getDelta(),0.05);
+
+  // smooth bpm ramp (no sudden jumps)
+  bpm=lerp(bpm,targetBpm,1-Math.pow(0.001,dt));
+  bpmVal.innerHTML=Math.round(bpm)+'<small> bpm</small>';
+
+  const timeScale = slowMode?0.22:1.0;
+
+  // advance heartbeat: one beat = 60/bpm seconds
+  const beatSpeed=(bpm/60)*timeScale;
+  phase=(phase+dt*beatSpeed)%1;
+  updateCycle(dt);
+
+  // advance blood: speed scales with heart rate, but kept gentle so students
+  // can follow it. This same rate drives the "Follow the blood" mini-map pane.
+  if(flowPlaying){
+    const dU=dt*beatSpeed*0.22;
+    updateBlood(dU);
+    tracerU=(tracerU+dU)%1;
+    updateMinimap();
+  }
+
+  updateTour(dt); // slow single-cell journey (only runs while the tour is on)
+
+  // pulse the hotspot dots gently
+  const g=0.5+0.35*Math.sin(performance.now()*0.004);
+  hotspots.forEach(h=>{h.material.emissiveIntensity=g; h.visible=labelsOn && !tourOn;});
+
+  // ease camera toward desired
+  cam.target.lerp(cam.dTarget,1-Math.pow(0.0025,dt));
+  cam.radius=lerp(cam.radius,cam.dRadius,1-Math.pow(0.0025,dt));
+  cam.theta=lerp(cam.theta,cam.dTheta,1-Math.pow(0.0025,dt));
+  cam.phi=lerp(cam.phi,cam.dPhi,1-Math.pow(0.0025,dt));
+  applyCam();
+
+  // position HTML labels over their 3D anchors.
+  // During the single-cell tour the camera follows the moving cell, so pinned
+  // organ labels would slide around the screen — hide them and let the tour
+  // caption name each structure instead.
+  parts.forEach(p=>{
+    if(!labelsOn || tourOn){ p.el.style.display='none'; return; }
+    const v=p.v.clone().add(new THREEr.Vector3(0,-0.2,0)).project(camera);
+    const behind=v.z>1;
+    p.el.style.display=behind?'none':'block';
+    p.el.style.left=((v.x*0.5+0.5)*innerWidth)+'px';
+    p.el.style.top=((-v.y*0.5+0.5)*innerHeight)+'px';
+  });
+
+  renderer.render(scene,camera);
+  requestAnimationFrame(tick);
+}
+applyCam();
+tick();
+
+/* keep flow "playing" button in sync (default running) */
+setActive('flowPlay',true);
+
+addEventListener('resize',()=>{
+  camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth,innerHeight);
+});
+</script>
+</body>
+</html>
