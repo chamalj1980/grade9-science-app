@@ -65,5 +65,40 @@ export const recaps: Record<
           "O is the universal donor, AB is the universal recipient, and Rh⁻ recipients receive Rh⁻ only. Mismatches cause agglutination."
       }
     ]
+  },
+  "sensory-system": {
+    intro: "The eye, the ear, how they focus and hear, and how to protect them.",
+    points: [
+      {
+        term: "The eye",
+        detail:
+          "Light enters through the cornea and pupil, the lens focuses it, and a real, inverted image forms on the retina; the brain reads it as upright."
+      },
+      {
+        term: "Focusing",
+        detail:
+          "The ciliary muscle changes the lens curvature (accommodation) so near and far objects both focus on the retina without moving it."
+      },
+      {
+        term: "Vision defects",
+        detail:
+          "Short sight (myopia) is corrected with a concave lens; long sight (hypermetropia) is corrected with a convex lens."
+      },
+      {
+        term: "Eye diseases",
+        detail:
+          "Cataract clouds the lens; glaucoma damages the optic nerve and is irreversible. Protect eyes from strong light and injury."
+      },
+      {
+        term: "The ear",
+        detail:
+          "Sound vibrates the eardrum, the ossicles pass it to the cochlea, and the auditory nerve carries the signal to the brain."
+      },
+      {
+        term: "Balance & safety",
+        detail:
+          "Semicircular canals keep balance. Humans hear 20 Hz–20,000 Hz; very loud sounds damage the ear, so protect it."
+      }
+    ]
   }
 };

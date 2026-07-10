@@ -26,6 +26,9 @@ export interface LearningSection {
   type: SectionType;
 }
 
+// Visual theme for a module. Drives accent colours in hero, recap, and cards.
+export type Theme = "pressure" | "circulatory" | "sensory-system";
+
 export interface LearningModule {
   id: string;
   chapter: number;
@@ -33,6 +36,6 @@ export interface LearningModule {
   shortTitle: string;
   summary: string;
   icon: string;
-  theme: "pressure" | "circulatory";
+  theme: Theme;
   sections: LearningSection[];
 }

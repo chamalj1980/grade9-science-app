@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>3D Human Eye — Grade 9 Science</title>
+<style>
+  :root{
+    --bg1:#0a1826; --bg2:#0e2740; --glass:rgba(16,34,54,0.55);
+    --glass-brd:rgba(140,200,240,0.22); --ink:#eaf4fb; --ink-dim:#a9c4d8;
+    --accent:#ffc14d; --teal:#39d0c8; --blue:#4aa8ff;
+    --good:#4ade80; --bad:#ff7a7a; --shadow:0 10px 34px rgba(0,0,0,0.45);
+    --radius:16px;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0; height:100%; overflow:hidden; background:radial-gradient(1200px 800px at 60% 30%,var(--bg2),var(--bg1)); color:var(--ink);
+    font-family:"Inter","Segoe UI",system-ui,-apple-system,sans-serif;}
+  #app{position:fixed; inset:0;}
+  canvas{display:block; touch-action:none;}
+
+  /* ---------- Panels ---------- */
+  .panel{position:absolute; background:var(--glass); backdrop-filter:blur(14px) saturate(1.2);
+    -webkit-backdrop-filter:blur(14px) saturate(1.2); border:1px solid var(--glass-brd);
+    border-radius:var(--radius); box-shadow:var(--shadow);}
+  #controls{top:16px; left:16px; width:298px; max-height:calc(100vh - 32px); overflow-y:auto; padding:16px; transition:width .25s, max-height .25s, padding .25s;}
+  #controls h1{font-size:16px; margin:0 0 2px; letter-spacing:.3px; display:flex; align-items:center; gap:8px; padding-right:34px;}
+  #controls .sub{font-size:11.5px; color:var(--ink-dim); margin:0 0 14px;}
+  #collapseBtn{position:absolute; top:13px; right:13px; width:30px; height:30px; min-height:30px; padding:0; border-radius:9px; font-size:16px; line-height:1;}
+  #controls.collapsed{width:auto; max-height:56px; overflow:hidden; padding:13px 16px;}
+  #controls.collapsed .grp, #controls.collapsed .sub{display:none;}
+  #controls.collapsed h1{margin:0; font-size:15px;}
+  .grp{margin-bottom:14px; padding-bottom:14px; border-bottom:1px solid rgba(140,200,240,.12);}
+  .grp:last-child{border-bottom:none; margin-bottom:4px;}
+  .grp .lbl{font-size:11px; text-transform:uppercase; letter-spacing:.6px; color:var(--ink-dim); margin:0 0 8px; display:flex; justify-content:space-between;}
+  .row{display:flex; gap:8px; flex-wrap:wrap;}
+  button, .toggle{font-family:inherit; color:var(--ink); background:rgba(255,255,255,.06); border:1px solid var(--glass-brd);
+    border-radius:11px; padding:9px 12px; font-size:12.5px; cursor:pointer; transition:.15s; min-height:40px; display:inline-flex; align-items:center; gap:6px; justify-content:center;}
+  button:hover, .toggle:hover{background:rgba(255,255,255,.13);}
+  button:focus-visible, .toggle:focus-visible, input:focus-visible{outline:2px solid var(--teal); outline-offset:2px;}
+  button.active, .seg.active{background:linear-gradient(135deg,var(--teal),var(--blue)); border-color:transparent; color:#04141c; font-weight:600;}
+  button.full{width:100%;}
+  .seg-wrap{display:flex; gap:6px; flex-wrap:wrap;}
+  .seg{flex:1 1 auto; min-width:78px; padding:8px 6px; font-size:12px; border-radius:10px; background:rgba(255,255,255,.06); border:1px solid var(--glass-brd); cursor:pointer; text-align:center; min-height:40px; display:flex; align-items:center; justify-content:center;}
+  input[type=range]{width:100%; accent-color:var(--teal); height:26px;}
+  .rangeval{font-variant-numeric:tabular-nums; color:var(--teal); font-weight:600;}
+  .switch{display:flex; align-items:center; justify-content:space-between; width:100%;}
+  .sw{position:relative; width:46px; height:26px; border-radius:20px; background:rgba(255,255,255,.14); border:1px solid var(--glass-brd); cursor:pointer; flex:0 0 auto;}
+  .sw::after{content:""; position:absolute; top:2px; left:2px; width:20px; height:20px; border-radius:50%; background:#dfeef8; transition:.18s;}
+  .sw.on{background:linear-gradient(135deg,var(--teal),var(--blue));}
+  .sw.on::after{left:22px;}
+
+  /* ---------- Info panel ---------- */
+  #info{top:16px; right:16px; width:300px; padding:18px; transform:translateX(360px); transition:transform .35s cubic-bezier(.2,.9,.3,1); opacity:0;}
+  #info.show{transform:translateX(0); opacity:1;}
+  #info .tag{display:inline-block; font-size:10.5px; text-transform:uppercase; letter-spacing:.7px; padding:4px 9px; border-radius:20px; background:rgba(57,208,200,.16); color:var(--teal); margin-bottom:10px;}
+  #info h2{margin:0 0 8px; font-size:19px;}
+  #info p{margin:0 0 16px; font-size:13.5px; line-height:1.55; color:#d6e8f4;}
+  #info .close{width:100%;}
+
+  /* ---------- Status strip ---------- */
+  #status{left:50%; bottom:16px; transform:translateX(-50%); padding:11px 18px; display:flex; align-items:center; gap:16px; font-size:12.5px; max-width:calc(100vw - 32px); flex-wrap:wrap; justify-content:center;}
+  #status .st{display:flex; align-items:center; gap:7px;}
+  #status .dot{width:10px; height:10px; border-radius:50%; box-shadow:0 0 8px currentColor;}
+  #statusText b{color:#fff;}
+  .key{display:flex; gap:12px; align-items:center; color:var(--ink-dim);}
+  .key i{display:inline-block; width:16px; height:3px; border-radius:2px; vertical-align:middle; margin-right:4px;}
+
+  /* ---------- Ray caption ---------- */
+  #rayCaption{left:50%; bottom:78px; transform:translateX(-50%); padding:11px 20px; font-size:14px; text-align:center; max-width:min(560px,calc(100vw - 32px)); opacity:0; transition:opacity .4s; pointer-events:none;}
+  #rayCaption.show{opacity:1;}
+  #rayCaption .ph{color:var(--accent); font-weight:600;}
+
+  /* ---------- Labels ---------- */
+  #labels{position:absolute; inset:0; pointer-events:none; overflow:hidden;}
+  .pin{position:absolute; transform:translate(-50%,-50%); pointer-events:auto; cursor:pointer; font-size:11px; white-space:nowrap;
+    background:rgba(8,20,32,.72); border:1px solid var(--glass-brd); color:var(--ink); padding:3px 8px; border-radius:20px; backdrop-filter:blur(4px); transition:opacity .2s;}
+  .pin::before{content:""; position:absolute; left:-5px; top:50%; width:5px; height:5px; border-radius:50%; background:var(--teal); transform:translateY(-50%);}
+  .pin:hover{background:rgba(57,208,200,.25);}
+
+  /* ---------- Modal / tour ---------- */
+  #overlay{position:absolute; inset:0; background:rgba(4,12,20,.6); backdrop-filter:blur(6px); display:flex; align-items:center; justify-content:center; z-index:30; transition:opacity .3s;}
+  #modal{max-width:460px; margin:20px; padding:26px 28px; text-align:center;}
+  #modal .eye-emoji{font-size:40px;}
+  #modal h2{margin:8px 0 12px; font-size:23px;}
+  #modal p{color:#d6e8f4; line-height:1.6; font-size:14px; margin:0 0 10px;}
+  #modal .flow{font-size:13px; color:var(--teal); margin:14px 0 20px; font-weight:600;}
+  #modal button{font-size:15px; padding:13px 26px; background:linear-gradient(135deg,var(--teal),var(--blue)); color:#04141c; font-weight:700; border:none;}
+  .hidden{display:none !important;}
+
+  #tourBanner{left:50%; bottom:82px; transform:translateX(-50%); width:min(560px,calc(100vw - 32px)); padding:16px 20px; text-align:center; z-index:20;}
+  #tourBanner .step{font-size:11px; color:var(--teal); letter-spacing:.5px; text-transform:uppercase; margin-bottom:6px;}
+  #tourBanner p{margin:0 0 14px; font-size:14.5px; line-height:1.5;}
+  #tourBanner .row{justify-content:center;}
+
+  #hint{position:absolute; top:16px; left:50%; transform:translateX(-50%); font-size:11.5px; color:var(--ink-dim); background:var(--glass); padding:7px 14px; border-radius:20px; border:1px solid var(--glass-brd); pointer-events:none; transition:opacity .5s;}
+
+  /* mobile */
+  @media (max-width:900px){
+    #controls{width:calc(100vw - 32px); max-height:44vh;}
+    #info{width:calc(100vw - 32px); right:16px; top:auto; bottom:150px; transform:translateY(400px);}
+    #info.show{transform:translateY(0);}
+    #hint{display:none;}
+  }
+  @media (prefers-reduced-motion:reduce){ *{transition:none !important;} }
+  ::-webkit-scrollbar{width:8px;} ::-webkit-scrollbar-thumb{background:rgba(140,200,240,.25); border-radius:8px;}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="labels"></div>
+
+<!-- LEFT CONTROLS -->
+<div id="controls" class="panel" role="region" aria-label="Eye controls">
+  <button id="collapseBtn" aria-label="Minimize control panel" title="Minimize / maximize">–</button>
+  <h1>👁️ The Human Eye</h1>
+  <p class="sub">Grade 9 Science · Chapter 2 — Eye & Ear</p>
+
+  <div class="grp">
+    <div class="lbl">View</div>
+    <div class="seg-wrap" id="viewSeg">
+      <div class="seg active" data-view="whole" tabindex="0" role="button" aria-label="Whole eye view">Whole eye</div>
+      <div class="seg" data-view="cut" tabindex="0" role="button" aria-label="Cut-away section view">Cut-away</div>
+    </div>
+    <div class="switch" style="margin-top:10px;">
+      <span style="font-size:12.5px;">Show labels</span>
+      <div class="sw" id="swLabels" tabindex="0" role="switch" aria-checked="false" aria-label="Toggle labels"></div>
+    </div>
+  </div>
+
+  <div class="grp">
+    <div class="lbl"><span>Object distance</span><span class="rangeval" id="distVal">far</span></div>
+    <input type="range" id="dist" min="0" max="100" value="85" aria-label="Object distance far to near" />
+    <button class="full" id="btnRays" style="margin-top:10px;">▶ How an image forms</button>
+  </div>
+
+  <div class="grp">
+    <div class="lbl"><span>Light level (pupil)</span><span class="rangeval" id="lightVal">bright</span></div>
+    <input type="range" id="light" min="0" max="100" value="75" aria-label="Light level dim to bright" />
+  </div>
+
+  <div class="grp">
+    <div class="lbl">Eye condition</div>
+    <div class="seg-wrap" id="defectSeg">
+      <div class="seg active" data-defect="normal" tabindex="0" role="button">Normal</div>
+      <div class="seg" data-defect="myopia" tabindex="0" role="button">Short sight</div>
+      <div class="seg" data-defect="hyper" tabindex="0" role="button">Long sight</div>
+      <div class="seg" data-defect="cataract" tabindex="0" role="button">Cataract</div>
+      <div class="seg" data-defect="glaucoma" tabindex="0" role="button">Glaucoma</div>
+    </div>
+    <div class="switch" style="margin-top:10px;">
+      <span style="font-size:12.5px;">👓 Wear glasses</span>
+      <div class="sw" id="swGlasses" tabindex="0" role="switch" aria-checked="false" aria-label="Toggle corrective glasses"></div>
+    </div>
+  </div>
+
+  <div class="grp">
+    <div class="row">
+      <button style="flex:1;" id="btnTour">🎬 Tour</button>
+      <button style="flex:1;" id="btnReset">🎯 Reset</button>
+      <button style="flex:1;" id="btnHelp">ℹ️ Info</button>
+    </div>
+  </div>
+</div>
+
+<!-- RIGHT INFO -->
+<div id="info" class="panel" role="dialog" aria-label="Part information">
+  <span class="tag" id="infoTag">Structure</span>
+  <h2 id="infoName">Part</h2>
+  <p id="infoDesc">Description</p>
+  <button class="close" id="infoClose">Close &amp; zoom out</button>
+</div>
+
+<!-- RAY CAPTION (during light animation) -->
+<div id="rayCaption" class="panel"></div>
+
+<!-- STATUS -->
+<div id="status" class="panel">
+  <div class="st"><span class="dot" id="statusDot" style="color:var(--good);"></span><span id="statusText">Image forms <b>on the retina</b> — sharp</span></div>
+  <div class="key">
+    <span><i style="background:#ff5a4d;"></i>top ray</span>
+    <span><i style="background:#4aa8ff;"></i>bottom ray</span>
+    <span><i style="background:#ffc14d;"></i>focus</span>
+  </div>
+</div>
+
+<!-- INTRO MODAL -->
+<div id="overlay">
+  <div id="modal" class="panel">
+    <div class="eye-emoji">👁️</div>
+    <h2>Your Window to the World</h2>
+    <p>Light bounces off everything you see and travels into your eye. The clear <b>cornea</b> and the <b>lens</b> bend that light and focus it onto the <b>retina</b> at the back.</p>
+    <p class="flow">Light → Cornea → Pupil → Lens → Retina → Brain</p>
+    <p style="font-size:12.5px;color:var(--ink-dim);">A tiny <b>upside-down</b> picture forms on the retina — and your brain flips it the right way up!</p>
+    <button id="btnStart">Start exploring</button>
+  </div>
+</div>
+
+<!-- TOUR BANNER -->
+<div id="tourBanner" class="panel hidden">
+  <div class="step" id="tourStep">Step 1 / 7</div>
+  <p id="tourText">…</p>
+  <div class="row">
+    <button id="tourExit">Exit</button>
+    <button id="tourNext" class="active">Next →</button>
+  </div>
+</div>
+
+<div id="hint">🖱️ Drag to rotate · scroll to zoom · click a part to learn</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+"use strict";
+(function(){
+  if(!window.THREE){ document.getElementById('modal').innerHTML='<h2>Could not load 3D library</h2><p>Please check your internet connection and reload.</p>'; return; }
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  const TAU = Math.PI*2;
+
+  /* ============ Renderer / Scene / Camera ============ */
+  const app = document.getElementById('app');
+  const renderer = new THREE.WebGLRenderer({ antialias:true, alpha:true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  renderer.setSize(innerWidth, innerHeight);
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.localClippingEnabled = true;
+  app.appendChild(renderer.domElement);
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(45, innerWidth/innerHeight, 0.1, 100);
+
+  /* ============ Custom Orbit Controls (in-file) ============ */
+  const controls = {
+    target:new THREE.Vector3(0,0,0),
+    dist:9, minDist:4, maxDist:20,
+    theta:0.95, phi:1.18, // azimuth, polar
+    tTheta:0.95, tPhi:1.18, tDist:8.5, tTarget:new THREE.Vector3(0,0,0),
+    update(){
+      // smooth toward targets
+      const e = reduceMotion?1:0.15;
+      this.theta += (this.tTheta-this.theta)*e;
+      this.phi   += (this.tPhi-this.phi)*e;
+      this.dist  += (this.tDist-this.dist)*e;
+      this.target.lerp(this.tTarget, e);
+      this.phi = Math.max(0.15, Math.min(Math.PI-0.15, this.phi));
+      const s = Math.sin(this.phi);
+      camera.position.set(
+        this.target.x + this.dist*s*Math.sin(this.theta),
+        this.target.y + this.dist*Math.cos(this.phi),
+        this.target.z + this.dist*s*Math.cos(this.theta)
+      );
+      camera.lookAt(this.target);
+    },
+    flyTo(tgt, dist, theta, phi){
+      this.tTarget.copy(tgt); if(dist)this.tDist=dist;
+      if(theta!=null)this.tTheta=theta; if(phi!=null)this.tPhi=phi;
+    }
+  };
+
+  // pointer interaction
+  let dragging=false, lastX=0, lastY=0, pinchD=0, moved=false;
+  const el = renderer.domElement;
+  function down(x,y){ dragging=true; moved=false; lastX=x; lastY=y; }
+  function move(x,y){
+    if(!dragging) return;
+    const dx=x-lastX, dy=y-lastY; lastX=x; lastY=y;
+    if(Math.abs(dx)+Math.abs(dy)>3) moved=true;
+    controls.tTheta -= dx*0.008;
+    controls.tPhi   -= dy*0.008;
+    controls.tPhi = Math.max(0.15, Math.min(Math.PI-0.15, controls.tPhi));
+  }
+  function up(){ dragging=false; }
+  el.addEventListener('mousedown', e=>down(e.clientX,e.clientY));
+  window.addEventListener('mousemove', e=>move(e.clientX,e.clientY));
+  window.addEventListener('mouseup', up);
+  el.addEventListener('wheel', e=>{ e.preventDefault(); controls.tDist=Math.max(controls.minDist,Math.min(controls.maxDist, controls.tDist + e.deltaY*0.01)); }, {passive:false});
+  el.addEventListener('touchstart', e=>{
+    if(e.touches.length===1){ down(e.touches[0].clientX,e.touches[0].clientY); }
+    else if(e.touches.length===2){ pinchD=touchDist(e); }
+  }, {passive:true});
+  el.addEventListener('touchmove', e=>{
+    if(e.touches.length===1){ move(e.touches[0].clientX,e.touches[0].clientY); }
+    else if(e.touches.length===2){ const d=touchDist(e); controls.tDist=Math.max(controls.minDist,Math.min(controls.maxDist, controls.tDist - (d-pinchD)*0.03)); pinchD=d; }
+    e.preventDefault();
+  }, {passive:false});
+  el.addEventListener('touchend', up);
+  function touchDist(e){ const a=e.touches[0],b=e.touches[1]; return Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY); }
+
+  /* ============ Lighting ============ */
+  scene.add(new THREE.AmbientLight(0x556677, 0.55));
+  const key = new THREE.DirectionalLight(0xffffff, 1.15); key.position.set(6,9,7);
+  key.castShadow=true; key.shadow.mapSize.set(1024,1024);
+  key.shadow.camera.near=1; key.shadow.camera.far=40;
+  key.shadow.camera.left=-10; key.shadow.camera.right=10; key.shadow.camera.top=10; key.shadow.camera.bottom=-10;
+  scene.add(key);
+  const fill = new THREE.DirectionalLight(0x88bbff, 0.5); fill.position.set(-7,2,-4); scene.add(fill);
+  const rim  = new THREE.DirectionalLight(0x66ffee, 0.45); rim.position.set(-3,4,-8); scene.add(rim);
+  // warm glow inside the eyeball — gives the interior that lit, blood-rich look from the reference
+  const innerGlow = new THREE.PointLight(0xff8a5c, 1.3, 7, 1.6); innerGlow.position.set(-0.4,0,0); scene.add(innerGlow);
+  const innerGlow2 = new THREE.PointLight(0xffd0a0, 0.6, 6, 2); innerGlow2.position.set(1.0,0,0); scene.add(innerGlow2);
+
+  // faint floor for shadow
+  const floor = new THREE.Mesh(new THREE.CircleGeometry(16,48),
+    new THREE.ShadowMaterial({opacity:0.28}));
+  floor.rotation.x=-Math.PI/2; floor.position.y=-3.2; floor.receiveShadow=true; scene.add(floor);
+
+  /* ============ Eye anatomy ============ */
+  // The eye looks toward +X (front of eye at +X). Radius ~2.
+  const R = 2;
+  const eye = new THREE.Group(); scene.add(eye);
+
+  // Clipping plane for cut-away: removes front-top-near quadrant.
+  // We clip away the +Z half (near side to camera-ish) combined; use one plane on Z>0 that hides upper-front-right octant.
+  const clipPlane = new THREE.Plane(new THREE.Vector3(0,0,-1), 0); // hides z> 0 when active
+  let clipActive=false;
+  const noClip = [];
+  function mat(opts){ const m=new THREE.MeshStandardMaterial(opts); return m; }
+
+  // ---- procedural texture helpers ----
+  function cvs(size){ const c=document.createElement('canvas'); c.width=c.height=size; return c; }
+  function shade(hex,f){ const r=Math.min(255,((hex>>16)&255)*f), g=Math.min(255,((hex>>8)&255)*f), b=Math.min(255,(hex&255)*f); return `rgb(${r|0},${g|0},${b|0})`; }
+  function makeIrisTex(hex){
+    const c=cvs(256), x=c.getContext('2d'), cx=128, cy=128;
+    const g=x.createRadialGradient(cx,cy,18,cx,cy,128);
+    g.addColorStop(0,'#0a0a0a'); g.addColorStop(0.16, shade(hex,0.45));
+    g.addColorStop(0.5, shade(hex,1.0)); g.addColorStop(0.86, shade(hex,1.35)); g.addColorStop(1, shade(hex,0.6));
+    x.fillStyle=g; x.beginPath(); x.arc(cx,cy,128,0,TAU); x.fill();
+    for(let i=0;i<260;i++){ const a=Math.random()*TAU, r0=24+Math.random()*10, r1=86+Math.random()*40;
+      const light=Math.random()<0.5;
+      x.strokeStyle = light ? `rgba(240,225,195,${0.05+Math.random()*0.14})` : `rgba(35,22,10,${0.06+Math.random()*0.16})`;
+      x.lineWidth=0.5+Math.random()*1.1; x.beginPath();
+      x.moveTo(cx+Math.cos(a)*r0, cy+Math.sin(a)*r0); x.lineTo(cx+Math.cos(a)*r1, cy+Math.sin(a)*r1); x.stroke(); }
+    x.strokeStyle='rgba(15,9,4,0.55)'; x.lineWidth=12; x.beginPath(); x.arc(cx,cy,118,0,TAU); x.stroke();
+    return new THREE.CanvasTexture(c);
+  }
+  function makeScleraTex(){
+    const c=cvs(512), x=c.getContext('2d');
+    x.fillStyle='#f4f0e8'; x.fillRect(0,0,512,512);
+    // faint red veins, denser toward the sides (u near 0 and 1)
+    for(let i=0;i<70;i++){
+      let u=Math.random(); const edge=Math.min(u,1-u);
+      if(Math.random() > (0.15+edge)) continue; // more veins near edges
+      let px=u*512, py=Math.random()*512;
+      x.strokeStyle=`rgba(190,60,55,${0.10+Math.random()*0.22})`; x.lineWidth=0.6+Math.random()*1.4; x.beginPath(); x.moveTo(px,py);
+      for(let j=0;j<6;j++){ px+=(Math.random()-0.5)*40; py+=(Math.random()-0.5)*40; x.lineTo(px,py);} x.stroke();
+    }
+    return new THREE.CanvasTexture(c);
+  }
+
+  const hotspots = []; // {mesh,key}
+
+  // --- Sclera (white outer) ---
+  const sclera = new THREE.Mesh(
+    new THREE.SphereGeometry(R, 64, 48),
+    mat({map:makeScleraTex(), color:0xffffff, roughness:0.5, metalness:0.02, clippingPlanes:[clipPlane], clipShadows:true})
+  );
+  sclera.castShadow=true; sclera.receiveShadow=true; eye.add(sclera);
+  hotspots.push({mesh:sclera, key:'sclera'});
+
+  // --- Choroid (dark reddish inner shell, slightly smaller) ---
+  const choroid = new THREE.Mesh(
+    new THREE.SphereGeometry(R*0.965, 64, 48),
+    mat({color:0x5a1e22, roughness:0.85, side:THREE.BackSide, clippingPlanes:[clipPlane]})
+  );
+  eye.add(choroid);
+  const choroidHot = new THREE.Mesh(new THREE.SphereGeometry(R*0.955,32,24), new THREE.MeshBasicMaterial({visible:false}));
+  eye.add(choroidHot); hotspots.push({mesh:choroidHot, key:'choroid'});
+
+  // --- Retina (inner lining, reddish warm) with blood vessels radiating from the optic disc ---
+  const retinaCanvas = cvs(512);
+  (function(){
+    const c=retinaCanvas.getContext('2d');
+    const g=c.createRadialGradient(256,256,40,256,256,300);
+    g.addColorStop(0,'#e08a7e'); g.addColorStop(0.55,'#c25a55'); g.addColorStop(1,'#8f3a3c');
+    c.fillStyle=g; c.fillRect(0,0,512,512);
+    // optic disc off-centre; vessels branch out from it
+    const dx=320, dy=300;
+    function branch(x,y,ang,len,w){ if(len<8||w<0.4) return;
+      const nx=x+Math.cos(ang)*len, ny=y+Math.sin(ang)*len;
+      c.strokeStyle='rgba(150,30,32,0.55)'; c.lineWidth=w; c.beginPath(); c.moveTo(x,y); c.lineTo(nx,ny); c.stroke();
+      branch(nx,ny,ang+(Math.random()-0.5)*0.8, len*0.8, w*0.72);
+      if(Math.random()<0.7) branch(nx,ny,ang+(Math.random()-0.5)*1.3, len*0.7, w*0.6);
+    }
+    for(let i=0;i<10;i++) branch(dx,dy,(i/10)*TAU, 44+Math.random()*30, 3.2);
+    // pale optic disc
+    c.fillStyle='rgba(240,224,196,0.85)'; c.beginPath(); c.arc(dx,dy,17,0,TAU); c.fill();
+  })();
+  const retinaTex = new THREE.CanvasTexture(retinaCanvas);
+  const retina = new THREE.Mesh(
+    new THREE.SphereGeometry(R*0.93, 64, 48),
+    mat({map:retinaTex, color:0xdd918a, roughness:0.72, side:THREE.BackSide,
+      emissive:0x3a1210, emissiveMap:retinaTex, emissiveIntensity:0.4, clippingPlanes:[clipPlane]})
+  );
+  eye.add(retina);
+  const retinaHot = new THREE.Mesh(new THREE.SphereGeometry(R*0.9,32,24,0,Math.PI), new THREE.MeshBasicMaterial({visible:false}));
+  retinaHot.rotation.y=Math.PI; eye.add(retinaHot); hotspots.push({mesh:retinaHot, key:'retina'});
+
+  // --- Fovea (yellow spot) at back centre (-X) ---
+  const fovea = new THREE.Mesh(new THREE.CircleGeometry(0.16,24),
+    new THREE.MeshBasicMaterial({color:0xffd84a}));
+  fovea.position.set(-R*0.9,0,0); fovea.rotation.y=Math.PI/2; eye.add(fovea);
+  hotspots.push({mesh:fovea, key:'fovea'});
+
+  // --- Blind spot / optic disc (pale patch, offset from fovea) ---
+  const blind = new THREE.Mesh(new THREE.CircleGeometry(0.17,24),
+    new THREE.MeshBasicMaterial({color:0xe9d9c0}));
+  blind.position.set(-R*0.87,-0.35,0.42); blind.lookAt(0,-0.35,0.42*0.5); eye.add(blind);
+  hotspots.push({mesh:blind, key:'blind'});
+
+  // --- Optic nerve (cable leaving the back) ---
+  const nervePath = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(-R*0.9,-0.35,0.42),
+    new THREE.Vector3(-R*1.35,-0.55,0.55),
+    new THREE.Vector3(-R*2.1,-0.9,0.7),
+    new THREE.Vector3(-R*2.9,-1.25,0.85)
+  ]);
+  const nerve = new THREE.Mesh(new THREE.TubeGeometry(nervePath,32,0.28,16),
+    mat({color:0xf2e6cf, roughness:0.6}));
+  nerve.castShadow=true; eye.add(nerve); hotspots.push({mesh:nerve, key:'nerve'});
+
+  // --- Vitreous humour (clear jelly filling rear) ---
+  const vitreous = new THREE.Mesh(new THREE.SphereGeometry(R*0.9,48,36),
+    mat({color:0xdff1ff, transparent:true, opacity:0.10, roughness:0.1, metalness:0, clippingPlanes:[clipPlane]}));
+  eye.add(vitreous); hotspots.push({mesh:vitreous, key:'vitreous'});
+
+  /* ---- Front assembly: cornea, aqueous, iris, pupil, lens, ciliary ---- */
+  const front = new THREE.Group(); eye.add(front);
+
+  // Cornea (transparent dome hugging the iris at the front pole). Slightly more curved than the sclera.
+  const corneaGeo = new THREE.SphereGeometry(1.1, 48, 32, 0, TAU, 0, Math.PI*0.22);
+  const cornea = new THREE.Mesh(corneaGeo,
+    mat({color:0xd4edff, transparent:true, opacity:0.26, roughness:0.04, metalness:0.15, side:THREE.DoubleSide}));
+  cornea.rotation.z=-Math.PI/2; cornea.position.set(1.15,0,0);
+  eye.add(cornea); hotspots.push({mesh:cornea, key:'cornea'});
+
+  // Aqueous humour (thin clear chamber behind the cornea)
+  const aqueous = new THREE.Mesh(new THREE.SphereGeometry(0.8,32,24,0,TAU,0,Math.PI*0.34),
+    mat({color:0xdaf3ff, transparent:true, opacity:0.14, roughness:0.05}));
+  aqueous.rotation.z=-Math.PI/2; aqueous.position.set(1.05,0,0);
+  eye.add(aqueous); hotspots.push({mesh:aqueous, key:'aqueous'});
+
+  // Iris (coloured, fibrous disc facing +X). Textured for realism; pupil disc sits on top.
+  const irisGroup = new THREE.Group(); irisGroup.position.set(R*0.62,0,0); irisGroup.rotation.y=Math.PI/2; eye.add(irisGroup);
+  let irisColor = 0x7a5230;
+  const iris = new THREE.Mesh(new THREE.CircleGeometry(0.86,64),
+    mat({map:makeIrisTex(irisColor), color:0xffffff, roughness:0.5, metalness:0.05, side:THREE.DoubleSide}));
+  irisGroup.add(iris); hotspots.push({mesh:iris, key:'iris'});
+  // subtle raised inner collarette ring
+  const collar = new THREE.Mesh(new THREE.TorusGeometry(0.4,0.03,10,40), mat({color:shade(irisColor,0.6), roughness:0.6}));
+  irisGroup.add(collar);
+
+  // External front face — shown only in the WHOLE-EYE view so it looks like a real eyeball
+  // (white sclera + coloured iris + black pupil + wet corneal reflections)
+  const externalFace = new THREE.Group(); eye.add(externalFace);
+  const extIris = new THREE.Mesh(new THREE.CircleGeometry(0.6,64),
+    mat({map:makeIrisTex(irisColor), color:0xffffff, roughness:0.45, metalness:0.05, side:THREE.DoubleSide}));
+  extIris.position.set(R*1.005,0,0); extIris.rotation.y=Math.PI/2;
+  const extPupil = new THREE.Mesh(new THREE.CircleGeometry(0.22,40), new THREE.MeshBasicMaterial({color:0x040406}));
+  extPupil.position.set(R*1.012,0,0); extPupil.rotation.y=Math.PI/2;
+  const extShine = new THREE.Mesh(new THREE.CircleGeometry(0.10,24),
+    new THREE.MeshBasicMaterial({color:0xffffff, transparent:true, opacity:0.9}));
+  extShine.position.set(R*1.05,0.22,0.17); extShine.rotation.y=Math.PI/2;
+  const extShine2 = new THREE.Mesh(new THREE.CircleGeometry(0.045,20),
+    new THREE.MeshBasicMaterial({color:0xffffff, transparent:true, opacity:0.7}));
+  extShine2.position.set(R*1.05,-0.13,-0.1); extShine2.rotation.y=Math.PI/2;
+  externalFace.add(extIris, extPupil, extShine, extShine2);
+
+  // Pupil (dark disc that we scale to simulate opening). Actually the hole; render a black disc behind iris slightly.
+  const pupil = new THREE.Mesh(new THREE.CircleGeometry(0.32,40),
+    new THREE.MeshBasicMaterial({color:0x030608}));
+  pupil.position.set(R*0.60,0,0); pupil.rotation.y=Math.PI/2; eye.add(pupil);
+  hotspots.push({mesh:pupil, key:'pupil'});
+
+  // Lens (biconvex) — built from two sphere caps merged; we'll approximate with a scaled sphere and animate scale.x (thickness)
+  const lens = new THREE.Mesh(new THREE.SphereGeometry(0.5, 40, 28),
+    mat({color:0xeafaff, transparent:true, opacity:0.34, roughness:0.02, metalness:0.15}));
+  lens.position.set(R*0.40,0,0); lens.scale.set(0.42,1,1); // thin biconvex-ish
+  eye.add(lens); hotspots.push({mesh:lens, key:'lens'});
+
+  // Ciliary body: muscular ring + scalloped finger-like processes (pars plicata)
+  const ciliary = new THREE.Mesh(new THREE.TorusGeometry(0.98,0.14,18,48),
+    mat({color:0xbf7a63, roughness:0.75}));
+  ciliary.position.set(R*0.50,0,0); ciliary.rotation.y=Math.PI/2; eye.add(ciliary);
+  hotspots.push({mesh:ciliary, key:'ciliary'});
+  const procGroup = new THREE.Group(); eye.add(procGroup);
+  const procN=56;
+  for(let i=0;i<procN;i++){ const a=i/procN*TAU, y=Math.cos(a), z=Math.sin(a);
+    const p=new THREE.Mesh(new THREE.ConeGeometry(0.05,0.28,6),
+      mat({color:shade(0xd08a70,0.85+Math.random()*0.3), roughness:0.7}));
+    p.position.set(R*0.50, y*0.82, z*0.82);
+    p.lookAt(R*0.42, y*0.5, z*0.5); p.rotateX(Math.PI/2);
+    procGroup.add(p);
+  }
+  // Suspensory ligaments (zonular fibres) — a fine crisscross mesh from lens equator to ciliary body
+  const zonules = new THREE.Group(); eye.add(zonules);
+  const zonuleLines=[]; const ZN=62;
+  for(let i=0;i<ZN;i++){ const a=i/ZN*TAU;
+    for(const off of [0.07,-0.07]){
+      const g=new THREE.BufferGeometry();
+      g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(6),3));
+      const m=new THREE.LineBasicMaterial({color:0xf2e6d8, transparent:true, opacity:0.4});
+      const ln=new THREE.Line(g,m); zonules.add(ln); zonuleLines.push({ln,a,off});
+    }
+  }
+  function updateZonules(){
+    const lensR = 0.5*lens.scale.y; // outer radius of lens
+    zonuleLines.forEach(({ln,a,off})=>{
+      const y=Math.cos(a), z=Math.sin(a);            // lens-equator end
+      const ya=Math.cos(a+off), za=Math.sin(a+off);  // ciliary end (offset → crisscross)
+      const pos=ln.geometry.attributes.position.array;
+      pos[0]=R*0.40; pos[1]=y*lensR;  pos[2]=z*lensR;   // inner (lens edge)
+      pos[3]=R*0.50; pos[4]=ya*0.84;  pos[5]=za*0.84;   // outer (ciliary, slightly forward)
+      ln.geometry.attributes.position.needsUpdate=true;
+    });
+  }
+  updateZonules();
+
+  // Extraocular muscle straps (nice-to-have)
+  [[0,1],[0,-1],[1,0],[-1,0]].forEach(([y,z])=>{
+    const strap=new THREE.Mesh(new THREE.CylinderGeometry(0.12,0.18,1.6,12),
+      mat({color:0xcf6f63, roughness:0.7, transparent:true, opacity:0.9}));
+    strap.position.set(-0.2, y*R*0.75, z*R*0.75);
+    strap.lookAt(R*1.2, y*R*0.2, z*R*0.2);
+    strap.rotateX(Math.PI/2);
+    strap.castShadow=true; eye.add(strap);
+  });
+
+  /* ============ Object (arrow) + light rays ============ */
+  const objGroup = new THREE.Group(); scene.add(objGroup);
+  const arrowH = 1.4;
+  const arrowMat = new THREE.MeshStandardMaterial({color:0x39d0c8, emissive:0x0a3d3a, roughness:0.5});
+  const arrowShaft = new THREE.Mesh(new THREE.CylinderGeometry(0.05,0.05,arrowH,12), arrowMat);
+  const arrowHead = new THREE.Mesh(new THREE.ConeGeometry(0.16,0.32,16), arrowMat);
+  arrowHead.position.y=arrowH/2+0.16;
+  objGroup.add(arrowShaft, arrowHead);
+  objGroup.position.set(7,0,0);
+  function objTop(){ return new THREE.Vector3(objGroup.position.x, arrowH/2+0.32, 0); }
+  function objBot(){ return new THREE.Vector3(objGroup.position.x, -arrowH/2, 0); }
+
+  // Ray lines (top ray red, bottom ray blue), each a polyline
+  function makeRay(color){
+    const g=new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(3*8),3));
+    const m=new THREE.LineBasicMaterial({color, transparent:true, opacity:0.55, linewidth:2});
+    const l=new THREE.Line(g,m); l.frustumCulled=false; scene.add(l); l.visible=false; return l;
+  }
+  const rayTop = makeRay(0xff5a4d);
+  const rayBot = makeRay(0x4aa8ff);
+  const rayTopExt = makeRay(0xff5a4d); rayTopExt.material.opacity=0.35;
+  const rayBotExt = makeRay(0x4aa8ff); rayBotExt.material.opacity=0.35;
+
+  // Retinal inverted image (little arrow on retina)
+  const retImg = new THREE.Group(); eye.add(retImg);
+  const riMat = new THREE.MeshBasicMaterial({color:0x39d0c8});
+  const riShaft=new THREE.Mesh(new THREE.CylinderGeometry(0.025,0.025,0.4,8),riMat);
+  const riHead=new THREE.Mesh(new THREE.ConeGeometry(0.07,0.14,10),riMat); riHead.position.y=0.27;
+  retImg.add(riShaft, riHead);
+  retImg.position.set(-R*0.9,0,0); retImg.rotation.z=Math.PI; // inverted
+  retImg.visible=false;
+
+  // Blur blob (for defects) — a sprite-ish disc on/near retina
+  const blob = new THREE.Mesh(new THREE.CircleGeometry(0.3,24),
+    new THREE.MeshBasicMaterial({color:0x39d0c8, transparent:true, opacity:0.4}));
+  blob.rotation.y=Math.PI/2; blob.visible=false; eye.add(blob);
+
+  // Focus point marker
+  const focusDot = new THREE.Mesh(new THREE.SphereGeometry(0.09,16,12),
+    new THREE.MeshBasicMaterial({color:0xffc14d}));
+  focusDot.visible=false; eye.add(focusDot);
+
+  /* ---- Animated light packets that slowly travel the ray path ---- */
+  function makePhoton(){
+    const m=new THREE.Mesh(new THREE.SphereGeometry(0.08,14,12), new THREE.MeshBasicMaterial({color:0xfff0c0}));
+    const halo=new THREE.Mesh(new THREE.SphereGeometry(0.19,14,12), new THREE.MeshBasicMaterial({color:0xffc14d, transparent:true, opacity:0.28}));
+    m.add(halo); m.visible=false; scene.add(m); return m;
+  }
+  const photonTop=makePhoton(), photonBot=makePhoton();
+  let photonT=0; // 0..1 progress along the travel path
+  const rayCap=document.getElementById('rayCaption');
+  const PHASES=[
+    {u:0.00,t:'Light leaves the <span class="ph">object</span> and travels toward the eye…'},
+    {u:0.36,t:'It bends — <span class="ph">refracts</span> — as it enters the curved <span class="ph">cornea</span>.'},
+    {u:0.56,t:'Through the <span class="ph">pupil</span> and into the <span class="ph">lens</span>, which fine-tunes the focus.'},
+    {u:0.74,t:'The rays <span class="ph">cross over</span> and travel through the vitreous to the back.'},
+    {u:0.93,t:'A real, <span class="ph">upside-down</span> image forms on the <span class="ph">retina</span> — your brain flips it upright!'}
+  ];
+  function samplePolyline(pts,f){
+    let total=0; const segs=[];
+    for(let i=0;i<pts.length-1;i++){ const d=pts[i].distanceTo(pts[i+1]); segs.push(d); total+=d; }
+    if(total<=0) return pts[0].clone();
+    let target=f*total;
+    for(let i=0;i<segs.length;i++){ if(target<=segs[i]||i===segs.length-1){ const t=segs[i]?Math.min(1,target/segs[i]):0; return pts[i].clone().lerp(pts[i+1],t); } target-=segs[i]; }
+    return pts[pts.length-1].clone();
+  }
+  function updatePhoton(dt){
+    if(!state.raysOn || reduceMotion){ photonTop.visible=photonBot.visible=false; rayCap.classList.remove('show'); return; }
+    const tp=rayTop.userData.travel, bp=rayBot.userData.travel;
+    if(!tp||!bp) return;
+    photonT += Math.min(dt,0.05)/6.5;      // ~6.5s for one slow pass
+    if(photonT>=1) photonT=0;
+    photonTop.visible=photonBot.visible=true;
+    photonTop.position.copy(samplePolyline(tp,photonT));
+    photonBot.position.copy(samplePolyline(bp,photonT));
+    let ph=PHASES[0]; for(const p of PHASES) if(photonT>=p.u) ph=p;
+    rayCap.innerHTML=ph.t; rayCap.classList.add('show');
+  }
+
+  /* ============ Spectacle (correction) lens ============ */
+  const glasses = new THREE.Group(); scene.add(glasses);
+  glasses.position.set(R+1.1,0,0);
+  const glassMat = new THREE.MeshStandardMaterial({color:0xbfe6ff, transparent:true, opacity:0.3, roughness:0.05, metalness:0.2, side:THREE.DoubleSide});
+  const specConvex = new THREE.Mesh(new THREE.SphereGeometry(1.0,32,24), glassMat);
+  specConvex.scale.set(0.28,1,1);
+  const specConcave = new THREE.Mesh(new THREE.CylinderGeometry(1.0,1.0,0.14,32,1,true), glassMat.clone());
+  // concave look: a ring/disc that's thinner in middle — approximate with a torus-ish; keep a simple disc frame
+  const specFrame = new THREE.Mesh(new THREE.TorusGeometry(1.0,0.06,12,40), mat({color:0x2a2a2e, roughness:0.4, metalness:0.5}));
+  specFrame.rotation.y=Math.PI/2;
+  glasses.add(specConvex, specFrame);
+  glasses.visible=false;
+
+  /* ============ State ============ */
+  const state = {
+    view:'whole', labels:false, defect:'normal', glasses:false,
+    dist:85, light:75, raysOn:false, tour:false
+  };
+
+  /* ============ Part data (Grade-9 copy) ============ */
+  const PARTS = {
+    sclera:{name:'Sclerotic layer',tag:'Structure',desc:'The tough, white outer layer of the eye. Light does not pass through it; it protects the eye and holds its shape.',focus:new THREE.Vector3(0,0,0)},
+    cornea:{name:'Cornea',tag:'Refraction',desc:'The clear front window of the eye. Light enters here and most of the bending (refraction) happens at this curved surface.',focus:new THREE.Vector3(R*0.8,0,0)},
+    aqueous:{name:'Aqueous humour',tag:'Fluid',desc:'A watery, transparent liquid filling the space between the cornea and the lens.',focus:new THREE.Vector3(R*0.66,0,0)},
+    iris:{name:'Iris',tag:'Controls light',desc:'The coloured ring. It controls how much light enters by changing the size of the pupil.',focus:new THREE.Vector3(R*0.62,0,0)},
+    pupil:{name:'Pupil',tag:'Opening',desc:'The hole in the centre of the iris that lets light through to the lens. It widens in dim light and narrows in bright light.',focus:new THREE.Vector3(R*0.6,0,0)},
+    lens:{name:'Lens',tag:'Focusing',desc:'A clear, biconvex lens that changes its curvature to focus light sharply on the retina (accommodation).',focus:new THREE.Vector3(R*0.4,0,0)},
+    ciliary:{name:'Ciliary muscle',tag:'Accommodation',desc:'Holds the lens and changes its curvature: it contracts to make the lens fatter for near objects and relaxes to flatten it for far objects.',focus:new THREE.Vector3(R*0.42,0,0)},
+    choroid:{name:'Choroid',tag:'Blood supply',desc:'A dark layer inside the sclera that supplies blood to the eye.',focus:new THREE.Vector3(-R*0.5,0,0)},
+    retina:{name:'Retina',tag:'Image forms here',desc:'The light-sensitive inner layer at the back, where the image forms. It contains rod cells and cone cells.',focus:new THREE.Vector3(-R*0.6,0,0)},
+    fovea:{name:'Fovea (yellow spot)',tag:'Sharpest vision',desc:'The most sensitive spot on the retina, where the sharpest image forms.',focus:new THREE.Vector3(-R*0.9,0,0)},
+    blind:{name:'Blind spot',tag:'No vision here',desc:'Where the optic nerve leaves the eye; it has no light-sensitive cells, so no image is seen there.',focus:new THREE.Vector3(-R*0.87,-0.35,0.42)},
+    nerve:{name:'Optic nerve',tag:'To the brain',desc:'Carries the visual message from the retina to the brain, which interprets the image as upright.',focus:new THREE.Vector3(-R*1.5,-0.7,0.6)},
+    vitreous:{name:'Vitreous humour',tag:'Jelly',desc:'A clear jelly that fills the rear of the eye and helps keep its round shape.',focus:new THREE.Vector3(-R*0.3,0,0)}
+  };
+  // label anchor points (local to eye)
+  const LABELS = {
+    cornea:[R*0.95,0.3,0], iris:[R*0.62,0.7,0.3], pupil:[R*0.6,0,0],
+    lens:[R*0.4,-0.7,0.2], ciliary:[R*0.42,0.95,0.4], sclera:[0,R*0.95,R*0.4],
+    retina:[-R*0.75,0.5,0.55], fovea:[-R*0.9,-0.4,0], blind:[-R*0.87,-0.5,0.5],
+    nerve:[-R*1.8,-0.9,0.7], choroid:[-R*0.4,-R*0.85,0.3], vitreous:[-R*0.2,-0.5,0.7],
+    aqueous:[R*0.7,-0.3,0.35]
+  };
+
+  /* ============ Optics engine ============ */
+  // Simplified thin-eye model along X. Cornea+lens combined power focuses object to an image plane.
+  // We compute where the top/bottom rays cross the axis (image point), then draw polylines:
+  //   object point -> cornea surface -> (bend) -> lens -> (bend toward image) -> hit retina/focus.
+  // Retina back at x = -R*0.9. Lens plane at x = R*0.4. Cornea plane at x = R*0.8.
+  const CORNEA_X = R*0.8, LENS_X = R*0.4, RETINA_X = -R*0.9;
+  const AXIS = 0;
+
+  function currentOptics(){
+    // object distance in "world" from 3 (near) to 12 (far)
+    const objX = objGroup.position.x;
+    // Normal eye: image lands on retina for all distances (accommodation).
+    // We express focus position along x. Negative deviation => front of retina, positive => behind.
+    let imageX = RETINA_X; // default sharp
+    let sharp = true; let where='on';
+    // lens "power" for accommodation display handled elsewhere.
+    if(state.defect==='myopia'){
+      // eyeball too long -> distant object focuses in front of retina
+      // amount depends on distance: worse for far objects
+      const farness = (objX-3)/9; // 0 near .. 1 far
+      imageX = RETINA_X + 0.75*farness + 0.15; // in front (toward front = larger x)
+      sharp = false; where='front';
+      if(state.glasses){ imageX = RETINA_X; sharp=true; where='on'; }
+    } else if(state.defect==='hyper'){
+      const nearness = 1-(objX-3)/9;
+      imageX = RETINA_X - 0.75*nearness - 0.15; // behind retina (smaller x, would be past back)
+      sharp=false; where='behind';
+      if(state.glasses){ imageX = RETINA_X; sharp=true; where='on'; }
+    } else if(state.defect==='cataract'){
+      imageX = RETINA_X; sharp=false; where='on'; // milky, not off-focus
+    } else if(state.defect==='glaucoma'){
+      imageX = RETINA_X; sharp=true; where='on';
+    }
+    return {objX, imageX, sharp, where};
+  }
+
+  function buildRay(line, ext, objPt, imageX){
+    // Path: object -> cornea front -> lens -> image point (on axis) -> continue to retina
+    const cyOff = objPt.y; // object height
+    // cornea entry point: same y as object but scaled slightly (aperture limited by pupil radius)
+    const pupilR = pupilRadius();
+    // ray aims from object through top of pupil region
+    const cornY = Math.max(-pupilR, Math.min(pupilR, cyOff>0?pupilR:-pupilR));
+    const imagePt = new THREE.Vector3(imageX, 0, 0);
+    // after lens the ray heads to imagePt; height at lens plane:
+    const lensY = cornY*0.75;
+    const pts = [
+      new THREE.Vector3(objPt.x, cyOff, 0),
+      new THREE.Vector3(CORNEA_X, cornY*1.0, 0),   // hits cornea (bend)
+      new THREE.Vector3(LENS_X, lensY, 0),          // through lens (bend)
+      imagePt.clone()                                // converge
+    ];
+    setLine(line, pts);
+    let travel = pts.map(p=>p.clone());     // full path a light packet will follow
+    // extension beyond / short of focus to show where rays actually meet the retina
+    if(imageX>RETINA_X+0.02){ // focus in front: rays cross then spread, hit retina apart -> blur
+      const t=(RETINA_X-imageX)/(imageX-LENS_X);
+      const yR = 0 + (0-lensY)*t;
+      const rp=new THREE.Vector3(RETINA_X, yR, 0);
+      setLine(ext, [imagePt.clone(), rp]);
+      ext.visible = state.raysOn; travel.push(rp);
+    } else if(imageX<RETINA_X-0.02){ // focus behind retina: rays still converging at retina
+      const t=(RETINA_X-LENS_X)/(imageX-LENS_X);
+      const yR = lensY + (0-lensY)*t;
+      const rp=new THREE.Vector3(RETINA_X, yR, 0);
+      setLine(ext, [rp, imagePt.clone()]);
+      ext.material.opacity=0.25; ext.visible = state.raysOn;
+      travel = [pts[0].clone(), pts[1].clone(), pts[2].clone(), rp]; // stop at retina, not the virtual focus
+    } else {
+      ext.visible=false;
+    }
+    line.userData.travel = travel;
+  }
+  function setLine(line, pts){
+    const arr=line.geometry.attributes.position.array;
+    for(let i=0;i<pts.length;i++){ arr[i*3]=pts[i].x; arr[i*3+1]=pts[i].y; arr[i*3+2]=pts[i].z; }
+    // fill remaining with last point
+    for(let i=pts.length;i<8;i++){ arr[i*3]=pts[pts.length-1].x; arr[i*3+1]=pts[pts.length-1].y; arr[i*3+2]=pts[pts.length-1].z; }
+    line.geometry.setDrawRange(0,pts.length);
+    line.geometry.attributes.position.needsUpdate=true;
+    line.geometry.computeBoundingSphere();
+  }
+
+  function pupilRadius(){
+    // light 0 (dim)-> big pupil, 100 (bright)-> small
+    const t=state.light/100;
+    return 0.62 - t*0.42; // 0.62 .. 0.20
+  }
+
+  /* ============ Update visuals from state ============ */
+  function updatePupil(){
+    const r=pupilRadius();
+    pupil.scale.set(r/0.32, r/0.32, 1);
+    const es=r/0.34; extPupil.scale.set(es,es,1); // external pupil reacts to light too
+  }
+
+  function updateLensShape(){
+    // Accommodation: near object -> fatter lens (bigger scale.x), far -> flatter
+    const objX=objGroup.position.x;
+    const nearness = 1-(objX-3)/9; // 0 far .. 1 near
+    let thick = 0.34 + nearness*0.34; // 0.34..0.68
+    if(state.defect==='myopia') thick+=0.05;
+    if(state.defect==='hyper')  thick-=0.03;
+    lens.scale.x = reduceMotion?thick: THREE.MathUtils.lerp(lens.scale.x, thick, 0.2);
+    // ciliary contracts (smaller ring) for near
+    const ring = 1.0 - nearness*0.12;
+    ciliary.scale.set(1,ring,ring);
+    updateZonules();
+  }
+
+  function updateDefectAppearance(){
+    // cataract clouds the lens
+    if(state.defect==='cataract'){
+      lens.material.color.set(0xd8d2c4); lens.material.opacity=0.85; lens.material.roughness=0.6;
+    } else {
+      lens.material.color.set(0xeafaff); lens.material.opacity=0.34; lens.material.roughness=0.02;
+    }
+    // glaucoma vignette handled by CSS overlay
+    document.getElementById('app').style.boxShadow = state.defect==='glaucoma'
+      ? 'inset 0 0 min(40vw,340px) min(18vw,140px) rgba(0,0,0,0.92)' : 'none';
+  }
+
+  function updateGlasses(){
+    glasses.visible = state.glasses && (state.defect==='myopia'||state.defect==='hyper');
+    if(!glasses.visible) return;
+    glasses.clear(); glasses.add(specFrame);
+    if(state.defect==='myopia'){
+      // concave/diverging: thin middle -> represent with two facing cones (biconcave) approximated by scaled sphere inverted
+      const c=new THREE.Mesh(new THREE.SphereGeometry(1.0,32,24), glassMat.clone());
+      c.scale.set(0.14,1,1); c.material.opacity=0.22; glasses.add(c);
+    } else {
+      const c=new THREE.Mesh(new THREE.SphereGeometry(1.0,32,24), glassMat.clone());
+      c.scale.set(0.30,1,1); glasses.add(c);
+    }
+  }
+
+  function updateRays(){
+    const showRays = state.raysOn;
+    rayTop.visible=rayBot.visible=showRays;
+    objGroup.visible = showRays;
+    if(!showRays){ retImg.visible=false; blob.visible=false; focusDot.visible=false; rayTopExt.visible=rayBotExt.visible=false; return; }
+    const o=currentOptics();
+    buildRay(rayTop, rayTopExt, objTop(), o.imageX);
+    buildRay(rayBot, rayBotExt, objBot(), o.imageX);
+    focusDot.position.set(o.imageX,0,0); focusDot.visible=true;
+    focusDot.material.color.set(o.sharp?0x9dffb0:0xff8a4d);
+
+    if(state.defect==='cataract'){
+      retImg.visible=false; blob.visible=true; blob.position.set(RETINA_X+0.02,0,0);
+      blob.material.color.set(0xd8d2c4); blob.material.opacity=0.7; blob.scale.set(1.4,1.4,1);
+    } else if(o.sharp){
+      retImg.visible=true; blob.visible=false;
+      // image size ~ diminished
+    } else {
+      retImg.visible=false; blob.visible=true; blob.position.set(RETINA_X+0.02,0,0);
+      const spread = Math.min(1.8, 0.6+Math.abs(o.imageX-RETINA_X)*1.6);
+      blob.material.color.set(0x39d0c8); blob.material.opacity=0.4; blob.scale.set(spread,spread,1);
+    }
+    updateStatus(o);
+  }
+
+  function updateStatus(o){
+    const dot=document.getElementById('statusDot');
+    const txt=document.getElementById('statusText');
+    let msg, color;
+    if(!state.raysOn){ txt.innerHTML='Press <b>▶ How an image forms</b> to trace the light'; dot.style.color='#7ea6c0'; return; }
+    if(state.defect==='cataract'){ msg='The clouded lens makes the image <b>milky &amp; blurred</b>'; color='#ff8a4d'; }
+    else if(state.defect==='glaucoma'){ msg='Sharp centre, but <b>side vision is lost</b> (tunnel vision)'; color='#ffc14d'; }
+    else if(o.where==='on'){ msg='Image forms <b>on the retina</b> — sharp'+(state.glasses?' (corrected 👓)':''); color='#4ade80'; }
+    else if(o.where==='front'){ msg='Image forms <b>in front of the retina</b> — blurry'; color='#ff7a7a'; }
+    else { msg='Image forms <b>behind the retina</b> — blurry'; color='#ff7a7a'; }
+    txt.innerHTML=msg; dot.style.color=color;
+  }
+
+  function refreshAll(){
+    updatePupil(); updateLensShape(); updateDefectAppearance(); updateGlasses(); updateRays();
+  }
+
+  /* ============ Cut-away toggle ============ */
+  function setView(v){
+    state.view=v; clipActive=(v==='cut');
+    clipPlane.constant = clipActive?0:100; // 100 => nothing clipped
+    externalFace.visible = (v==='whole'); // real eyeball face only when whole
+    document.querySelectorAll('#viewSeg .seg').forEach(s=>s.classList.toggle('active', s.dataset.view===v));
+    if(v==='cut'){ controls.flyTo(new THREE.Vector3(0,0,0), 8, 0.9, 1.25); }
+    else { controls.flyTo(new THREE.Vector3(0,0,0), 8.5, 0.95, 1.18); } // front three-quarter shows the iris
+  }
+
+  /* ============ Object distance ============ */
+  function setDist(val){
+    state.dist=val;
+    // val 0=near(x=3.5), 100=far(x=8) — kept on-screen in the side ray view
+    const x = 3.5 + (val/100)*4.5;
+    objGroup.position.x = x;
+    const dv=document.getElementById('distVal');
+    dv.textContent = val>70?'far':val<30?'near':'medium';
+    updateLensShape(); updateRays();
+  }
+  function setLight(val){
+    state.light=val;
+    document.getElementById('lightVal').textContent = val>66?'bright':val<33?'dim':'medium';
+    updatePupil(); updateRays();
+  }
+
+  /* ============ Hotspot picking ============ */
+  const ray=new THREE.Raycaster(); const mouse=new THREE.Vector2();
+  el.addEventListener('click', e=>{
+    if(moved) return;
+    mouse.x=(e.clientX/innerWidth)*2-1; mouse.y=-(e.clientY/innerHeight)*2+1;
+    ray.setFromCamera(mouse,camera);
+    const meshes=hotspots.map(h=>h.mesh);
+    const hit=ray.intersectObjects(meshes,false);
+    if(hit.length){
+      const h=hotspots.find(x=>x.mesh===hit[0].object);
+      if(h) openInfo(h.key);
+    }
+  });
+
+  function openInfo(key){
+    const p=PARTS[key]; if(!p) return;
+    document.getElementById('infoTag').textContent=p.tag;
+    document.getElementById('infoName').textContent=p.name;
+    document.getElementById('infoDesc').textContent=p.desc;
+    document.getElementById('info').classList.add('show');
+    const f=p.focus.clone(); controls.flyTo(f.clone().multiplyScalar(0.3), 6.5);
+    controls.tTarget.set(0,0,0); // keep centered but zoom
+    controls.tDist=6.2;
+  }
+  document.getElementById('infoClose').addEventListener('click', ()=>{
+    document.getElementById('info').classList.remove('show');
+    controls.flyTo(new THREE.Vector3(0,0,0), 9);
+  });
+
+  /* ============ Labels ============ */
+  const labelLayer=document.getElementById('labels');
+  const pins={};
+  Object.keys(LABELS).forEach(key=>{
+    const d=document.createElement('div'); d.className='pin'; d.textContent=PARTS[key].name;
+    d.addEventListener('click',()=>openInfo(key));
+    labelLayer.appendChild(d); pins[key]=d;
+  });
+  function updateLabels(){
+    if(!state.labels){ Object.values(pins).forEach(p=>p.style.display='none'); return; }
+    const cd=camera.position.length();
+    Object.keys(LABELS).forEach(key=>{
+      const [x,y,z]=LABELS[key];
+      const v=new THREE.Vector3(x,y,z); eye.localToWorld(v);
+      const wp=v.clone(); v.project(camera);
+      const behind = v.z>1;
+      // occlusion: is the point on far side of eye relative to camera?
+      const toCam=new THREE.Vector3().subVectors(camera.position, wp).normalize();
+      const normal=wp.clone().normalize();
+      const facing = normal.dot(toCam);
+      const p=pins[key];
+      if(behind || facing<-0.15){ p.style.display='none'; return; }
+      p.style.display='block';
+      p.style.left=((v.x*0.5+0.5)*innerWidth)+'px';
+      p.style.top=((-v.y*0.5+0.5)*innerHeight)+'px';
+      p.style.opacity = facing<0.2?0.4:1;
+    });
+  }
+
+  /* ============ UI wiring ============ */
+  function bindSeg(id, attr, fn){
+    document.querySelectorAll('#'+id+' .seg').forEach(s=>{
+      const act=()=>{ document.querySelectorAll('#'+id+' .seg').forEach(x=>x.classList.remove('active')); s.classList.add('active'); fn(s.dataset[attr]); };
+      s.addEventListener('click',act);
+      s.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();act();} });
+    });
+  }
+  bindSeg('viewSeg','view', setView);
+  bindSeg('defectSeg','defect', v=>{
+    state.defect=v;
+    // pick a sensible object distance to demonstrate the defect
+    if(v==='myopia'){ setSlider('dist',90); setDist(90); }
+    else if(v==='hyper'){ setSlider('dist',12); setDist(12); }
+    // reset glasses when switching
+    setSwitch('swGlasses', false); state.glasses=false;
+    refreshAll();
+  });
+
+  function setSwitch(id,on){ const sw=document.getElementById(id); sw.classList.toggle('on',on); sw.setAttribute('aria-checked',on); }
+  function bindSwitch(id, fn){
+    const sw=document.getElementById(id);
+    const act=()=>{ const on=!sw.classList.contains('on'); setSwitch(id,on); fn(on); };
+    sw.addEventListener('click',act);
+    sw.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();act();} });
+  }
+  bindSwitch('swLabels', on=>{ state.labels=on; updateLabels(); });
+  bindSwitch('swGlasses', on=>{ state.glasses=on; refreshAll(); });
+
+  function setSlider(id,val){ document.getElementById(id).value=val; }
+  document.getElementById('dist').addEventListener('input', e=>setDist(+e.target.value));
+  document.getElementById('light').addEventListener('input', e=>setLight(+e.target.value));
+
+  document.getElementById('btnRays').addEventListener('click', e=>{
+    state.raysOn=!state.raysOn; e.target.classList.toggle('active',state.raysOn);
+    e.target.textContent = state.raysOn?'⏹ Hide light rays':'▶ How an image forms';
+    if(state.raysOn){
+      // profile view: object (right) → eye → retina (left), classic ray diagram
+      if(state.view!=='cut') setView('cut');
+      controls.flyTo(new THREE.Vector3(2,0,0), 15.5, 0, Math.PI/2);
+    }
+    updateRays();
+  });
+
+  document.getElementById('btnReset').addEventListener('click', ()=>{
+    controls.flyTo(new THREE.Vector3(0,0,0), state.view==='cut'?8:8.5, state.view==='cut'?0.9:0.95, state.view==='cut'?1.25:1.18);
+    document.getElementById('info').classList.remove('show');
+  });
+  document.getElementById('btnHelp').addEventListener('click', ()=>{ document.getElementById('overlay').classList.remove('hidden'); });
+  document.getElementById('btnStart').addEventListener('click', ()=>{ document.getElementById('overlay').classList.add('hidden'); });
+
+  // minimize / maximize the control panel
+  const collapseBtn=document.getElementById('collapseBtn'), controlsEl=document.getElementById('controls');
+  collapseBtn.addEventListener('click', ()=>{
+    const min=controlsEl.classList.toggle('collapsed');
+    collapseBtn.textContent = min ? '☰' : '–';
+    collapseBtn.setAttribute('aria-label', min ? 'Maximize control panel' : 'Minimize control panel');
+  });
+
+  /* ============ Guided tour ============ */
+  const TOUR=[
+    {t:"This is the human eye — your window to the world. Drag to rotate it.", act:()=>{ setView('whole'); state.raysOn=false; updateRays(); controls.flyTo(new THREE.Vector3(0,0,0),9,0.7,1.3);} },
+    {t:"Light first enters through the clear cornea, then through the pupil — the hole in the coloured iris.", act:()=>{ setView('cut'); controls.flyTo(new THREE.Vector3(0,0,0),6.5,0.5,1.4);} },
+    {t:"The lens bends the light and focuses it toward the back of the eye.", act:()=>{ openInfo('lens'); } },
+    {t:"A real, upside-down image forms on the retina. Your brain flips it upright!", act:()=>{ document.getElementById('info').classList.remove('show'); state.raysOn=true; setDefect('normal'); setSlider('dist',60); setDist(60); updateRays(); controls.flyTo(new THREE.Vector3(0,0,0),9,0.9,1.3);} },
+    {t:"For near objects the lens gets fatter; for far objects it gets flatter — that's accommodation.", act:()=>{ setSlider('dist',10); setDist(10); } },
+    {t:"In short sight the image lands in front of the retina — a concave lens fixes it. In long sight it lands behind — a convex lens fixes it.", act:()=>{ setDefect('myopia'); setSlider('dist',90); setDist(90); setTimeout(()=>{ setSwitch('swGlasses',true); state.glasses=true; refreshAll(); },1400);} },
+    {t:"You're ready — explore parts, focus on near and far objects, and try the eye defects!", act:()=>{ setDefect('normal'); setSwitch('swGlasses',false); state.glasses=false; refreshAll(); controls.flyTo(new THREE.Vector3(0,0,0),9,0.6,1.35);} }
+  ];
+  function setDefect(v){ state.defect=v; document.querySelectorAll('#defectSeg .seg').forEach(s=>s.classList.toggle('active',s.dataset.defect===v)); refreshAll(); }
+  let tourI=0;
+  function startTour(){ state.tour=true; tourI=0; document.getElementById('tourBanner').classList.remove('hidden'); showTour(); }
+  function showTour(){
+    const s=TOUR[tourI];
+    document.getElementById('tourStep').textContent=`Step ${tourI+1} / ${TOUR.length}`;
+    document.getElementById('tourText').textContent=s.t;
+    document.getElementById('tourNext').textContent = tourI===TOUR.length-1?'Finish ✓':'Next →';
+    s.act();
+  }
+  function endTour(){ state.tour=false; document.getElementById('tourBanner').classList.add('hidden'); }
+  document.getElementById('btnTour').addEventListener('click', startTour);
+  document.getElementById('tourExit').addEventListener('click', endTour);
+  document.getElementById('tourNext').addEventListener('click', ()=>{ tourI++; if(tourI>=TOUR.length){ endTour(); } else showTour(); });
+
+  /* ============ Resize ============ */
+  function onResize(){ camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight); }
+  window.addEventListener('resize', onResize);
+
+  /* ============ hint auto-hide ============ */
+  setTimeout(()=>{ const h=document.getElementById('hint'); if(h) h.style.opacity='0'; }, 6000);
+
+  /* ============ Render loop ============ */
+  let running=true;
+  document.addEventListener('visibilitychange', ()=>{ running=!document.hidden; if(running) loop(); });
+  let t0=0;
+  function loop(ts){
+    if(!running) return;
+    requestAnimationFrame(loop);
+    const dt=(ts-t0)*0.001||0; t0=ts;
+    controls.update();
+    updateLabels();
+    updatePhoton(dt);
+    // subtle idle: keep lens accommodation smoothing
+    if(!reduceMotion) updateLensShape();
+    renderer.render(scene,camera);
+  }
+  // init
+  setView('whole'); setDist(85); setLight(75); refreshAll();
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>

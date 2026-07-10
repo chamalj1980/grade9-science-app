@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import type { Theme } from "../types";
 import type { SectionViewProps } from "./section";
 
 export interface RecapPoint {
@@ -7,7 +8,7 @@ export interface RecapPoint {
 }
 
 interface RecapViewProps extends SectionViewProps {
-  theme: "pressure" | "circulatory";
+  theme: Theme;
   eyebrow: string;
   title: string;
   intro: string;

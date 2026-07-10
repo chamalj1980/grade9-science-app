@@ -104,5 +104,62 @@ export const modules: LearningModule[] = [
           "Chambers, vessels, valves, blood parts, and transfusion rules in one quick card."
       }
     ]
+  },
+  {
+    id: "sensory-system",
+    chapter: 2,
+    title: "Eye and Ear",
+    shortTitle: "Senses",
+    icon: "👁️",
+    theme: "sensory-system",
+    summary:
+      "Explore how the eye sees and the ear hears — structure, focusing, defects, and safe habits.",
+    sections: [
+      {
+        id: "lesson",
+        navLabel: "Lesson",
+        title: "How We See and Hear",
+        eyebrow: "Concept builder",
+        type: "lesson",
+        summary:
+          "Click through the eye and ear, focus light on the retina, correct vision defects, and follow sound to the brain."
+      },
+      {
+        id: "simulation",
+        navLabel: "3D Eye",
+        title: "3D Eye Simulation",
+        eyebrow: "Explore in 3D",
+        type: "simulation",
+        summary:
+          "Rotate an interactive 3D eye, follow light forming an image on the retina, and see vision defects and their correction."
+      },
+      {
+        id: "exercise-1",
+        navLabel: "Exercise 1",
+        title: "Label It!",
+        eyebrow: "Diagram practice",
+        type: "labeling",
+        summary:
+          "Drag the names onto the eye and ear diagrams, level by level."
+      },
+      {
+        id: "exercise-2",
+        navLabel: "Exercise 2",
+        title: "The Sense Clinic",
+        eyebrow: "Diagnose and quiz",
+        type: "mixed-exercise",
+        summary:
+          "Diagnose each patient's vision defect and prescribe the right lens, then take the recap quiz."
+      },
+      {
+        id: "recap",
+        navLabel: "Recap",
+        title: "Eye & Ear Recap",
+        eyebrow: "Key ideas",
+        type: "recap",
+        summary:
+          "Eye and ear parts, focusing, defects, and safe habits in one quick card."
+      }
+    ]
   }
 ];

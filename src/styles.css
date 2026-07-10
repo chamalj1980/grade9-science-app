@@ -14,6 +14,8 @@
   --coral: #c2410c;
   --gold: #b7791f;
   --blue: #2563eb;
+  --indigo: #4f46e5;
+  --indigo-deep: #4338ca;
   --focus: #f5b700;
   --shadow: 0 16px 40px rgba(23, 32, 27, 0.1);
 }
@@ -293,6 +295,33 @@ button:active {
   stroke: #92400e;
   stroke-width: 5;
   stroke-linecap: round;
+}
+
+.svg-eye-outline {
+  fill: #eef2ff;
+  stroke: var(--indigo);
+  stroke-width: 6;
+  stroke-linejoin: round;
+}
+
+.svg-eye-iris {
+  fill: var(--indigo);
+}
+
+.svg-eye-pupil {
+  fill: #1e1b4b;
+}
+
+.svg-eye-shine {
+  fill: #ffffff;
+}
+
+.svg-sound {
+  fill: none;
+  stroke: var(--indigo);
+  stroke-width: 5;
+  stroke-linecap: round;
+  opacity: 0.55;
 }
 
 .svg-heart-left {
@@ -867,6 +896,18 @@ button:active {
   border-top: 6px solid var(--coral);
 }
 
+.recap-card.sensory-system {
+  border-top: 6px solid var(--indigo);
+}
+
+.recap-card.sensory-system .recap-list li {
+  background: #eef0fe;
+}
+
+.recap-card.sensory-system .recap-list strong {
+  color: var(--indigo-deep);
+}
+
 .recap-intro h2 {
   margin: 0.2rem 0 0.4rem;
 }
@@ -941,6 +982,10 @@ button:active {
 
 .lesson-hero.circulatory {
   border-top: 6px solid var(--coral);
+}
+
+.lesson-hero.sensory-system {
+  border-top: 6px solid var(--indigo);
 }
 
 .lesson-hero h2 {
@@ -1633,6 +1678,162 @@ button:active {
   flex-wrap: wrap;
   gap: 0.6rem;
   margin: 0.8rem 0;
+}
+
+/* =====================================================================
+   Sensory-system lesson (eye & ear)
+   ===================================================================== */
+.sense-figure {
+  width: 100%;
+  max-width: 380px;
+}
+
+.blind-svg {
+  width: 100%;
+  max-width: 340px;
+  margin: 0.6rem 0;
+}
+
+.flow-status.sound {
+  background: #eef0fe;
+  color: #3730a3;
+}
+
+/* Focusing / vision-defect ray demo */
+.ray-demo {
+  display: grid;
+  grid-template-columns: 1fr minmax(220px, 340px);
+  gap: 1rem;
+  align-items: center;
+  margin-top: 0.8rem;
+}
+
+.ray-svg {
+  width: 100%;
+  max-width: 340px;
+  justify-self: center;
+}
+
+.sense-status {
+  margin: 0.6rem 0 0;
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.sense-status.ok {
+  background: #e9f4f1;
+  color: var(--teal-deep);
+}
+
+.sense-status.no {
+  background: #fdeaea;
+  color: #b0272b;
+}
+
+.sense-badge {
+  display: inline-block;
+  margin-left: 0.35rem;
+  padding: 0.15rem 0.6rem;
+  border-radius: 99px;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.sense-badge.no {
+  background: #fdeaea;
+  color: #b0272b;
+}
+
+.sense-note {
+  margin: 0.6rem 0 0;
+}
+
+/* Sense Clinic patient speech */
+.clinic-symptom {
+  margin: 0.4rem 0 0;
+  font-size: 1.05rem;
+  font-style: italic;
+  color: var(--ink);
+}
+
+/* Eye-disease vision simulator */
+.vision-scene {
+  position: relative;
+  max-width: 320px;
+  margin: 0.6rem 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+
+.vision-scene svg {
+  display: block;
+  width: 100%;
+}
+
+.vision-scene.cataract svg {
+  filter: blur(2.6px) brightness(1.12) contrast(0.8);
+}
+
+.vision-scene .scene-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.vision-scene.cataract .scene-overlay {
+  background: rgba(255, 255, 255, 0.42);
+}
+
+.vision-scene.glaucoma .scene-overlay {
+  background: radial-gradient(circle, transparent 26%, rgba(12, 14, 26, 0.94) 70%);
+}
+
+/* Loudness meter */
+.db-meter {
+  height: 22px;
+  margin: 0.5rem 0;
+  overflow: hidden;
+  border-radius: 99px;
+  background: #eef1f8;
+}
+
+.db-fill {
+  display: block;
+  height: 100%;
+  transition: width 0.2s ease, background 0.2s ease;
+}
+
+.db-fill.safe {
+  background: #22b573;
+}
+
+.db-fill.caution {
+  background: #f5b800;
+}
+
+.db-fill.dangerous {
+  background: #f0663a;
+}
+
+.db-fill.harmful {
+  background: #e5484d;
+}
+
+.db-scale {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1rem;
+  margin-top: 0.4rem;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+@media (max-width: 620px) {
+  .ray-demo {
+    grid-template-columns: 1fr;
+  }
 }
 
 .flow-chain {

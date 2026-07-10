@@ -8,6 +8,10 @@ import { TransfusionLab } from "./circulatory/TransfusionLab";
 import { PressureLesson } from "./pressure/PressureLesson";
 import { PressurePlayground } from "./pressure/PressurePlayground";
 import { PressureSortAndCalc } from "./pressure/PressureSortAndCalc";
+import { EyeSimulation } from "./sensory-system/EyeSimulation";
+import { LabelTheSenses } from "./sensory-system/LabelTheSenses";
+import { SenseClinic } from "./sensory-system/SenseClinic";
+import { SensoryLesson } from "./sensory-system/SensoryLesson";
 import { RecapView } from "./RecapView";
 import type { SectionViewProps } from "./section";
 
@@ -60,6 +64,21 @@ export function renderSection(
     }
     if (section.id === "exercise-2") {
       return <TransfusionLab onProgress={progressProps.onProgress} />;
+    }
+  }
+
+  if (module.id === "sensory-system") {
+    if (section.id === "lesson") {
+      return <SensoryLesson onProgress={progressProps.onProgress} />;
+    }
+    if (section.id === "simulation") {
+      return <EyeSimulation onProgress={progressProps.onProgress} />;
+    }
+    if (section.id === "exercise-1") {
+      return <LabelTheSenses onProgress={progressProps.onProgress} />;
+    }
+    if (section.id === "exercise-2") {
+      return <SenseClinic onProgress={progressProps.onProgress} />;
     }
   }
 

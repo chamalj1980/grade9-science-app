@@ -116,6 +116,7 @@ describe("progress utilities", () => {
     );
 
     expect(pressureSuggestion?.sectionId).toBe("exercise-1");
-    expect(suggestions).toHaveLength(2);
+    // One suggestion per module that still has an unfinished section.
+    expect(suggestions).toHaveLength(modules.length);
   });
 });

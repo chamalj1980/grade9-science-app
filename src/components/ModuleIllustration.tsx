@@ -22,6 +22,27 @@ export function ModuleIllustration({ theme }: ModuleIllustrationProps) {
     );
   }
 
+  if (theme === "sensory-system") {
+    return (
+      <svg
+        className="module-illustration"
+        viewBox="0 0 180 120"
+        role="img"
+        aria-label="An eye with sound waves"
+      >
+        <path
+          className="svg-eye-outline"
+          d="M16 60C50 28 116 28 150 60C116 92 50 92 16 60Z"
+        />
+        <circle className="svg-eye-iris" cx="83" cy="60" r="25" />
+        <circle className="svg-eye-pupil" cx="83" cy="60" r="12" />
+        <circle className="svg-eye-shine" cx="75" cy="51" r="5" />
+        <path className="svg-sound" d="M150 44c11 10 11 22 0 32" />
+        <path className="svg-sound" d="M161 37c17 14 17 32 0 46" />
+      </svg>
+    );
+  }
+
   return (
     <svg
       className="module-illustration"
