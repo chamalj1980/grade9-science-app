@@ -12,6 +12,10 @@ import { EyeSimulation } from "./sensory-system/EyeSimulation";
 import { LabelTheSenses } from "./sensory-system/LabelTheSenses";
 import { SenseClinic } from "./sensory-system/SenseClinic";
 import { SensoryLesson } from "./sensory-system/SensoryLesson";
+import { MicrobeLesson } from "./micro-organisms/MicrobeLesson";
+import { MicrobeSimulation } from "./micro-organisms/MicrobeSimulation";
+import { MicrobeMatch } from "./micro-organisms/MicrobeMatch";
+import { MicrobeSortAndQuiz } from "./micro-organisms/MicrobeSortAndQuiz";
 import { RecapView } from "./RecapView";
 import type { SectionViewProps } from "./section";
 
@@ -79,6 +83,21 @@ export function renderSection(
     }
     if (section.id === "exercise-2") {
       return <SenseClinic onProgress={progressProps.onProgress} />;
+    }
+  }
+
+  if (module.id === "micro-organisms") {
+    if (section.id === "lesson") {
+      return <MicrobeLesson onProgress={progressProps.onProgress} />;
+    }
+    if (section.id === "simulation") {
+      return <MicrobeSimulation onProgress={progressProps.onProgress} />;
+    }
+    if (section.id === "exercise-1") {
+      return <MicrobeMatch onProgress={progressProps.onProgress} />;
+    }
+    if (section.id === "exercise-2") {
+      return <MicrobeSortAndQuiz onProgress={progressProps.onProgress} />;
     }
   }
 

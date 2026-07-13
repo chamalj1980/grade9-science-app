@@ -43,6 +43,30 @@ export function ModuleIllustration({ theme }: ModuleIllustrationProps) {
     );
   }
 
+  if (theme === "microbes") {
+    return (
+      <svg
+        className="module-illustration"
+        viewBox="0 0 180 120"
+        role="img"
+        aria-label="Microbes seen through a magnifying glass"
+      >
+        <circle className="svg-microbe-body" cx="70" cy="60" r="40" />
+        {/* a rod-shaped bacterium */}
+        <rect className="svg-microbe-cell" x="46" y="40" width="30" height="12" rx="6" transform="rotate(-18 61 46)" />
+        {/* a round microbe with a flagellum */}
+        <circle className="svg-microbe-cell" cx="82" cy="70" r="11" />
+        <path className="svg-microbe-tail" d="M92 74c10 3 14 10 12 18" />
+        {/* a small cluster */}
+        <circle className="svg-microbe-cell" cx="58" cy="78" r="6" />
+        <circle className="svg-microbe-cell" cx="48" cy="70" r="5" />
+        {/* magnifying-glass rim and handle */}
+        <circle className="svg-microbe-lens" cx="70" cy="60" r="40" />
+        <path className="svg-microbe-handle" d="M99 89l24 24" />
+      </svg>
+    );
+  }
+
   return (
     <svg
       className="module-illustration"

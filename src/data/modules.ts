@@ -161,5 +161,62 @@ export const modules: LearningModule[] = [
           "Eye and ear parts, focusing, defects, and safe habits in one quick card."
       }
     ]
+  },
+  {
+    id: "micro-organisms",
+    chapter: 1,
+    title: "Applications of Micro-organisms",
+    shortTitle: "Microbes",
+    icon: "🦠",
+    theme: "microbes",
+    summary:
+      "Meet the five groups of microbes and see how they help us — and sometimes harm us.",
+    sections: [
+      {
+        id: "lesson",
+        navLabel: "Lesson",
+        title: "Applications of Micro-organisms",
+        eyebrow: "Concept builder",
+        type: "lesson",
+        summary:
+          "Explore bacteria, fungi, protozoa, algae, and viruses, then how microbes help farming, medicine, industry, and the environment."
+      },
+      {
+        id: "simulation",
+        navLabel: "3D Lab",
+        title: "3D Microbe Lab",
+        eyebrow: "Explore in 3D",
+        type: "simulation",
+        summary:
+          "Build each microbe group in 3D, click parts to learn them, compare their sizes, and watch yeast ferment sugar into gas."
+      },
+      {
+        id: "exercise-1",
+        navLabel: "Exercise 1",
+        title: "Match the Microbe",
+        eyebrow: "Matching practice",
+        type: "labeling",
+        summary:
+          "Match each microbe to the job it does, level by level: food, farming and medicine, then industry and environment."
+      },
+      {
+        id: "exercise-2",
+        navLabel: "Exercise 2",
+        title: "Useful or Harmful?",
+        eyebrow: "Sort and quiz",
+        type: "mixed-exercise",
+        summary:
+          "Sort each scene by whether the microbe helps or harms, then take the recap quiz."
+      },
+      {
+        id: "recap",
+        navLabel: "Recap",
+        title: "Micro-organisms Recap",
+        eyebrow: "Key ideas",
+        type: "recap",
+        summary:
+          "The five groups, beneficial uses, harmful effects, and key terms in one quick card."
+      }
+    ]
   }
 ];

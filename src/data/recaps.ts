@@ -100,5 +100,40 @@ export const recaps: Record<
           "Semicircular canals keep balance. Humans hear 20 Hz–20,000 Hz; very loud sounds damage the ear, so protect it."
       }
     ]
+  },
+  "micro-organisms": {
+    intro: "The groups, the beneficial uses, the harmful effects, and the key terms in one place.",
+    points: [
+      {
+        term: "Five groups",
+        detail:
+          "Bacteria, fungi, protozoa, and algae are micro-organisms; viruses show both living and non-living characteristics and are studied with them."
+      },
+      {
+        term: "Agriculture",
+        detail:
+          "Rhizobium and Azotobacter fix nitrogen, microbes make compost and bio-pesticides, and gene technology improves crops."
+      },
+      {
+        term: "Medicine",
+        detail:
+          "Antibiotics (e.g. penicillin from Penicillium) kill bacteria and fungi but not viruses; vaccines and anti-toxins prevent disease."
+      },
+      {
+        term: "Industry",
+        detail:
+          "Yeast makes bread and alcohol, Lactobacillus makes dairy, Acetobacter makes vinegar, plus biogas, metal extraction, and plant fibres."
+      },
+      {
+        term: "Environment",
+        detail:
+          "Bio-remediation uses microbes to clean polluted water, break down oil spills, and remove heavy metals."
+      },
+      {
+        term: "Harmful effects",
+        detail:
+          "Microbes cause disease (a pathogen spread by a vector to a host), spoil food, and can be used as biological weapons."
+      }
+    ]
   }
 };

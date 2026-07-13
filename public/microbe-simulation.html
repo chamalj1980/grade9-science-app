@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>The Microbe Lab — Explore 3D Micro-organisms</title>
+<style>
+  :root{
+    --bg1:#e9f6ee; --bg2:#eefaf3;
+    --card:#ffffff; --ink:#16261d; --muted:#5b6b62;
+    --green:#15803d; --green-deep:#166534; --greensoft:#d8f2e1;
+    --accent:#15803d; --accent2:#0f766e;
+    --shadow:0 10px 30px rgba(20,50,35,.14);
+    --radius:18px;
+    font-size:16px;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0; height:100%; overflow:hidden;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink);
+    background:radial-gradient(1200px 800px at 30% 20%, var(--bg2), var(--bg1));}
+  #stage{position:fixed; inset:0;}
+  canvas{display:block; touch-action:none;}
+
+  /* Floating labels over the 3D model */
+  #labels{position:fixed; inset:0; pointer-events:none; z-index:5;}
+  .lbl{position:absolute; transform:translate(-50%,-120%);
+    background:rgba(255,255,255,.92); border:1px solid rgba(0,0,0,.06);
+    padding:4px 9px; border-radius:999px; font-size:12.5px; font-weight:600;
+    color:var(--ink); white-space:nowrap; box-shadow:var(--shadow);
+    pointer-events:auto; cursor:pointer; transition:transform .12s ease, background .15s;}
+  .lbl:hover{background:#fff; transform:translate(-50%,-130%) scale(1.05);}
+  .lbl .dot{display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:5px; vertical-align:middle; background:var(--green);}
+  .lbl.hidden{display:none;}
+
+  /* Side panel */
+  #panel{position:fixed; top:14px; right:14px; width:320px; max-width:calc(100vw - 28px);
+    background:rgba(255,255,255,.88); backdrop-filter:blur(10px);
+    border-radius:var(--radius); box-shadow:var(--shadow); z-index:20;
+    padding:14px 16px; max-height:calc(100vh - 28px); overflow:auto;}
+  #panel h1{font-size:17px; margin:2px 0 2px;}
+  #panel .sub{font-size:12px; color:var(--muted); margin-bottom:10px;}
+  .grp{background:#fff; border-radius:14px; padding:11px 12px; margin-bottom:10px; box-shadow:0 2px 8px rgba(20,50,35,.05);}
+  .grp .t{font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); margin-bottom:8px;}
+  .row{display:flex; gap:8px; flex-wrap:wrap;}
+  .btn{flex:1; min-width:0; border:none; border-radius:11px; padding:11px 10px; font-size:13.5px; font-weight:650;
+    background:#eaf3ee; color:var(--ink); cursor:pointer; transition:.15s; min-height:44px;}
+  .btn:hover{background:#dcede3;}
+  .btn.active{background:var(--accent); color:#fff;}
+  .btn.full{width:100%; flex:none;}
+  .btn.big{font-size:15px; padding:13px;}
+  .grid5{display:grid; grid-template-columns:1fr 1fr; gap:8px;}
+  .grid5 .btn{min-height:52px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; line-height:1.1;}
+  .grid5 .btn .em{font-size:19px;}
+  .hint{font-size:11.5px; color:var(--muted); margin-top:7px; line-height:1.35;}
+
+  /* Info card */
+  #info{position:fixed; left:50%; bottom:16px; transform:translateX(-50%) translateY(130%);
+    width:min(560px, calc(100vw - 28px)); background:var(--card); border-radius:var(--radius);
+    box-shadow:var(--shadow); z-index:30; padding:16px 18px; transition:transform .35s cubic-bezier(.2,.8,.2,1);}
+  #info.show{transform:translateX(-50%) translateY(0);}
+  #info h2{margin:0 0 4px; font-size:18px;}
+  #info .tag{display:inline-block; font-size:11px; font-weight:700; padding:3px 9px; border-radius:999px; margin-bottom:8px; background:var(--greensoft); color:var(--green-deep);}
+  #info p{margin:0 0 8px; font-size:14.5px; line-height:1.5; color:#33413a;}
+  #info .term{font-size:12.5px; color:var(--muted); background:#f2f8f4; border-radius:10px; padding:8px 10px; line-height:1.45;}
+  #info .x{position:absolute; top:12px; right:14px; border:none; background:#eef4f0; width:34px; height:34px; border-radius:50%; cursor:pointer; font-size:16px; color:var(--muted);}
+
+  /* Size comparison overlay */
+  #sizecard{position:fixed; left:14px; bottom:14px; width:300px; max-width:calc(100vw - 28px); z-index:20;
+    background:rgba(255,255,255,.92); backdrop-filter:blur(8px); border-radius:var(--radius); box-shadow:var(--shadow);
+    padding:13px 15px; transform:translateY(140%); transition:transform .35s cubic-bezier(.2,.8,.2,1);}
+  #sizecard.show{transform:translateY(0);}
+  #sizecard .t{font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); margin-bottom:9px;}
+  .sizerow{margin-bottom:8px;}
+  .sizerow .lab{display:flex; justify-content:space-between; font-size:12.5px; font-weight:600; margin-bottom:3px;}
+  .sizerow .lab .val{color:var(--muted); font-weight:600;}
+  .bar{height:9px; border-radius:99px; background:#e6efe9; overflow:hidden;}
+  .bar span{display:block; height:100%; border-radius:99px; background:linear-gradient(90deg,var(--accent2),var(--green));}
+  #sizecard .note{font-size:11px; color:var(--muted); margin-top:6px; line-height:1.35;}
+
+  /* Intro modal */
+  #overlay{position:fixed; inset:0; background:rgba(18,40,28,.45); backdrop-filter:blur(4px); z-index:60;
+    display:flex; align-items:center; justify-content:center; padding:18px;}
+  #overlay.hidden{display:none;}
+  .modal{background:#fff; border-radius:22px; max-width:520px; width:100%; padding:26px 26px 22px; box-shadow:var(--shadow);}
+  .modal h1{margin:0 0 2px; font-size:24px;}
+  .modal .lead{color:var(--muted); font-size:14px; margin-bottom:14px;}
+  .chips{display:flex; gap:8px; flex-wrap:wrap; margin:12px 0 6px;}
+  .chip{background:var(--greensoft); color:var(--green-deep); border-radius:12px; padding:8px 11px; font-size:13px; font-weight:600;}
+  .modal ul{margin:12px 0 4px; padding-left:18px; font-size:13.5px; color:#33413a; line-height:1.55;}
+  .modal .go{margin-top:16px;}
+
+  .credit{position:fixed; left:50%; top:8px; transform:translateX(-50%); font-size:11px; color:var(--muted); z-index:4; pointer-events:none;}
+  .banner{position:fixed; top:12px; left:50%; transform:translateX(-50%) translateY(-160%); background:rgba(22,101,52,.94); color:#fff;
+    padding:10px 18px; border-radius:13px; z-index:40; font-size:14px; font-weight:600; box-shadow:var(--shadow);
+    max-width:min(560px,calc(100vw - 200px)); text-align:center; transition:transform .4s cubic-bezier(.2,.8,.2,1);}
+  .banner.show{transform:translateX(-50%) translateY(0);}
+
+  @media (max-width:760px){
+    #panel{width:250px; top:8px; right:8px; padding:11px;}
+    #sizecard{display:none;}
+    .credit{display:none;}
+  }
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<div id="labels"></div>
+<div class="credit">Drag to rotate · scroll / pinch to zoom · tap a label to explore</div>
+<div class="banner" id="banner"></div>
+
+<!-- SIDE PANEL -->
+<div id="panel">
+  <h1>🦠 The Microbe Lab</h1>
+  <div class="sub">A 3D tour of the five groups of micro-organisms — Grade 9 Science</div>
+
+  <div class="grp">
+    <div class="t">Pick a microbe</div>
+    <div class="grid5">
+      <button class="btn active" data-microbe="bacteria"><span class="em">🦠</span>Bacteria</button>
+      <button class="btn" data-microbe="fungi"><span class="em">🍄</span>Fungi (yeast)</button>
+      <button class="btn" data-microbe="protozoa"><span class="em">🐛</span>Protozoa</button>
+      <button class="btn" data-microbe="algae"><span class="em">🌿</span>Algae</button>
+      <button class="btn" data-microbe="virus"><span class="em">🧬</span>Virus</button>
+    </div>
+    <div class="hint" id="microbeHint">Bacteria are single-celled with no true nucleus. Tap a glowing dot to explore each part.</div>
+  </div>
+
+  <div class="grp">
+    <div class="t">Controls</div>
+    <div class="row">
+      <button class="btn active" id="spinBtn">🔄 Spin: On</button>
+      <button class="btn active" id="lblBtn">🏷️ Labels: On</button>
+    </div>
+    <div class="row" style="margin-top:8px">
+      <button class="btn" id="sizeBtn">📏 Size compare</button>
+      <button class="btn" id="resetBtn">🎯 Reset view</button>
+    </div>
+  </div>
+
+  <div class="grp">
+    <div class="t">Fun demo</div>
+    <div class="row">
+      <button class="btn full big" id="fermentBtn">🍞 Fermentation chamber</button>
+    </div>
+    <div class="hint">Watch yeast eat sugar and bubble out carbon dioxide — the gas that makes bread rise and puts fizz in drinks.</div>
+    <div class="row" style="margin-top:8px">
+      <button class="btn full" id="helpBtn">ℹ️ About micro-organisms</button>
+    </div>
+  </div>
+</div>
+
+<!-- INFO CARD -->
+<div id="info">
+  <button class="x" id="infoX">✕</button>
+  <span class="tag" id="infoTag"></span>
+  <h2 id="infoTitle"></h2>
+  <p id="infoText"></p>
+  <div class="term" id="infoTerm"></div>
+</div>
+
+<!-- SIZE COMPARE -->
+<div id="sizecard">
+  <div class="t">How big are they?</div>
+  <div id="sizeRows"></div>
+  <div class="note">Sizes are approximate. A virus is so tiny you need an electron microscope; some algae you can see with the naked eye.</div>
+</div>
+
+<!-- INTRO -->
+<div id="overlay">
+  <div class="modal">
+    <h1>🦠 Meet the micro-organisms</h1>
+    <div class="lead">Micro-organisms are far too small to see with the naked eye — but they are everywhere, and most of them help us.</div>
+    <div class="chips">
+      <span class="chip">🦠 Bacteria</span>
+      <span class="chip">🍄 Fungi</span>
+      <span class="chip">🐛 Protozoa</span>
+      <span class="chip">🌿 Algae</span>
+      <span class="chip">🧬 Viruses</span>
+    </div>
+    <ul>
+      <li>Pick a group on the right to build it in <b>3D</b>.</li>
+      <li>Tap the glowing dots to learn what each part does.</li>
+      <li>Try the <b>Fermentation chamber</b> to see yeast make bubbles of gas.</li>
+    </ul>
+    <div class="row go">
+      <button class="btn full big active" id="startBtn">Start exploring →</button>
+    </div>
+  </div>
+</div>
+
+<!-- Three.js from cdnjs (only external dependency; everything else is self-contained) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+/* =========================================================================
+   THE MICROBE LAB — single-file 3D educational app (Grade 9 Science)
+   Builds each of the five micro-organism groups from Three.js primitives:
+     bacteria (rod + flagella), yeast (budding), amoeba (pseudopodia),
+     spirogyra (filament + spiral chloroplast), virus (capsid + spikes).
+   Facts follow the Grade 9 textbook, Chapter 1 (Applications of Micro-organisms).
+   ========================================================================= */
+const T = THREE;
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const lerp=(a,b,t)=>a+(b-a)*t;
+
+/* ---- scene ---- */
+const stage=document.getElementById('stage');
+const renderer=new T.WebGLRenderer({antialias:true, alpha:true});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+renderer.setSize(innerWidth,innerHeight);
+renderer.shadowMap.enabled=true; renderer.shadowMap.type=T.PCFSoftShadowMap;
+stage.appendChild(renderer.domElement);
+
+const scene=new T.Scene();
+const camera=new T.PerspectiveCamera(45,innerWidth/innerHeight,0.1,100);
+
+scene.add(new T.HemisphereLight(0xffffff,0xcfe6d6,0.9));
+const key=new T.DirectionalLight(0xffffff,1.0); key.position.set(5,8,6); key.castShadow=true;
+key.shadow.mapSize.set(1024,1024);
+key.shadow.camera.left=-8;key.shadow.camera.right=8;key.shadow.camera.top=8;key.shadow.camera.bottom=-8; key.shadow.radius=6;
+scene.add(key);
+const fill=new T.DirectionalLight(0xdff0e6,0.5); fill.position.set(-6,2,-4); scene.add(fill);
+const rim=new T.PointLight(0xd6ffe6,0.5,40); rim.position.set(0,3,-6); scene.add(rim);
+
+/* petri-dish floor */
+const floorMat=new T.ShadowMaterial({opacity:0.12});
+const floor=new T.Mesh(new T.CircleGeometry(14,48),floorMat);
+floor.rotation.x=-Math.PI/2; floor.position.y=-3.2; floor.receiveShadow=true; scene.add(floor);
+const dish=new T.Mesh(new T.CircleGeometry(4.6,64),
+  new T.MeshStandardMaterial({color:0xffffff, roughness:0.6, transparent:true, opacity:0.32, side:T.DoubleSide}));
+dish.rotation.x=-Math.PI/2; dish.position.y=-3.18; scene.add(dish);
+
+/* =========================================================================
+   MATERIALS
+   ========================================================================= */
+function mat(color,opts={}){ return new T.MeshStandardMaterial({color, roughness:0.5, metalness:0.03, ...opts}); }
+const M={
+  bacteria: mat(0x3fae63),
+  bactDark: mat(0x2f8a4d),
+  yeast:    mat(0xe6c67a),
+  yeastDark:mat(0xcaa858),
+  amoeba:   new T.MeshStandardMaterial({color:0x8fd6b0, roughness:0.35, transparent:true, opacity:0.62, side:T.DoubleSide}),
+  nucleus:  mat(0x2f6b46),
+  vacuole:  new T.MeshStandardMaterial({color:0xbfeecf, roughness:0.3, transparent:true, opacity:0.5}),
+  algae:    new T.MeshStandardMaterial({color:0xbfe8cf, roughness:0.35, transparent:true, opacity:0.55, side:T.DoubleSide}),
+  chloro:   mat(0x1f8a4d,{roughness:0.4}),
+  capsid:   mat(0x7b4bd0,{roughness:0.35}),
+  spike:    mat(0x9d6bea),
+  spikeTip: mat(0xcaa6f5,{emissive:0x5a2ea6, emissiveIntensity:0.4}),
+  rna:      mat(0xf2c14e,{emissive:0x7a5a10, emissiveIntensity:0.3})
+};
+
+/* =========================================================================
+   MICROBE BUILDERS  — each returns { group, parts:[...], animate(t,dt) }
+   parts: {id,name,tag,text,term,pos:[x,y,z]}
+   ========================================================================= */
+
+// --- Bacteria: rod (bacillus) with wiggling flagella ---
+function buildBacteria(){
+  const g=new T.Group();
+  const bodyLen=2.2, r=0.85;
+  const cyl=new T.Mesh(new T.CylinderGeometry(r,r,bodyLen,40,1,true), M.bacteria);
+  cyl.rotation.z=Math.PI/2; cyl.castShadow=true; g.add(cyl);
+  const capA=new T.Mesh(new T.SphereGeometry(r,36,24), M.bacteria); capA.position.x= bodyLen/2; capA.castShadow=true; g.add(capA);
+  const capB=new T.Mesh(new T.SphereGeometry(r,36,24), M.bacteria); capB.position.x=-bodyLen/2; capB.castShadow=true; g.add(capB);
+  // faint plasmid / DNA loop inside (shows "no true nucleus")
+  const dna=new T.Mesh(new T.TorusKnotGeometry(0.32,0.05,60,8,2,3), M.bactDark); g.add(dna);
+
+  // flagella as animated lines from the -x end
+  const flG=[]; const NF=3;
+  for(let f=0; f<NF; f++){
+    const geo=new T.BufferGeometry(); const n=32; geo.setAttribute('position', new T.BufferAttribute(new Float32Array(n*3),3));
+    const line=new T.Line(geo, new T.LineBasicMaterial({color:0x2f8a4d, transparent:true, opacity:0.9}));
+    flG.push({line, geo, n, off:f*2.1}); g.add(line);
+  }
+  const parts=[
+    {id:'wall', name:'Cell wall', tag:'Structure', pos:[0,0.95,0],
+     text:"A tough outer wall gives the bacterium its rod shape (a bacillus) and protects it from its surroundings.",
+     term:"Bacillus = a rod-shaped bacterium. Others can be round (cocci) or spiral."},
+    {id:'dna', name:'Genetic material', tag:'Inside', pos:[0,0,0],
+     text:"A bacterium's DNA floats freely in the cytoplasm as a loop. Bacteria have NO true nucleus.",
+     term:"No true nucleus = the DNA is not wrapped inside a nuclear membrane."},
+    {id:'flag', name:'Flagellum', tag:'Movement', pos:[-1.9,0,0],
+     text:"A whip-like tail that spins to push the bacterium through liquid. Some bacteria have one, some have many.",
+     term:"Flagellum = a tail used for swimming. Plural: flagella."}
+  ];
+  return {group:g, parts, animate:(t)=>{
+    g.rotation.y = t*0.5;
+    dna.rotation.x=t*0.8; dna.rotation.y=t*0.6;
+    flG.forEach(({geo,n,off})=>{
+      const p=geo.attributes.position.array;
+      for(let i=0;i<n;i++){ const x=-bodyLen/2 - i*0.13;
+        p[i*3]=x; p[i*3+1]=Math.sin(i*0.5 - t*6 + off)*0.28*(i/n); p[i*3+2]=Math.cos(i*0.5 - t*6 + off)*0.28*(i/n); }
+      geo.attributes.position.needsUpdate=true; geo.computeBoundingSphere();
+    });
+  }};
+}
+
+// --- Fungi (yeast): mother cell with a growing bud ---
+function buildYeast(){
+  const g=new T.Group();
+  const mother=new T.Mesh(new T.SphereGeometry(1.25,48,36), M.yeast); mother.castShadow=true; g.add(mother);
+  const nuc=new T.Mesh(new T.SphereGeometry(0.42,28,20), M.yeastDark); nuc.position.set(-0.2,0.1,0.2); g.add(nuc);
+  const budPivot=new T.Group(); g.add(budPivot);
+  const bud=new T.Mesh(new T.SphereGeometry(0.6,36,26), M.yeast); bud.position.set(1.55,0.5,0); bud.castShadow=true; budPivot.add(bud);
+  // little bud scars
+  for(let i=0;i<3;i++){ const s=new T.Mesh(new T.RingGeometry(0.1,0.16,16), M.yeastDark);
+    const a=i*2.1; s.position.set(Math.cos(a)*1.2,Math.sin(a)*0.9,0.6); s.lookAt(s.position.clone().multiplyScalar(2)); g.add(s); }
+  const parts=[
+    {id:'wall', name:'Cell wall', tag:'Structure', pos:[0,1.3,0],
+     text:"Yeast is a single-celled fungus. Its cell wall keeps its round shape. Yeast makes bread rise and produces alcohol.",
+     term:"Fungus = a group of microbes; yeast is one, mushrooms and moulds are others."},
+    {id:'nuc', name:'Nucleus', tag:'Inside', pos:[-0.2,0.1,0.6],
+     text:"Unlike bacteria, fungi have a true nucleus — a membrane-bound sac that holds the cell's DNA.",
+     term:"Nucleus = the control centre of the cell, holding its genetic material."},
+    {id:'bud', name:'Bud', tag:'Reproduction', pos:[1.7,0.6,0],
+     text:"A new yeast cell grows out of the parent as a bud, then breaks off. This is called budding.",
+     term:"Budding = reproduction where a small copy grows out of the parent cell."}
+  ];
+  return {group:g, parts, animate:(t)=>{
+    g.rotation.y=t*0.4;
+    const grow=(Math.sin(t*0.9)*0.5+0.5); // 0..1 budding cycle
+    bud.scale.setScalar(0.25+grow*0.95);
+    budPivot.rotation.z=Math.sin(t*0.5)*0.05;
+  }};
+}
+
+// --- Protozoa (amoeba): wobbling blob with pseudopodia + nucleus + vacuoles ---
+function buildAmoeba(){
+  const g=new T.Group();
+  const geo=new T.SphereGeometry(1.4,64,48);
+  const base=geo.attributes.position.array.slice();
+  const blob=new T.Mesh(geo, M.amoeba); blob.castShadow=true; g.add(blob);
+  const nuc=new T.Mesh(new T.SphereGeometry(0.42,28,20), M.nucleus); nuc.position.set(0.1,0.05,0); g.add(nuc);
+  const vac=[]; for(let i=0;i<3;i++){ const v=new T.Mesh(new T.SphereGeometry(0.22+i*0.05,20,16), M.vacuole);
+    const a=i*2.2; v.position.set(Math.cos(a)*0.7,Math.sin(a)*0.5,0.3); g.add(v); vac.push(v); }
+  const parts=[
+    {id:'pseu', name:'Pseudopodium', tag:'Movement', pos:[1.5,0.2,0],
+     text:"Amoeba is a single-celled protozoan. It pushes out finger-like 'false feet' called pseudopodia to crawl and to trap food.",
+     term:"Pseudopodium = a bulge of cytoplasm used to move and feed. Plural: pseudopodia."},
+    {id:'nuc', name:'Nucleus', tag:'Inside', pos:[0.1,0.05,0.7],
+     text:"The nucleus controls the cell and holds its DNA. Protozoa are more complex cells than bacteria.",
+     term:"Protozoa = single-celled microbes that live in water and inside other organisms."},
+    {id:'vac', name:'Food vacuole', tag:'Feeding', pos:[0.7,0.5,0.4],
+     text:"A bubble where food the amoeba has surrounded is slowly digested.",
+     term:"Vacuole = a fluid-filled bubble inside a cell."}
+  ];
+  return {group:g, parts, animate:(t)=>{
+    g.rotation.y=t*0.25;
+    const p=geo.attributes.position.array;
+    for(let i=0;i<p.length;i+=3){ const x=base[i],y=base[i+1],z=base[i+2];
+      const d=1 + 0.16*Math.sin(x*2+t*1.6) + 0.16*Math.cos(y*2.3+t*1.3) + 0.12*Math.sin(z*2.1 - t*1.1);
+      p[i]=x*d; p[i+1]=y*d; p[i+2]=z*d; }
+    geo.attributes.position.needsUpdate=true; geo.computeVertexNormals();
+    vac.forEach((v,i)=>{ v.position.x=Math.cos(t*0.6+i*2)*0.7; v.position.y=Math.sin(t*0.5+i*2)*0.5; });
+  }};
+}
+
+// --- Algae (spirogyra): filament of cells, each with a spiral chloroplast ---
+function buildAlgae(){
+  const g=new T.Group();
+  const NCELL=4, cw=1.05, r=0.62;
+  const cells=[];
+  for(let c=0;c<NCELL;c++){
+    const cell=new T.Group(); cell.position.x=(c-(NCELL-1)/2)*cw;
+    const wall=new T.Mesh(new T.CylinderGeometry(r,r,cw*0.96,32,1,true), M.algae); wall.rotation.z=Math.PI/2; cell.add(wall);
+    // spiral chloroplast: a helix tube
+    const pts=[]; for(let i=0;i<=60;i++){ const a=i/60*Math.PI*4; pts.push(new T.Vector3((i/60-0.5)*cw*0.9, Math.cos(a)*r*0.7, Math.sin(a)*r*0.7)); }
+    const helix=new T.Mesh(new T.TubeGeometry(new T.CatmullRomCurve3(pts),80,0.09,8,false), M.chloro); cell.add(helix);
+    const nuc=new T.Mesh(new T.SphereGeometry(0.14,18,14), M.nucleus); cell.add(nuc);
+    g.add(cell); cells.push(cell);
+  }
+  const parts=[
+    {id:'chloro', name:'Spiral chloroplast', tag:'Food', pos:[0,0.7,0.3],
+     text:"Each Spirogyra cell holds a green ribbon-shaped chloroplast wound in a spiral. It makes food from sunlight.",
+     term:"Chloroplast = the part that does photosynthesis. Algae are autotrophs — they make their own food."},
+    {id:'wall', name:'Cell wall & filament', tag:'Structure', pos:[1.6,0.5,0],
+     text:"Spirogyra cells join end-to-end into a long thread called a filament. Algae can be one cell or many.",
+     term:"Filament = a chain of cells joined in a line."},
+    {id:'nuc', name:'Nucleus', tag:'Inside', pos:[-0.5,0.0,0.6],
+     text:"Like fungi and protozoa, algae have a true nucleus suspended in the cell.",
+     term:"Autotroph = a living thing that makes its own food using sunlight."}
+  ];
+  return {group:g, parts, animate:(t)=>{
+    g.rotation.y=t*0.35;
+    cells.forEach((cell,i)=> cell.position.y=Math.sin(t*1.2 + i*0.7)*0.12 );
+  }};
+}
+
+// --- Virus: icosahedral capsid with spike proteins + genetic core ---
+function buildVirus(){
+  const g=new T.Group();
+  const capsid=new T.Mesh(new T.IcosahedronGeometry(1.15,1), M.capsid); capsid.castShadow=true; g.add(capsid);
+  const rna=new T.Mesh(new T.TorusKnotGeometry(0.4,0.08,80,10,2,3), M.rna); g.add(rna);
+  // spikes at each icosahedron vertex direction
+  const dirs=[]; const ico=new T.IcosahedronGeometry(1,0); const pos=ico.attributes.position;
+  const seen=new Set();
+  for(let i=0;i<pos.count;i++){ const v=new T.Vector3().fromBufferAttribute(pos,i).normalize();
+    const kkey=v.toArray().map(n=>n.toFixed(2)).join(','); if(seen.has(kkey))continue; seen.add(kkey); dirs.push(v); }
+  const spikes=[];
+  dirs.forEach(d=>{ const s=new T.Group();
+    const stalk=new T.Mesh(new T.CylinderGeometry(0.05,0.07,0.55,10), M.spike); stalk.position.y=0.4; s.add(stalk);
+    const knob=new T.Mesh(new T.SphereGeometry(0.16,18,14), M.spikeTip); knob.position.y=0.72; s.add(knob);
+    s.position.copy(d.clone().multiplyScalar(1.1)); s.quaternion.setFromUnitVectors(new T.Vector3(0,1,0), d);
+    g.add(s); spikes.push({s,knob}); });
+  const parts=[
+    {id:'capsid', name:'Capsid (protein coat)', tag:'Structure', pos:[0,1.15,0],
+     text:"A virus is not a full cell. Its genetic material is wrapped in a protein coat called a capsid.",
+     term:"Capsid = the protein shell that protects a virus."},
+    {id:'spike', name:'Spike protein', tag:'Attachment', pos:[1.4,0.9,0.5],
+     text:"Spikes stick out of the coat and let the virus lock onto and enter a living host cell.",
+     term:"Host cell = a living cell a virus invades. Viruses multiply only inside living cells."},
+    {id:'rna', name:'Genetic material', tag:'Inside', pos:[0,0,0],
+     text:"Inside is the virus's DNA or RNA — the instructions to make copies of itself once inside a host.",
+     term:"Viruses show living and non-living characteristics, so they sit between the two."}
+  ];
+  return {group:g, parts, animate:(t)=>{
+    g.rotation.y=t*0.6; g.rotation.x=Math.sin(t*0.3)*0.2;
+    rna.rotation.z=t*1.2;
+    const pulse=0.4+0.3*Math.sin(t*3);
+    spikes.forEach(({knob})=> knob.material.emissiveIntensity=pulse );
+  }};
+}
+
+const BUILDERS={bacteria:buildBacteria, fungi:buildYeast, protozoa:buildAmoeba, algae:buildAlgae, virus:buildVirus};
+const MICROBE_HINT={
+  bacteria:"Bacteria are single-celled with no true nucleus. This rod is a bacillus.",
+  fungi:"Yeast is a single-celled fungus that reproduces by budding.",
+  protozoa:"Amoeba is a protozoan that moves and feeds using pseudopodia.",
+  algae:"Spirogyra is a green alga — a filament of cells that photosynthesise.",
+  virus:"A virus is genetic material in a protein coat; it multiplies only inside host cells."
+};
+
+/* =========================================================================
+   SPECIMEN MOUNT + LABELS + HOTSPOTS
+   ========================================================================= */
+const specimen=new T.Group(); specimen.position.y=0.2; scene.add(specimen);
+let current=null, currentParts=[], hotspots=[];
+const labelsRoot=document.getElementById('labels');
+
+function clearGroup(gr){ while(gr.children.length) gr.remove(gr.children[0]); }
+function switchTo(type){
+  clearGroup(specimen); hotspots.forEach(h=>h.parent&&h.parent.remove(h)); hotspots=[];
+  labelsRoot.innerHTML='';
+  current=BUILDERS[type]();
+  current.type=type;
+  specimen.add(current.group);
+  currentParts=current.parts;
+  // labels + hotspots
+  currentParts.forEach(p=>{
+    const d=document.createElement('div'); d.className='lbl'+(labelsOn?'':' hidden');
+    d.innerHTML='<span class="dot"></span>'+p.name;
+    d.addEventListener('click',()=>selectPart(p.id));
+    p.el=d; p.v=new T.Vector3(...p.pos); labelsRoot.appendChild(d);
+    const m=new T.Mesh(new T.SphereGeometry(0.12,16,12), new T.MeshStandardMaterial({color:0xffffff, emissive:0x8ff0b8, emissiveIntensity:0.6}));
+    m.position.set(...p.pos); m.userData.id=p.id; specimen.add(m); hotspots.push(m);
+  });
+  // grow-in animation
+  specimen.scale.setScalar(0.2); specimenTargetScale=1;
+  document.querySelectorAll('[data-microbe]').forEach(b=>b.classList.toggle('active', b.dataset.microbe===type));
+  document.getElementById('microbeHint').textContent=MICROBE_HINT[type];
+  info.classList.remove('show'); resetCam();
+}
+let specimenTargetScale=1;
+
+/* =========================================================================
+   FERMENTATION MODE  — yeast bobbing in liquid, releasing CO2 bubbles
+   ========================================================================= */
+const ferment=new T.Group(); ferment.visible=false; scene.add(ferment);
+(function buildFerment(){
+  // liquid cylinder
+  const liquid=new T.Mesh(new T.CylinderGeometry(3,3,3.4,48,1,true),
+    new T.MeshStandardMaterial({color:0xdff0e6, roughness:0.2, transparent:true, opacity:0.28, side:T.DoubleSide}));
+  liquid.position.y=-1.2; ferment.add(liquid);
+  const base=new T.Mesh(new T.CircleGeometry(3,48), new T.MeshStandardMaterial({color:0xcfe8d8, roughness:0.5}));
+  base.rotation.x=-Math.PI/2; base.position.y=-2.9; ferment.add(base);
+  // rising dough dome
+  const dough=new T.Mesh(new T.SphereGeometry(2.2,40,24,0,Math.PI*2,0,Math.PI/2),
+    new T.MeshStandardMaterial({color:0xe9d3a1, roughness:0.8}));
+  dough.position.y=-2.9; dough.scale.y=0.35; ferment.userData.dough=dough; ferment.add(dough);
+  // yeast cells
+  const yeasts=[]; for(let i=0;i<7;i++){ const y=new T.Mesh(new T.SphereGeometry(0.3,20,16), M.yeast);
+    y.position.set((Math.random()-0.5)*3.4,(Math.random()-0.5)*2.4-0.6,(Math.random()-0.5)*3.4); ferment.add(y); yeasts.push(y); }
+  ferment.userData.yeasts=yeasts;
+  // sugar cubes
+  const sugars=[]; for(let i=0;i<5;i++){ const s=new T.Mesh(new T.BoxGeometry(0.3,0.3,0.3), new T.MeshStandardMaterial({color:0xffffff, roughness:0.4}));
+    s.position.set((Math.random()-0.5)*3,(Math.random()-0.5)*2-0.6,(Math.random()-0.5)*3); s.rotation.set(Math.random(),Math.random(),0); ferment.add(s); sugars.push(s); }
+  ferment.userData.sugars=sugars;
+  // CO2 bubbles
+  const NB=90; const bGeo=new T.BufferGeometry(); const bPos=new Float32Array(NB*3); const bU=new Float32Array(NB);
+  for(let i=0;i<NB;i++){ bU[i]=Math.random(); bPos[i*3]=(Math.random()-0.5)*4; bPos[i*3+2]=(Math.random()-0.5)*4; bPos[i*3+1]=Math.random()*4-2.8; }
+  bGeo.setAttribute('position',new T.BufferAttribute(bPos,3));
+  const bubbles=new T.Points(bGeo, new T.PointsMaterial({color:0xffffff, size:0.16, transparent:true, opacity:0.7, depthWrite:false}));
+  ferment.add(bubbles); ferment.userData.bubbles={bubbles,bGeo,bPos,bU,NB};
+})();
+function animateFerment(t,dt){
+  const u=ferment.userData;
+  u.yeasts.forEach((y,i)=>{ y.position.y = ((y.position.y+ dt*0.15 +3)% 3)-1.6; y.position.x+=Math.sin(t+i)*0.002; });
+  const {bubbles,bGeo,bPos,bU,NB}=u.bubbles;
+  for(let i=0;i<NB;i++){ bU[i]=(bU[i]+dt*(0.12+ (i%5)*0.02))%1; bPos[i*3+1]=-2.8 + bU[i]*4.6; }
+  bGeo.attributes.position.needsUpdate=true;
+  // dough slowly rises then resets
+  const rise=(Math.sin(t*0.35)*0.5+0.5); u.dough.scale.y=0.35+rise*0.7; u.dough.position.y=-2.9;
+}
+let fermentOn=false;
+function setFerment(on){
+  fermentOn=on; ferment.visible=on; specimen.visible=!on;
+  document.querySelectorAll('[data-microbe]').forEach(b=>b.disabled=on);
+  document.getElementById('fermentBtn').classList.toggle('active',on);
+  document.getElementById('fermentBtn').textContent = on?'🧫 Back to specimens':'🍞 Fermentation chamber';
+  hotspots.forEach(h=>h.visible=!on);
+  currentParts.forEach(p=>p.el.classList.toggle('hidden', on || !labelsOn));
+  info.classList.remove('show');
+  if(on){ showBanner('Yeast eats sugar and breathes out carbon dioxide (CO₂). The gas bubbles make bread rise and drinks fizzy.'); cam.dRadius=11; }
+  else { resetCam(); }
+}
+
+/* =========================================================================
+   CAMERA CONTROLLER (drag / wheel / pinch)
+   ========================================================================= */
+const cam={ target:new T.Vector3(0,0,0), radius:8, theta:0.6, phi:1.2,
+            dTarget:new T.Vector3(0,0,0), dRadius:8, dTheta:0.6, dPhi:1.2 };
+function applyCam(){
+  const st=Math.sin(cam.phi)*cam.radius;
+  camera.position.set(cam.target.x+st*Math.sin(cam.theta), cam.target.y+Math.cos(cam.phi)*cam.radius, cam.target.z+st*Math.cos(cam.theta));
+  camera.lookAt(cam.target);
+}
+function focusOn(v,radius=5){ cam.dTarget.copy(v); cam.dRadius=radius; }
+function resetCam(){ cam.dTarget.set(0,0.2,0); cam.dRadius=8; cam.dTheta=0.6; cam.dPhi=1.2; }
+let dragging=false,lastX=0,lastY=0,pinchDist=0;
+const el=renderer.domElement;
+el.addEventListener('pointerdown',e=>{dragging=true;lastX=e.clientX;lastY=e.clientY;el.setPointerCapture(e.pointerId);});
+el.addEventListener('pointermove',e=>{ if(!dragging)return;
+  cam.dTheta-=(e.clientX-lastX)*0.007; cam.dPhi=clamp(cam.dPhi-(e.clientY-lastY)*0.007,0.25,Math.PI-0.25);
+  lastX=e.clientX;lastY=e.clientY;});
+el.addEventListener('pointerup',()=>dragging=false);
+el.addEventListener('wheel',e=>{e.preventDefault();cam.dRadius=clamp(cam.dRadius+e.deltaY*0.01,3,18);},{passive:false});
+el.addEventListener('touchmove',e=>{ if(e.touches.length===2){
+  const dx=e.touches[0].clientX-e.touches[1].clientX, dy=e.touches[0].clientY-e.touches[1].clientY; const d=Math.hypot(dx,dy);
+  if(pinchDist) cam.dRadius=clamp(cam.dRadius+(pinchDist-d)*0.02,3,18); pinchDist=d; e.preventDefault(); }},{passive:false});
+el.addEventListener('touchend',()=>pinchDist=0);
+
+/* click hotspots */
+const ray=new T.Raycaster(), mouse=new T.Vector2(); let downPos=null;
+el.addEventListener('pointerdown',e=>{downPos=[e.clientX,e.clientY];});
+el.addEventListener('pointerup',e=>{
+  if(!downPos||fermentOn) return;
+  if(Math.hypot(e.clientX-downPos[0],e.clientY-downPos[1])>6) return;
+  mouse.x=(e.clientX/innerWidth)*2-1; mouse.y=-(e.clientY/innerHeight)*2+1;
+  ray.setFromCamera(mouse,camera);
+  const hit=ray.intersectObjects(hotspots,false);
+  if(hit.length) selectPart(hit[0].object.userData.id);
+});
+
+/* info card */
+const info=document.getElementById('info');
+function selectPart(id){
+  const p=currentParts.find(x=>x.id===id); if(!p)return;
+  document.getElementById('infoTitle').textContent=p.name;
+  document.getElementById('infoTag').textContent=p.tag;
+  document.getElementById('infoText').textContent=p.text;
+  document.getElementById('infoTerm').innerHTML='📖 <b>Remember</b> — '+p.term;
+  info.classList.add('show');
+  focusOn(p.v.clone(),5.2);
+}
+document.getElementById('infoX').onclick=()=>{info.classList.remove('show'); resetCam();};
+
+/* banner */
+let bannerTimer=null; const bannerEl=document.getElementById('banner');
+function showBanner(txt){ bannerEl.textContent=txt; bannerEl.classList.add('show'); clearTimeout(bannerTimer);
+  bannerTimer=setTimeout(()=>bannerEl.classList.remove('show'),5200); }
+
+/* =========================================================================
+   SIZE COMPARE overlay (log-scaled bars)
+   ========================================================================= */
+const sizeData=[
+  {n:'🧬 Virus', v:0.1,  s:'~0.1 µm'},
+  {n:'🦠 Bacteria', v:2, s:'~1–5 µm'},
+  {n:'🍄 Yeast', v:7,   s:'~5–10 µm'},
+  {n:'🐛 Amoeba', v:150, s:'~100–500 µm'},
+  {n:'🌿 Spirogyra', v:300, s:'visible!'}
+];
+(function buildSizeRows(){
+  const root=document.getElementById('sizeRows'); const maxL=Math.log10(300/0.1);
+  sizeData.forEach(d=>{ const pct=(Math.log10(d.v/0.1)/maxL)*100;
+    const row=document.createElement('div'); row.className='sizerow';
+    row.innerHTML=`<div class="lab"><span>${d.n}</span><span class="val">${d.s}</span></div><div class="bar"><span style="width:${Math.max(6,pct)}%"></span></div>`;
+    root.appendChild(row); });
+})();
+let sizeOn=false;
+document.getElementById('sizeBtn').onclick=(e)=>{ sizeOn=!sizeOn; document.getElementById('sizecard').classList.toggle('show',sizeOn); e.target.classList.toggle('active',sizeOn); };
+
+/* =========================================================================
+   UI CONTROLS
+   ========================================================================= */
+let spinOn=true, labelsOn=true;
+document.querySelectorAll('[data-microbe]').forEach(b=> b.onclick=()=>{ if(!fermentOn) switchTo(b.dataset.microbe); });
+document.getElementById('spinBtn').onclick=(e)=>{ spinOn=!spinOn; e.target.textContent='🔄 Spin: '+(spinOn?'On':'Off'); e.target.classList.toggle('active',spinOn); };
+document.getElementById('lblBtn').onclick=(e)=>{ labelsOn=!labelsOn; e.target.textContent='🏷️ Labels: '+(labelsOn?'On':'Off'); e.target.classList.toggle('active',labelsOn);
+  currentParts.forEach(p=>p.el.classList.toggle('hidden',!labelsOn||fermentOn)); };
+document.getElementById('resetBtn').onclick=()=>{ resetCam(); info.classList.remove('show'); };
+document.getElementById('fermentBtn').onclick=()=> setFerment(!fermentOn);
+const overlay=document.getElementById('overlay');
+document.getElementById('startBtn').onclick=()=>overlay.classList.add('hidden');
+document.getElementById('helpBtn').onclick=()=>overlay.classList.remove('hidden');
+
+/* =========================================================================
+   RENDER LOOP
+   ========================================================================= */
+const clock=new T.Clock();
+function tick(){
+  const dt=Math.min(clock.getDelta(),0.05); const t=clock.elapsedTime;
+  if(current && current.animate){
+    current.animate(t,dt);
+    if(!spinOn) current.group.rotation.y=0.6; // freeze orientation but keep part animations
+  }
+  if(fermentOn) animateFerment(t,dt);
+
+  specimen.scale.lerp(new T.Vector3(specimenTargetScale,specimenTargetScale,specimenTargetScale),1-Math.pow(0.002,dt));
+
+  // pulse hotspots
+  const gpulse=0.5+0.35*Math.sin(performance.now()*0.004);
+  hotspots.forEach(h=>{ h.material.emissiveIntensity=gpulse; h.visible=labelsOn && !fermentOn; });
+
+  // ease camera
+  cam.target.lerp(cam.dTarget,1-Math.pow(0.0025,dt));
+  cam.radius=lerp(cam.radius,cam.dRadius,1-Math.pow(0.0025,dt));
+  cam.theta=lerp(cam.theta,cam.dTheta,1-Math.pow(0.0025,dt));
+  cam.phi=lerp(cam.phi,cam.dPhi,1-Math.pow(0.0025,dt));
+  applyCam();
+
+  // position HTML labels
+  if(!fermentOn) currentParts.forEach(p=>{
+    if(!labelsOn){ p.el.style.display='none'; return; }
+    const wpos=p.v.clone(); specimen.localToWorld(wpos); const v=wpos.project(camera);
+    const behind=v.z>1; p.el.style.display=behind?'none':'block';
+    p.el.style.left=((v.x*0.5+0.5)*innerWidth)+'px'; p.el.style.top=((-v.y*0.5+0.5)*innerHeight)+'px';
+  });
+
+  renderer.render(scene,camera);
+  requestAnimationFrame(tick);
+}
+switchTo('bacteria');
+applyCam(); tick();
+
+addEventListener('resize',()=>{ camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight); });
+</script>
+</body>
+</html>
