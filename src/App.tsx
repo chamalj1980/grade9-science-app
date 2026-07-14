@@ -81,41 +81,43 @@ function App() {
       </a>
 
       <header className="site-header">
-        <div className="brand-mark" aria-hidden="true">
-          G9
-        </div>
-        <div className="brand-copy">
-          <strong>Fun Science Learning</strong>
-          <span>Grade 9 · English medium</span>
-        </div>
+        <div className="site-header-inner">
+          <div className="brand-mark" aria-hidden="true">
+            G9
+          </div>
+          <div className="brand-copy">
+            <strong>Fun Science Learning</strong>
+            <span>Grade 9 · English medium</span>
+          </div>
 
-        <nav className="top-nav" aria-label="Primary navigation">
-          <button
-            type="button"
-            aria-current={screen.name === "home" ? "page" : undefined}
-            onClick={() => setScreen({ name: "home" })}
-          >
-            Home
-          </button>
-          <button
-            type="button"
-            aria-current={
-              screen.name === "modules" || screen.name === "module"
-                ? "page"
-                : undefined
-            }
-            onClick={() => setScreen({ name: "modules" })}
-          >
-            Modules
-          </button>
-          <button
-            type="button"
-            aria-current={screen.name === "progress" ? "page" : undefined}
-            onClick={() => setScreen({ name: "progress" })}
-          >
-            Progress
-          </button>
-        </nav>
+          <nav className="top-nav" aria-label="Primary navigation">
+            <button
+              type="button"
+              aria-current={screen.name === "home" ? "page" : undefined}
+              onClick={() => setScreen({ name: "home" })}
+            >
+              Home
+            </button>
+            <button
+              type="button"
+              aria-current={
+                screen.name === "modules" || screen.name === "module"
+                  ? "page"
+                  : undefined
+              }
+              onClick={() => setScreen({ name: "modules" })}
+            >
+              Modules
+            </button>
+            <button
+              type="button"
+              aria-current={screen.name === "progress" ? "page" : undefined}
+              onClick={() => setScreen({ name: "progress" })}
+            >
+              Progress
+            </button>
+          </nav>
+        </div>
       </header>
 
       <main id="main-content" className="main-content">

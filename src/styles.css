@@ -97,14 +97,21 @@ button:active {
   position: sticky;
   top: 0;
   z-index: 5;
+  border-bottom: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(12px);
+}
+
+/* Header contents share the same centred column as the main content, so the brand
+   and nav line up with the hero and cards below rather than hugging the screen edges. */
+.site-header-inner {
+  width: min(1280px, calc(100% - 2rem));
+  margin: 0 auto;
   display: grid;
   grid-template-columns: auto 1fr auto;
   gap: 1rem;
   align-items: center;
-  padding: 1rem clamp(1rem, 3vw, 2.5rem);
-  border-bottom: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.94);
-  backdrop-filter: blur(12px);
+  padding: 0.85rem 0;
 }
 
 .brand-mark {
@@ -155,9 +162,9 @@ button:active {
 }
 
 .main-content {
-  width: min(1180px, calc(100% - 2rem));
+  width: min(1280px, calc(100% - 2rem));
   margin: 0 auto;
-  padding: 2rem 0 3rem;
+  padding: 1.5rem 0 3rem;
 }
 
 .dashboard-intro,
@@ -2579,9 +2586,9 @@ button:active {
   gap: 1.5rem;
   align-items: center;
   justify-content: space-between;
-  padding: clamp(1.5rem, 4vw, 2.5rem);
+  padding: clamp(1.25rem, 2.5vw, 1.75rem) clamp(1.5rem, 3vw, 2.25rem);
   border: 1px solid var(--line);
-  border-radius: 20px;
+  border-radius: 18px;
   background:
     radial-gradient(120% 130% at 0% 0%, var(--planet-soft), transparent 55%),
     radial-gradient(120% 130% at 100% 10%, var(--life-soft), transparent 52%),
@@ -2594,9 +2601,9 @@ button:active {
 }
 
 .disco-hero-copy h1 {
-  margin: 0.35rem 0 0.5rem;
-  font-size: clamp(2rem, 5vw, 3.4rem);
-  line-height: 1.03;
+  margin: 0.25rem 0 0.45rem;
+  font-size: clamp(1.85rem, 4vw, 2.8rem);
+  line-height: 1.04;
 }
 
 .disco-pop {
@@ -2733,7 +2740,7 @@ button:active {
 /* ---- deck of chapter cards ---- */
 .disco-deck {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(228px, 1fr));
   gap: 1.1rem;
 }
 
