@@ -85,8 +85,8 @@ function App() {
           G9
         </div>
         <div className="brand-copy">
-          <strong>Grade 9 Science</strong>
-          <span>English-medium learning app</span>
+          <strong>Fun Science Learning</strong>
+          <span>Grade 9 · English medium</span>
         </div>
 
         <nav className="top-nav" aria-label="Primary navigation">

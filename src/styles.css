@@ -20,6 +20,16 @@
   --green-deep: #166534;
   --focus: #f5b700;
   --shadow: 0 16px 40px rgba(23, 32, 27, 0.1);
+
+  /* Subject areas used by the home page (Discovery Deck) */
+  --life: #16a34a;
+  --life-soft: #e7f7ec;
+  --matter: #ea580c;
+  --matter-soft: #fdece2;
+  --energy: #6366f1;
+  --energy-soft: #ecedfc;
+  --planet: #0891b2;
+  --planet-soft: #e2f4f8;
 }
 
 * {
@@ -2550,5 +2560,363 @@ button:active {
 @media (max-width: 720px) {
   .sim-frame iframe {
     height: 70vh;
+  }
+}
+
+/* =====================================================================
+   Home page — Discovery Deck
+   ===================================================================== */
+.discovery {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.disco-hero {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: clamp(1.5rem, 4vw, 2.5rem);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background:
+    radial-gradient(120% 130% at 0% 0%, var(--planet-soft), transparent 55%),
+    radial-gradient(120% 130% at 100% 10%, var(--life-soft), transparent 52%),
+    var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.disco-hero-copy {
+  max-width: 60ch;
+}
+
+.disco-hero-copy h1 {
+  margin: 0.35rem 0 0.5rem;
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  line-height: 1.03;
+}
+
+.disco-pop {
+  color: var(--teal-deep);
+}
+
+.disco-hero-copy p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.disco-ring-button {
+  display: grid;
+  justify-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 16px;
+  background: transparent;
+}
+
+.disco-ring-button:hover {
+  background: var(--surface-strong);
+}
+
+.disco-ring {
+  width: 96px;
+  height: 96px;
+}
+
+.disco-ring-bg {
+  fill: none;
+  stroke: #e4ece8;
+  stroke-width: 7;
+}
+
+.disco-ring-fg {
+  fill: none;
+  stroke: var(--teal);
+  stroke-width: 7;
+  stroke-linecap: round;
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+  transition: stroke-dashoffset 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.disco-ring text {
+  font-size: 15px;
+  font-weight: 800;
+  fill: var(--ink);
+}
+
+.disco-ring-caption {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+/* ---- controls ---- */
+.disco-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.disco-search {
+  flex: 1;
+  min-width: 220px;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--muted);
+  box-shadow: var(--shadow);
+}
+
+.disco-search:focus-within {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.disco-search input {
+  width: 100%;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  outline: none;
+}
+
+.disco-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.disco-chip {
+  min-height: auto;
+  padding: 0.55rem 0.9rem;
+  border: 1.5px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--muted);
+  font-weight: 700;
+  font-size: 0.85rem;
+  transition: 0.15s;
+}
+
+.disco-chip[aria-pressed="true"] {
+  color: #ffffff;
+  border-color: transparent;
+}
+
+.disco-chip.all[aria-pressed="true"] {
+  background: var(--teal-deep);
+}
+.disco-chip.life[aria-pressed="true"] {
+  background: var(--life);
+}
+.disco-chip.matter[aria-pressed="true"] {
+  background: var(--matter);
+}
+.disco-chip.energy[aria-pressed="true"] {
+  background: var(--energy);
+}
+.disco-chip.planet[aria-pressed="true"] {
+  background: var(--planet);
+}
+
+/* ---- deck of chapter cards ---- */
+.disco-deck {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1.1rem;
+}
+
+.dcard {
+  --accent: var(--teal);
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+  text-align: left;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  transition: transform 0.16s ease, box-shadow 0.16s ease;
+}
+
+.dcard.life {
+  --accent: var(--life);
+  --accent-soft: var(--life-soft);
+}
+.dcard.matter {
+  --accent: var(--matter);
+  --accent-soft: var(--matter-soft);
+}
+.dcard.energy {
+  --accent: var(--energy);
+  --accent-soft: var(--energy-soft);
+}
+.dcard.planet {
+  --accent: var(--planet);
+  --accent-soft: var(--planet-soft);
+}
+
+button.dcard {
+  cursor: pointer;
+}
+
+button.dcard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 22px 50px rgba(23, 32, 27, 0.16);
+}
+
+.dcard.is-soon {
+  opacity: 0.72;
+}
+
+.dcard-art {
+  position: relative;
+  display: grid;
+  place-items: center;
+  height: 118px;
+  border-bottom: 1px solid var(--line);
+  background: var(--accent-soft, var(--surface-strong));
+}
+
+.dcard-art .module-illustration {
+  max-width: 150px;
+  max-height: 96px;
+}
+
+.dcard-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: grid;
+  place-items: center;
+  min-width: 26px;
+  height: 26px;
+  padding: 0 7px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #ffffff;
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.dcard-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex: 1;
+  padding: 0.9rem 1rem 1rem;
+}
+
+.dcard-num {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.dcard-body h2 {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.25;
+}
+
+.dcard-blurb {
+  margin: 0;
+  flex: 1;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.dcard-progress {
+  height: 7px;
+  margin-top: 0.35rem;
+  border-radius: 999px;
+  background: #e6efe9;
+  overflow: hidden;
+}
+
+.dcard-progress span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--accent);
+}
+
+.dcard-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin-top: 0.5rem;
+}
+
+.subj-tag {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.dcard .pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.dcard .pill.play {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.dcard .pill.done {
+  background: var(--teal-deep);
+  color: #ffffff;
+}
+
+.dcard .pill.soon {
+  background: var(--surface-strong);
+  color: var(--muted);
+  border: 1px solid var(--line);
+}
+
+.disco-empty {
+  padding: 2.5rem;
+  text-align: center;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+@media (max-width: 720px) {
+  .disco-hero {
+    justify-content: flex-start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .disco-ring-fg,
+  button.dcard {
+    transition: none;
   }
 }
