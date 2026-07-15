@@ -4,6 +4,7 @@ import { ModuleNav } from "./components/ModuleNav";
 import { ModulesOverview } from "./components/ModulesOverview";
 import { ProgressIndicator } from "./components/ProgressIndicator";
 import { ProgressSummary } from "./components/ProgressSummary";
+import { QuizArena } from "./components/QuizArena";
 import { renderSection } from "./courses/registry";
 import { modules } from "./data/modules";
 import type { SectionId } from "./types";
@@ -19,6 +20,7 @@ import {
 type Screen =
   | { name: "home" }
   | { name: "modules" }
+  | { name: "quiz" }
   | { name: "progress" }
   | { name: "module"; moduleId: string; sectionId: SectionId };
 
@@ -111,6 +113,13 @@ function App() {
             </button>
             <button
               type="button"
+              aria-current={screen.name === "quiz" ? "page" : undefined}
+              onClick={() => setScreen({ name: "quiz" })}
+            >
+              Quiz
+            </button>
+            <button
+              type="button"
               aria-current={screen.name === "progress" ? "page" : undefined}
               onClick={() => setScreen({ name: "progress" })}
             >
@@ -137,6 +146,8 @@ function App() {
             onSelectSection={selectSection}
           />
         )}
+
+        {screen.name === "quiz" && <QuizArena modules={modules} />}
 
         {screen.name === "progress" && (
           <ProgressSummary
