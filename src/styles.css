@@ -3103,68 +3103,136 @@ button.dcard:hover {
   color: var(--accent);
 }
 
-.qa-runner {
+/* ---- running quiz: game-HUD layout ---- */
+.qa-stage {
   --accent: var(--teal);
-  max-width: 640px;
+  display: grid;
+  align-items: center;
+  min-height: calc(100vh - 200px);
+}
+
+.qa-board {
+  width: 100%;
+  max-width: 1000px;
   margin: 0 auto;
-  padding: 1.1rem 1.2rem 1.3rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 780px) {
+  .qa-board {
+    grid-template-columns: 280px 1fr;
+    gap: 1.25rem;
+    align-items: stretch;
+  }
+}
+
+.qa-side {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  padding: 1.1rem;
   border: 1px solid var(--line);
+  border-top: 5px solid var(--accent);
   border-radius: 18px;
   background: var(--surface);
   box-shadow: var(--shadow);
 }
 
-.qa-run-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  margin-bottom: 0.75rem;
-}
-
 .qa-quit {
   min-height: auto;
-  padding: 0.4rem 0.7rem;
+  align-self: flex-start;
+  padding: 0.4rem 0.75rem;
   background: #eef4f1;
   color: var(--muted);
   font-weight: 700;
   font-size: 0.85rem;
 }
 
-.qa-run-title {
-  flex: 1;
-  text-align: center;
-  font-weight: 800;
-  font-size: 0.95rem;
+.qa-side-head {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
 }
 
-.qa-run-score {
+.qa-side-art {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  flex: none;
+  border-radius: 12px;
+  background: var(--surface-2, #f5faf8);
+  overflow: hidden;
+}
+
+.qa-side-art .module-illustration {
+  max-width: 44px;
+  max-height: 38px;
+}
+
+.qa-side-mode {
+  margin: 0;
+  font-size: 0.72rem;
   font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.qa-side-head h3 {
+  margin: 0.1rem 0 0;
+  font-size: 1rem;
+  line-height: 1.2;
+}
+
+.qa-scorebox {
+  display: grid;
+  gap: 0.1rem;
+  padding: 0.7rem 0.9rem;
+  border-radius: 14px;
+  background: var(--surface-2, #f5faf8);
+}
+
+.qa-scorenum {
+  font-size: 2.2rem;
+  font-weight: 800;
+  line-height: 1;
   color: var(--accent);
   font-variant-numeric: tabular-nums;
 }
 
-.qa-timer,
-.qa-progress {
-  margin-bottom: 0.6rem;
+.qa-scorelabel {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
 }
 
-.qa-timer {
+.qa-side-track {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.qa-side-trackhead {
   display: flex;
-  align-items: center;
-  gap: 0.6rem;
+  align-items: baseline;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .qa-timer-bar,
 .qa-progress {
-  height: 9px;
+  height: 10px;
   border-radius: 999px;
   background: #e6efe9;
   overflow: hidden;
-}
-
-.qa-timer-bar {
-  flex: 1;
 }
 
 .qa-timer-bar span {
@@ -3186,43 +3254,55 @@ button.dcard:hover {
 .qa-timer-num {
   font-weight: 800;
   font-variant-numeric: tabular-nums;
-  color: var(--muted);
-  font-size: 0.9rem;
-}
-
-.qa-metary {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  margin-bottom: 0.6rem;
+  color: var(--ink);
 }
 
 .qa-count {
-  font-size: 0.8rem;
-  font-weight: 700;
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 600;
   color: var(--muted);
 }
 
-.qa-streak {
-  font-size: 0.8rem;
-  font-weight: 800;
-  color: var(--gold, #f59e0b);
+.qa-side-streak {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--muted);
+  padding: 0.55rem 0.75rem;
+  border-radius: 12px;
+  background: var(--surface-2, #f5faf8);
+  transition: 0.2s;
+}
+
+.qa-side-streak[data-on="true"] {
+  color: #fff;
+  background: var(--gold, #f59e0b);
+}
+
+/* question panel */
+.qa-play {
+  display: flex;
+  flex-direction: column;
+  padding: clamp(1.1rem, 2.5vw, 1.75rem);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
 }
 
 .qa-question {
-  margin: 0.4rem 0 1rem;
-  font-size: 1.2rem;
+  margin: 0 0 1.1rem;
+  font-size: clamp(1.25rem, 2vw, 1.55rem);
   font-weight: 800;
-  line-height: 1.35;
+  line-height: 1.32;
 }
 
 .qa-options {
   display: grid;
-  gap: 0.6rem;
+  gap: 0.75rem;
 }
 
-@media (min-width: 520px) {
+@media (min-width: 560px) {
   .qa-options {
     grid-template-columns: 1fr 1fr;
   }
@@ -3231,20 +3311,22 @@ button.dcard:hover {
 .qa-opt {
   display: flex;
   align-items: center;
-  gap: 0.7rem;
-  padding: 0.85rem 0.9rem;
+  gap: 0.8rem;
+  min-height: 66px;
+  padding: 0.9rem 1rem;
   border: 2px solid var(--line);
-  border-radius: 13px;
+  border-radius: 14px;
   background: var(--surface);
   color: var(--ink);
   font-weight: 600;
+  font-size: 1rem;
   text-align: left;
   transition: 0.14s;
 }
 
 .qa-opt:hover:not(:disabled) {
   border-color: var(--accent);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
 }
 
 .qa-opt:disabled {
@@ -3254,14 +3336,14 @@ button.dcard:hover {
 .qa-key {
   display: grid;
   place-items: center;
-  width: 26px;
-  height: 26px;
+  width: 30px;
+  height: 30px;
   flex: none;
-  border-radius: 8px;
+  border-radius: 9px;
   border: 1px solid var(--line);
   background: #f5faf8;
   font-weight: 800;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
 }
 
 .qa-opt.correct {
@@ -3287,12 +3369,12 @@ button.dcard:hover {
 }
 
 .qa-feedback {
-  margin-top: 0.9rem;
-  padding: 0.8rem 0.95rem;
+  margin-top: 1rem;
+  padding: 0.85rem 1rem;
   border: 1px solid var(--line);
   border-radius: 12px;
   background: #f5faf8;
-  font-size: 0.9rem;
+  font-size: 0.92rem;
   line-height: 1.5;
 }
 
@@ -3307,14 +3389,14 @@ button.dcard:hover {
 .qa-run-foot {
   display: flex;
   justify-content: flex-end;
-  margin-top: 0.9rem;
+  margin-top: 1rem;
 }
 
 .qa-next {
   background: var(--accent);
   color: #fff;
   font-weight: 800;
-  padding: 0.75rem 1.3rem;
+  padding: 0.8rem 1.4rem;
   border-radius: 12px;
 }
 
@@ -3322,6 +3404,7 @@ button.dcard:hover {
   --accent: var(--teal);
   display: grid;
   place-items: center;
+  min-height: calc(100vh - 200px);
   padding: 1rem 0;
 }
 

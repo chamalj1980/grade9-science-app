@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import type { QuizQuestion } from "../data/quizQuestions";
+import type { ChapterArtId } from "../data/curriculum";
 import {
   computePoints,
   shuffle,
   TIME_ATTACK_SECONDS,
   type QuizMode
 } from "../utils/quiz";
+import { ChapterArt } from "./ChapterArt";
 
 export interface QuizRunResult {
   score: number;
@@ -17,6 +19,7 @@ interface QuizRunnerProps {
   questions: QuizQuestion[]; // already shuffled by the caller
   mode: QuizMode;
   moduleTitle: string;
+  art: ChapterArtId; // chapter illustration for the scoreboard
   accent: string; // CSS colour for this chapter's subject
   onComplete: (result: QuizRunResult) => void;
   onQuit: () => void;
@@ -28,6 +31,7 @@ export function QuizRunner({
   questions,
   mode,
   moduleTitle,
+  art,
   accent,
   onComplete,
   onQuit
@@ -133,90 +137,120 @@ export function QuizRunner({
     }
   }
 
-  const progressLabel = isTimeAttack
-    ? `${answeredCountRef.current} answered`
-    : `Question ${index + 1} of ${deck.length}`;
   const timePct = Math.max(0, (secondsLeft / TIME_ATTACK_SECONDS) * 100);
 
   return (
-    <div className="qa-runner" style={{ ["--accent" as string]: accent }}>
-      <div className="qa-run-top">
-        <button type="button" className="qa-quit" onClick={onQuit}>
-          ← Quit
-        </button>
-        <span className="qa-run-title">{moduleTitle}</span>
-        <span className="qa-run-score" aria-live="polite">
-          {score} pts
-        </span>
-      </div>
-
-      {isTimeAttack ? (
-        <div className="qa-timer" aria-label={`${secondsLeft} seconds left`}>
-          <div className="qa-timer-bar">
-            <span style={{ width: `${timePct}%` }} />
-          </div>
-          <span className="qa-timer-num">{secondsLeft}s</span>
-        </div>
-      ) : (
-        <div className="qa-progress" aria-hidden="true">
-          <span style={{ width: `${((index + 1) / deck.length) * 100}%` }} />
-        </div>
-      )}
-
-      <div className="qa-metary">
-        <span className="qa-count">{progressLabel}</span>
-        {streak >= 2 && <span className="qa-streak">🔥 Streak {streak}</span>}
-      </div>
-
-      <p className="qa-question">{question.prompt}</p>
-
-      <div className="qa-options">
-        {question.options.map((option, optionIndex) => {
-          const isAnswer = optionIndex === question.answer;
-          const isChosen = optionIndex === selected;
-          let cls = "qa-opt";
-          if (answered) {
-            if (isAnswer) {
-              cls += " correct";
-            } else if (isChosen) {
-              cls += " wrong";
-            }
-          }
-          return (
-            <button
-              key={option}
-              type="button"
-              className={cls}
-              disabled={answered}
-              onClick={() => choose(optionIndex)}
-            >
-              <span className="qa-key">{OPTION_KEYS[optionIndex]}</span>
-              <span>{option}</span>
-            </button>
-          );
-        })}
-      </div>
-
-      {answered && (
-        <div
-          className={`qa-feedback ${selected === question.answer ? "ok" : "no"}`}
-          role="status"
-          aria-live="polite"
-        >
-          <strong>
-            {selected === question.answer ? "✅ Correct!" : "❌ Not quite."}
-          </strong>{" "}
-          {question.explanation}
-        </div>
-      )}
-
-      {answered && !isTimeAttack && (
-        <div className="qa-run-foot">
-          <button type="button" className="qa-next" onClick={advance}>
-            {index + 1 >= deck.length ? "See results →" : "Next question →"}
+    <div className="qa-stage" style={{ ["--accent" as string]: accent }}>
+      <div className="qa-board">
+        {/* Scoreboard rail */}
+        <aside className="qa-side">
+          <button type="button" className="qa-quit" onClick={onQuit}>
+            ← Quit
           </button>
-        </div>
-      )}
+
+          <div className="qa-side-head">
+            <span className="qa-side-art">
+              <ChapterArt art={art} />
+            </span>
+            <div>
+              <p className="qa-side-mode">
+                {isTimeAttack ? "⏱️ Time Attack" : "🎯 Module Quiz"}
+              </p>
+              <h3>{moduleTitle}</h3>
+            </div>
+          </div>
+
+          <div className="qa-scorebox">
+            <span className="qa-scorenum" aria-live="polite">
+              {score}
+            </span>
+            <span className="qa-scorelabel">points</span>
+          </div>
+
+          {isTimeAttack ? (
+            <div className="qa-side-track" aria-label={`${secondsLeft} seconds left`}>
+              <div className="qa-side-trackhead">
+                <span>Time left</span>
+                <span className="qa-timer-num">{secondsLeft}s</span>
+              </div>
+              <div className="qa-timer-bar">
+                <span style={{ width: `${timePct}%` }} />
+              </div>
+              <p className="qa-count">{answeredCountRef.current} answered</p>
+            </div>
+          ) : (
+            <div className="qa-side-track">
+              <div className="qa-side-trackhead">
+                <span>Progress</span>
+                <span className="qa-timer-num">
+                  {index + 1}/{deck.length}
+                </span>
+              </div>
+              <div className="qa-progress" aria-hidden="true">
+                <span style={{ width: `${((index + 1) / deck.length) * 100}%` }} />
+              </div>
+              <p className="qa-count">Question {index + 1} of {deck.length}</p>
+            </div>
+          )}
+
+          <div className="qa-side-streak" data-on={streak >= 2}>
+            🔥 Streak <strong>{streak}</strong>
+          </div>
+        </aside>
+
+        {/* Question panel */}
+        <main className="qa-play">
+          <p className="qa-question">{question.prompt}</p>
+
+          <div className="qa-options">
+            {question.options.map((option, optionIndex) => {
+              const isAnswer = optionIndex === question.answer;
+              const isChosen = optionIndex === selected;
+              let cls = "qa-opt";
+              if (answered) {
+                if (isAnswer) {
+                  cls += " correct";
+                } else if (isChosen) {
+                  cls += " wrong";
+                }
+              }
+              return (
+                <button
+                  key={option}
+                  type="button"
+                  className={cls}
+                  disabled={answered}
+                  onClick={() => choose(optionIndex)}
+                >
+                  <span className="qa-key">{OPTION_KEYS[optionIndex]}</span>
+                  <span>{option}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          {answered && (
+            <div
+              className={`qa-feedback ${selected === question.answer ? "ok" : "no"}`}
+              role="status"
+              aria-live="polite"
+            >
+              <strong>
+                {selected === question.answer ? "✅ Correct!" : "❌ Not quite."}
+              </strong>{" "}
+              {question.explanation}
+            </div>
+          )}
+
+          {answered && !isTimeAttack && (
+            <div className="qa-run-foot">
+              <button type="button" className="qa-next" onClick={advance}>
+                {index + 1 >= deck.length ? "See results →" : "Next question →"}
+              </button>
+            </div>
+          )}
+        </main>
+      </div>
     </div>
   );
 }

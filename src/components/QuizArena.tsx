@@ -99,6 +99,7 @@ export function QuizArena({ modules }: QuizArenaProps) {
         questions={deck}
         mode={mode}
         moduleTitle={activeModule.title}
+        art={activeChapter.art}
         accent={accentFor(activeChapter.subject)}
         onComplete={handleComplete}
         onQuit={() => setView("menu")}
