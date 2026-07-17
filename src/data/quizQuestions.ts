@@ -17,6 +17,109 @@ export interface QuizQuestion {
 
 export const quizQuestions: QuizQuestion[] = [
   // ------------------------------------------------------------------
+  // Nature and Properties of Matter (chapter 3)
+  // ------------------------------------------------------------------
+  {
+    id: "ma-1",
+    moduleId: "matter-properties",
+    prompt: "The number of protons in the nucleus of an atom is called its…",
+    options: ["Mass number", "Atomic number", "Neutron number", "Molecule number"],
+    answer: 1,
+    explanation:
+      "The atomic number (Z) is the number of protons, and it is unique to each element.",
+    difficulty: "easy"
+  },
+  {
+    id: "ma-2",
+    moduleId: "matter-properties",
+    prompt: "The mass number of an atom is the sum of its…",
+    options: [
+      "Protons and electrons",
+      "Neutrons and electrons",
+      "Protons and neutrons",
+      "Protons, neutrons and electrons"
+    ],
+    answer: 2,
+    explanation: "Mass number (A) = protons + neutrons, the particles in the nucleus.",
+    difficulty: "easy"
+  },
+  {
+    id: "ma-3",
+    moduleId: "matter-properties",
+    prompt: "The numbers of protons, neutrons and electrons in a ³⁵₁₇Cl atom are…",
+    options: ["17, 18, 18", "17, 18, 17", "17, 17, 18", "17, 17, 17"],
+    answer: 1,
+    explanation:
+      "Z = 17 protons. Neutrons = 35 − 17 = 18. A neutral atom has electrons = protons = 17.",
+    difficulty: "hard"
+  },
+  {
+    id: "ma-4",
+    moduleId: "matter-properties",
+    prompt: "Which of these is a pure substance?",
+    options: ["Air", "Salt solution", "Vinegar", "Copper sulphate"],
+    answer: 3,
+    explanation:
+      "Copper sulphate is a compound — a pure substance. The others are mixtures.",
+    difficulty: "medium"
+  },
+  {
+    id: "ma-5",
+    moduleId: "matter-properties",
+    prompt: "The symbol Na for sodium comes from its Latin name…",
+    options: ["Natrium", "Nautium", "Sodius", "Natron"],
+    answer: 0,
+    explanation:
+      "Some symbols come from Latin names: Na (Natrium), Cu (Cuprum), Fe (Ferrum), Au (Aurum).",
+    difficulty: "medium"
+  },
+  {
+    id: "ma-6",
+    moduleId: "matter-properties",
+    prompt: "A molecule of oxygen, O₂, is described as…",
+    options: [
+      "Hetero-atomic, because it has two atoms",
+      "Homo-atomic, because both atoms are the same",
+      "A compound, because it is a molecule",
+      "A mixture of two oxygen atoms"
+    ],
+    answer: 1,
+    explanation:
+      "Both atoms are oxygen, so O₂ is homo-atomic — it is still the element oxygen, not a compound.",
+    difficulty: "medium"
+  },
+  {
+    id: "ma-7",
+    moduleId: "matter-properties",
+    prompt: "Which statement about an atom is FALSE?",
+    options: [
+      "Atoms are the building units of matter.",
+      "A large portion of an atom is empty space.",
+      "There is a positively charged nucleus at its centre.",
+      "An atom cannot be divided any further."
+    ],
+    answer: 3,
+    explanation:
+      "Atoms ARE divisible — they are made of protons, neutrons and electrons. Dalton's original idea was later corrected.",
+    difficulty: "medium"
+  },
+  {
+    id: "ma-8",
+    moduleId: "matter-properties",
+    prompt: "Muddy water is a heterogeneous mixture because…",
+    options: [
+      "It can be separated chemically",
+      "Its composition is not uniform throughout",
+      "It contains only one constituent",
+      "It is a pure substance"
+    ],
+    answer: 1,
+    explanation:
+      "In a heterogeneous mixture the colour and composition change from place to place — unlike a salt solution.",
+    difficulty: "easy"
+  },
+
+  // ------------------------------------------------------------------
   // Pressure Exerted by Solids (chapter 5)
   // ------------------------------------------------------------------
   {

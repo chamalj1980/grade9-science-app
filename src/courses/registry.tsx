@@ -12,6 +12,9 @@ import { EyeSimulation } from "./sensory-system/EyeSimulation";
 import { LabelTheSenses } from "./sensory-system/LabelTheSenses";
 import { SenseClinic } from "./sensory-system/SenseClinic";
 import { SensoryLesson } from "./sensory-system/SensoryLesson";
+import { BuildTheAtom } from "./matter/BuildTheAtom";
+import { MatterLesson } from "./matter/MatterLesson";
+import { MatterSortAndQuiz } from "./matter/MatterSortAndQuiz";
 import { MicrobeLesson } from "./micro-organisms/MicrobeLesson";
 import { MicrobeSimulation } from "./micro-organisms/MicrobeSimulation";
 import { MicrobeMatch } from "./micro-organisms/MicrobeMatch";
@@ -41,6 +44,18 @@ export function renderSection(
           onProgress={progressProps.onProgress}
         />
       );
+    }
+  }
+
+  if (module.id === "matter-properties") {
+    if (section.id === "lesson") {
+      return <MatterLesson onProgress={progressProps.onProgress} />;
+    }
+    if (section.id === "exercise-1") {
+      return <BuildTheAtom onProgress={progressProps.onProgress} />;
+    }
+    if (section.id === "exercise-2") {
+      return <MatterSortAndQuiz onProgress={progressProps.onProgress} />;
     }
   }
 

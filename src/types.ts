@@ -27,7 +27,12 @@ export interface LearningSection {
 }
 
 // Visual theme for a module. Drives accent colours in hero, recap, and cards.
-export type Theme = "pressure" | "circulatory" | "sensory-system" | "microbes";
+export type Theme =
+  | "pressure"
+  | "circulatory"
+  | "sensory-system"
+  | "microbes"
+  | "matter";
 
 export interface LearningModule {
   id: string;

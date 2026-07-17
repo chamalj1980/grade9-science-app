@@ -4208,3 +4208,717 @@ button.dcard:hover {
     flex-direction: column-reverse;
   }
 }
+
+/* =====================================================================
+   Chapter 3 — Nature and Properties of Matter
+   ===================================================================== */
+.lesson-hero.matter,
+.recap-card.matter {
+  border-color: #f6c99a;
+  background: linear-gradient(140deg, #fff4ea, #ffffff);
+}
+
+.lesson-hero.matter .eyebrow,
+.recap-card.matter .eyebrow {
+  color: var(--matter, #ea580c);
+}
+
+/* module card illustration */
+.svg-atom-orbits {
+  fill: none;
+  stroke: #6366f1;
+  stroke-width: 3;
+  opacity: 0.75;
+}
+
+.svg-atom-proton {
+  fill: #ea580c;
+}
+
+.svg-atom-neutron {
+  fill: #94a3b8;
+}
+
+.svg-atom-electron {
+  fill: #4338ca;
+}
+
+/* animated hero orbits */
+.matter-hero {
+  position: relative;
+  overflow: hidden;
+}
+
+.matter-orbits {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.matter-hero > :not(.matter-orbits) {
+  position: relative;
+  z-index: 1;
+}
+
+.matter-orbits .mo {
+  position: absolute;
+  top: 50%;
+  right: 8%;
+  width: 190px;
+  height: 76px;
+  margin-top: -38px;
+  border: 2px solid var(--matter, #ea580c);
+  border-radius: 50%;
+  opacity: 0.16;
+  animation: mo-spin 14s linear infinite;
+}
+
+.matter-orbits .mo2 {
+  animation-duration: 20s;
+  animation-direction: reverse;
+}
+
+.matter-orbits .mo3 {
+  animation-duration: 26s;
+}
+
+@keyframes mo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.matter-reveal {
+  animation: matter-rise 0.3s ease both;
+}
+
+@keyframes matter-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---- classification tree ---- */
+.matter-tree {
+  display: grid;
+  gap: 0.55rem;
+  justify-items: center;
+  padding: 1rem 0.5rem;
+  margin: 1rem 0;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fffaf5;
+}
+
+.mt-branch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  justify-content: center;
+  position: relative;
+  padding-top: 0.85rem;
+}
+
+.mt-branch::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 2px;
+  height: 0.85rem;
+  background: var(--line);
+}
+
+.mt-node {
+  padding: 0.55rem 0.9rem;
+  border: 2px solid var(--line);
+  border-radius: 999px;
+  background: #ffffff;
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: var(--ink);
+  transition: 0.15s;
+}
+
+.mt-node.is-root {
+  border-color: var(--matter, #ea580c);
+  background: var(--matter, #ea580c);
+  color: #ffffff;
+  font-size: 1rem;
+  cursor: default;
+}
+
+button.mt-node:hover {
+  border-color: var(--matter, #ea580c);
+  transform: translateY(-1px);
+}
+
+.mt-node.is-active {
+  border-color: var(--matter, #ea580c);
+  background: #fdece2;
+  color: #9a3412;
+}
+
+.mt-node.is-leaf {
+  font-size: 0.82rem;
+  padding: 0.45rem 0.75rem;
+}
+
+.mt-leaves {
+  max-width: 640px;
+}
+
+/* ---- symbol explorer ---- */
+.symbol-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 0.65rem;
+  margin-top: 0.85rem;
+}
+
+.symbol-tile {
+  display: grid;
+  gap: 0.1rem;
+  justify-items: center;
+  padding: 0.7rem 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #ffffff;
+  text-align: center;
+}
+
+.st-symbol {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--matter, #ea580c);
+  line-height: 1;
+}
+
+.st-name {
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.st-latin {
+  font-size: 0.72rem;
+  color: var(--muted);
+  font-style: italic;
+}
+
+/* ---- particle stats ---- */
+.particle-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  margin: 0.6rem 0;
+}
+
+.particle-stats div {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.6rem 0.4rem;
+  border-radius: 10px;
+  background: #fff4ea;
+  text-align: center;
+}
+
+.particle-stats strong {
+  font-size: 0.95rem;
+}
+
+.particle-stats span {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+/* ---- atom figure + lab ---- */
+.atom-figure {
+  width: 100%;
+  max-width: 300px;
+  justify-self: center;
+}
+
+.atom-shell {
+  fill: none;
+  stroke: #c7d2fe;
+  stroke-width: 1.5;
+  stroke-dasharray: 3 4;
+}
+
+.atom-orbit {
+  transform-origin: 110px 110px;
+  animation: mo-spin 12s linear infinite;
+}
+
+.atom-electron {
+  fill: #4338ca;
+}
+
+.atom-proton {
+  fill: #ea580c;
+}
+
+.atom-neutron {
+  fill: #94a3b8;
+}
+
+.atom-empty {
+  fill: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.atom-lab {
+  display: grid;
+  gap: 1.25rem;
+  align-items: center;
+  margin-top: 0.75rem;
+}
+
+@media (min-width: 760px) {
+  .atom-lab {
+    grid-template-columns: minmax(220px, 300px) 1fr;
+  }
+}
+
+.atom-controls {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.atom-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.ar-label {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.ar-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex: none;
+}
+
+.atom-row.p .ar-dot {
+  background: #ea580c;
+}
+
+.atom-row.n .ar-dot {
+  background: #94a3b8;
+}
+
+.atom-row.e .ar-dot {
+  background: #4338ca;
+}
+
+.ar-buttons {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.ar-buttons button {
+  min-height: auto;
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: #fff4ea;
+  color: #9a3412;
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+
+.ar-buttons button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.ar-value {
+  min-width: 2ch;
+  text-align: center;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.atom-readout {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0.8rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fffaf5;
+}
+
+@media (min-width: 520px) {
+  .atom-readout {
+    grid-template-columns: auto 1fr;
+    align-items: center;
+  }
+}
+
+/* ²³₁₁Na style notation */
+.atom-notation {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto auto;
+  align-items: center;
+  gap: 0 0.2rem;
+  padding: 0.3rem 0.5rem;
+}
+
+.an-mass,
+.an-z {
+  grid-column: 1;
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.an-mass {
+  color: #9a3412;
+}
+
+.an-z {
+  color: #4338ca;
+}
+
+.an-symbol {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  font-size: 2.4rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.atom-facts p {
+  margin: 0.15rem 0;
+  font-size: 0.88rem;
+}
+
+.atom-ok {
+  color: var(--green-deep);
+  font-weight: 700;
+}
+
+.atom-warn {
+  color: #b45309;
+  font-weight: 700;
+}
+
+/* ---- molecules ---- */
+.mol-tag {
+  display: inline-block;
+  margin-left: 0.4rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.66rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  vertical-align: middle;
+}
+
+.mol-tag.homo {
+  background: var(--life-soft);
+  color: var(--life);
+}
+
+.mol-tag.hetero {
+  background: var(--energy-soft);
+  color: var(--energy);
+}
+
+.mol-atoms {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.6rem 0;
+}
+
+.mol-atom {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  font-weight: 800;
+  color: #ffffff;
+  background: #64748b;
+  animation: matter-rise 0.3s ease both;
+}
+
+.mol-atom.a-O {
+  background: #dc2626;
+}
+.mol-atom.a-H {
+  background: #38bdf8;
+  color: #0c4a6e;
+}
+.mol-atom.a-C {
+  background: #334155;
+}
+.mol-atom.a-N {
+  background: #4338ca;
+}
+.mol-atom.a-Cl {
+  background: #16a34a;
+}
+
+.family-note {
+  margin-top: 1rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--matter, #ea580c);
+  border-radius: 12px;
+  background: #fffaf5;
+}
+
+.family-note h4 {
+  margin: 0 0 0.5rem;
+}
+
+.family-row {
+  display: grid;
+  gap: 0.3rem;
+  margin-bottom: 0.75rem;
+}
+
+.family-label {
+  font-weight: 800;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--matter, #ea580c);
+}
+
+.family-row ul {
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+
+/* ---- mixtures ---- */
+.mix-columns {
+  display: grid;
+  gap: 0.85rem;
+  margin: 0.85rem 0;
+}
+
+@media (min-width: 720px) {
+  .mix-columns {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.mix-col {
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+
+.mix-col.uniform {
+  background: #eef6ff;
+  border-color: #bfdbfe;
+}
+
+.mix-col.varied {
+  background: #fff4ea;
+  border-color: #f6c99a;
+}
+
+.mix-col h4 {
+  margin: 0 0 0.5rem;
+  font-size: 0.95rem;
+}
+
+.mix-col ul {
+  display: grid;
+  gap: 0.5rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.mix-col li {
+  display: grid;
+  gap: 0.1rem;
+}
+
+.mix-col li span {
+  font-size: 0.82rem;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.sep-title {
+  margin: 1rem 0 0.5rem;
+}
+
+.sep-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 0.6rem;
+}
+
+.sep-card {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.sep-emoji {
+  font-size: 1.3rem;
+}
+
+.sep-card strong {
+  font-size: 0.88rem;
+}
+
+.sep-card span:last-child {
+  font-size: 0.76rem;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+/* ---- Exercise 1: build the atom ---- */
+.build-target {
+  display: grid;
+  justify-items: center;
+  gap: 0.15rem;
+  padding: 0.9rem;
+  margin: 0.75rem 0;
+  border: 2px dashed var(--matter, #ea580c);
+  border-radius: 14px;
+  background: #fff4ea;
+  text-align: center;
+}
+
+.bt-label {
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.bt-symbol {
+  font-size: 2.6rem;
+  font-weight: 800;
+  line-height: 1;
+  color: #9a3412;
+}
+
+.bt-name {
+  font-weight: 800;
+}
+
+.bt-brief {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.build-readout {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+
+.build-readout div {
+  display: grid;
+  gap: 0.1rem;
+  padding: 0.55rem 0.35rem;
+  border-radius: 10px;
+  background: #fff4ea;
+  text-align: center;
+}
+
+.build-readout strong {
+  font-size: 1.15rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.build-readout span {
+  font-size: 0.66rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.build-hints {
+  margin: 0.4rem 0 0;
+  padding-left: 1.1rem;
+  font-size: 0.86rem;
+  line-height: 1.5;
+}
+
+/* ---- Exercise 2: three bins ---- */
+.matter-bins {
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 780px) {
+  .matter-bins {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.sort-bin.bin-element {
+  border-color: #bfdbfe;
+  background: #eef6ff;
+}
+
+.sort-bin.bin-compound {
+  border-color: #ddd6fe;
+  background: #f3f0ff;
+}
+
+.sort-bin.bin-mixture {
+  border-color: #f6c99a;
+  background: #fff4ea;
+}
+
+.sort-card.is-selected .sort-card-face {
+  outline: 3px solid var(--focus);
+}
+
+.matter-sort .sort-bin li {
+  animation: matter-rise 0.3s ease both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .matter-orbits .mo,
+  .atom-orbit,
+  .matter-reveal,
+  .mol-atom,
+  .matter-sort .sort-bin li {
+    animation: none;
+  }
+}

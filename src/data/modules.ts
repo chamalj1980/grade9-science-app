@@ -2,6 +2,54 @@ import type { LearningModule } from "../types";
 
 export const modules: LearningModule[] = [
   {
+    id: "matter-properties",
+    chapter: 3,
+    title: "Nature and Properties of Matter",
+    shortTitle: "Matter",
+    icon: "⚛️",
+    theme: "matter",
+    summary:
+      "Sort matter into elements, compounds and mixtures, then build atoms from protons, neutrons and electrons.",
+    sections: [
+      {
+        id: "lesson",
+        navLabel: "Lesson",
+        title: "Nature and Properties of Matter",
+        eyebrow: "Concept builder",
+        type: "lesson",
+        summary:
+          "Explore the classification of matter, element symbols, inside the atom, molecules, and mixtures."
+      },
+      {
+        id: "exercise-1",
+        navLabel: "Exercise 1",
+        title: "Build the Atom",
+        eyebrow: "Atom practice",
+        type: "simulation",
+        summary:
+          "Assemble neutral atoms from protons, neutrons and electrons, reading the atomic and mass numbers as you go."
+      },
+      {
+        id: "exercise-2",
+        navLabel: "Exercise 2",
+        title: "Element, Compound or Mixture?",
+        eyebrow: "Sort and quiz",
+        type: "mixed-exercise",
+        summary:
+          "Sort substances into the three classes of matter, then take the recap quiz."
+      },
+      {
+        id: "recap",
+        navLabel: "Recap",
+        title: "Matter Recap",
+        eyebrow: "Key ideas",
+        type: "recap",
+        summary:
+          "Classification, symbols, atomic structure and mixtures in one quick card."
+      }
+    ]
+  },
+  {
     id: "pressure-solids",
     chapter: 5,
     title: "Pressure Exerted by Solids",
