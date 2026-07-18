@@ -1,6 +1,9 @@
 import { useMemo, useState } from "react";
 import type { LearningModule } from "../types";
 import { chapters, subjects, type Subject } from "../data/curriculum";
+import { totalMarks, type TestPack } from "../data/testModel";
+import { builtInPacks } from "../data/termTests";
+import { loadPacks } from "../utils/testBank";
 import {
   getStat,
   hasQuiz,
@@ -13,14 +16,16 @@ import {
 } from "../utils/quiz";
 import { ChapterArt } from "./ChapterArt";
 import { QuizRunner, type QuizRunResult } from "./QuizRunner";
+import { TestPlayer } from "./TestPlayer";
 
 interface QuizArenaProps {
   modules: LearningModule[];
 }
 
-type View = "menu" | "run" | "result";
+type View = "menu" | "run" | "result" | "test";
+type Tab = QuizMode | "term";
 
-const MODES: { id: QuizMode; label: string; icon: string; blurb: string }[] = [
+const MODES: { id: Tab; label: string; icon: string; blurb: string }[] = [
   {
     id: "practice",
     label: "Module Quiz",
@@ -32,6 +37,12 @@ const MODES: { id: QuizMode; label: string; icon: string; blurb: string }[] = [
     label: "Time Attack",
     icon: "⏱️",
     blurb: "90 seconds on the clock. Fast, correct answers stack a speed bonus."
+  },
+  {
+    id: "term",
+    label: "Term Test",
+    icon: "📝",
+    blurb: "A whole-term mock paper — MCQs and written answers, then a report card."
   }
 ];
 
@@ -41,13 +52,23 @@ function accentFor(subject: Subject): string {
 
 export function QuizArena({ modules }: QuizArenaProps) {
   const [view, setView] = useState<View>("menu");
-  const [mode, setMode] = useState<QuizMode>("practice");
+  const [tab, setTab] = useState<Tab>("practice");
+  const [activePack, setActivePack] = useState<TestPack | null>(null);
   const [activeModuleId, setActiveModuleId] = useState<string | null>(null);
   const [deck, setDeck] = useState<ReturnType<typeof questionsForModule>>([]);
   const [result, setResult] = useState<(QuizRunResult & { isNewBest: boolean }) | null>(
     null
   );
   const [stats, setStats] = useState(() => loadQuizStats());
+
+  // The Term Test tab isn't a quiz mode; scores/stats always use a real quiz mode.
+  const quizMode: QuizMode = tab === "term" ? "practice" : tab;
+
+  // Built-in mock plus any term tests a teacher saved or imported on this device.
+  const termTests = useMemo<TestPack[]>(
+    () => [...builtInPacks, ...loadPacks().filter((pack) => pack.kind === "term")],
+    []
+  );
 
   // Only the built chapters that actually have a question set.
   const quizChapters = useMemo(
@@ -78,10 +99,10 @@ export function QuizArena({ modules }: QuizArenaProps) {
     if (!activeModuleId) {
       return;
     }
-    const previousBest = getStat(stats, activeModuleId, mode).bestScore;
+    const previousBest = getStat(stats, activeModuleId, quizMode).bestScore;
     const nextStats = recordResult(stats, {
       moduleId: activeModuleId,
-      mode,
+      mode: quizMode,
       score: runResult.score,
       correct: runResult.correct,
       total: runResult.total
@@ -92,12 +113,17 @@ export function QuizArena({ modules }: QuizArenaProps) {
     setView("result");
   }
 
+  // ---------- Term test ----------
+  if (view === "test" && activePack) {
+    return <TestPlayer pack={activePack} onExit={() => setView("menu")} />;
+  }
+
   // ---------- Run ----------
   if (view === "run" && activeModule && activeChapter) {
     return (
       <QuizRunner
         questions={deck}
-        mode={mode}
+        mode={quizMode}
         moduleTitle={activeModule.title}
         art={activeChapter.art}
         accent={accentFor(activeChapter.subject)}
@@ -111,14 +137,14 @@ export function QuizArena({ modules }: QuizArenaProps) {
   if (view === "result" && result && activeModule && activeChapter) {
     const accuracy =
       result.total > 0 ? Math.round((result.correct / result.total) * 100) : 0;
-    const best = getStat(stats, activeModuleId!, mode);
+    const best = getStat(stats, activeModuleId!, quizMode);
 
     return (
       <div className="qa-result" style={{ ["--accent" as string]: accentFor(activeChapter.subject) }}>
         <div className="qa-result-card">
           {result.isNewBest && <p className="qa-newbest">🎉 New personal best!</p>}
           <p className="eyebrow">{activeModule.title}</p>
-          <h2>{mode === "time-attack" ? "Time's up!" : "Quiz complete!"}</h2>
+          <h2>{quizMode === "time-attack" ? "Time's up!" : "Quiz complete!"}</h2>
           <div className="qa-bigscore">{result.score}</div>
           <p className="qa-score-label">points</p>
 
@@ -171,9 +197,9 @@ export function QuizArena({ modules }: QuizArenaProps) {
           <button
             key={m.id}
             type="button"
-            className={`qa-mode ${mode === m.id ? "is-active" : ""}`}
-            aria-pressed={mode === m.id}
-            onClick={() => setMode(m.id)}
+            className={`qa-mode ${tab === m.id ? "is-active" : ""}`}
+            aria-pressed={tab === m.id}
+            onClick={() => setTab(m.id)}
           >
             <span className="qa-mode-ic" aria-hidden="true">
               {m.icon}
@@ -186,10 +212,49 @@ export function QuizArena({ modules }: QuizArenaProps) {
         ))}
       </div>
 
+      {tab === "term" ? (
+        <>
+          <h2 className="qa-pick-title">Choose a test</h2>
+          <div className="qa-chapter-grid">
+            {termTests.map((pack) => (
+              <button
+                key={pack.id}
+                type="button"
+                className="qa-chapter energy qa-term"
+                onClick={() => {
+                  setActivePack(pack);
+                  setView("test");
+                }}
+              >
+                <span className="qa-chapter-art qa-term-art" aria-hidden="true">
+                  📝
+                </span>
+                <span className="qa-chapter-body">
+                  <span className="qa-chapter-num">
+                    {pack.source === "builtin" ? "Built-in" : "Your test"}
+                  </span>
+                  <strong>{pack.title}</strong>
+                  <span className="qa-chapter-meta">
+                    {pack.questions.length} questions · {totalMarks(pack.questions)} marks
+                  </span>
+                </span>
+                <span className="qa-chapter-go" aria-hidden="true">
+                  Start test →
+                </span>
+              </button>
+            ))}
+          </div>
+          <p className="qa-term-hint">
+            Term tests mix every chapter, just like the real paper. Teachers can add more
+            in the Teacher studio.
+          </p>
+        </>
+      ) : (
+        <>
       <h2 className="qa-pick-title">Choose a chapter</h2>
       <div className="qa-chapter-grid">
         {quizChapters.map(({ chapter, module }) => {
-          const stat = getStat(stats, module.id, mode);
+          const stat = getStat(stats, module.id, quizMode);
           const count = questionsForModule(module.id).length;
           return (
             <button
@@ -218,6 +283,8 @@ export function QuizArena({ modules }: QuizArenaProps) {
           );
         })}
       </div>
+        </>
+      )}
     </div>
   );
 }
