@@ -6,6 +6,57 @@ export const recaps: Record<
   string,
   { intro: string; points: RecapPoint[] }
 > = {
+  "matter-properties": {
+    intro:
+      "How matter is classified, how symbols work, and what an atom is made of — in one place.",
+    points: [
+      {
+        term: "Classifying matter",
+        detail:
+          "Matter is either a pure substance or a mixture. Pure substances split into elements and compounds; mixtures into homogeneous and heterogeneous."
+      },
+      {
+        term: "Element",
+        detail:
+          "A pure substance made of only one kind of atom. It cannot be broken into anything simpler by physical or chemical means. About 120 are known."
+      },
+      {
+        term: "Compound",
+        detail:
+          "Two or more elements chemically combined in a fixed ratio, e.g. water (H₂O), sodium chloride (NaCl), glucose (C₆H₁₂O₆)."
+      },
+      {
+        term: "Mixture",
+        detail:
+          "Two or more constituents simply mixed — they keep their own properties and can be separated by physical methods such as sifting, winnowing or distillation."
+      },
+      {
+        term: "Symbols",
+        detail:
+          "One capital letter (C, O, S), or two letters with the second one small (Cl, Ca, Mg). Some come from Latin: Na (Natrium), Cu (Cuprum), Fe (Ferrum), Au (Aurum), Pb (Plumbum), Ag (Argentum), Hg (Hydrargyrum)."
+      },
+      {
+        term: "Atoms and molecules",
+        detail:
+          "Atoms are the building units of elements. A molecule is joined atoms: homo-atomic if the atoms are the same (O₂), hetero-atomic if different (H₂O)."
+      },
+      {
+        term: "Inside the atom",
+        detail:
+          "Mostly empty space, with a positively charged nucleus at the centre holding protons and neutrons. Electrons (about 1840× lighter) move around it."
+      },
+      {
+        term: "Atomic number (Z)",
+        detail:
+          "The number of protons. It is unique to each element. In a neutral atom, electrons = protons."
+      },
+      {
+        term: "Mass number (A)",
+        detail:
+          "Protons + neutrons. Written as ²³₁₁Na — mass number at the top-left, atomic number at the bottom-left."
+      }
+    ]
+  },
   "pressure-solids": {
     intro: "The two factors, the formula, and the units in one place.",
     points: [

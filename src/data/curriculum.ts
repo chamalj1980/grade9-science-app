@@ -74,10 +74,11 @@ export const chapters: Chapter[] = [
   },
   {
     n: 3,
-    title: "Nutrition and Digestion",
-    subject: "life",
-    blurb: "Food groups, enzymes and the journey of food through the gut.",
-    art: "digestion"
+    title: "Nature and Properties of Matter",
+    subject: "matter",
+    blurb: "Elements, compounds and mixtures — and the atoms they are built from.",
+    art: "atom",
+    moduleId: "matter-properties"
   },
   {
     n: 4,

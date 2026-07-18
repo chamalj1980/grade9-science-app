@@ -43,6 +43,32 @@ export function ModuleIllustration({ theme }: ModuleIllustrationProps) {
     );
   }
 
+  if (theme === "matter") {
+    return (
+      <svg
+        className="module-illustration"
+        viewBox="0 0 180 120"
+        role="img"
+        aria-label="An atom with orbiting electrons"
+      >
+        {/* electron orbits */}
+        <g className="svg-atom-orbits">
+          <ellipse cx="90" cy="60" rx="60" ry="24" />
+          <ellipse cx="90" cy="60" rx="60" ry="24" transform="rotate(60 90 60)" />
+          <ellipse cx="90" cy="60" rx="60" ry="24" transform="rotate(120 90 60)" />
+        </g>
+        {/* nucleus: protons and neutrons */}
+        <circle className="svg-atom-proton" cx="86" cy="57" r="8" />
+        <circle className="svg-atom-neutron" cx="95" cy="63" r="8" />
+        <circle className="svg-atom-proton" cx="90" cy="68" r="7" />
+        {/* electrons */}
+        <circle className="svg-atom-electron" cx="150" cy="60" r="6" />
+        <circle className="svg-atom-electron" cx="60" cy="21" r="6" />
+        <circle className="svg-atom-electron" cx="60" cy="99" r="6" />
+      </svg>
+    );
+  }
+
   if (theme === "microbes") {
     return (
       <svg
