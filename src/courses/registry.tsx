@@ -22,6 +22,9 @@ import { MicrobeLesson } from "./micro-organisms/MicrobeLesson";
 import { MicrobeSimulation } from "./micro-organisms/MicrobeSimulation";
 import { MicrobeMatch } from "./micro-organisms/MicrobeMatch";
 import { MicrobeSortAndQuiz } from "./micro-organisms/MicrobeSortAndQuiz";
+import { PlantGrowthLesson } from "./plant-growth/PlantGrowthLesson";
+import { PhototropismLab } from "./plant-growth/PhototropismLab";
+import { HormoneSortAndQuiz } from "./plant-growth/HormoneSortAndQuiz";
 import { RecapView } from "./RecapView";
 import type { SectionViewProps } from "./section";
 
@@ -128,6 +131,18 @@ export function renderSection(
     }
     if (section.id === "exercise-2") {
       return <MicrobeSortAndQuiz onProgress={progressProps.onProgress} />;
+    }
+  }
+
+  if (module.id === "plant-growth") {
+    if (section.id === "lesson") {
+      return <PlantGrowthLesson onProgress={progressProps.onProgress} />;
+    }
+    if (section.id === "exercise-1") {
+      return <PhototropismLab onProgress={progressProps.onProgress} />;
+    }
+    if (section.id === "exercise-2") {
+      return <HormoneSortAndQuiz onProgress={progressProps.onProgress} />;
     }
   }
 

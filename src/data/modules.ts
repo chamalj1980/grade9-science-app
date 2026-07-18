@@ -314,5 +314,53 @@ export const modules: LearningModule[] = [
           "The five groups, beneficial uses, harmful effects, and key terms in one quick card."
       }
     ]
+  },
+  {
+    id: "plant-growth",
+    chapter: 7,
+    title: "Plant Growth Substances",
+    shortTitle: "Plant Growth",
+    icon: "🌱",
+    theme: "plant",
+    summary:
+      "Meet the chemicals a plant makes to control its own growth — and how farmers use man-made ones.",
+    sections: [
+      {
+        id: "lesson",
+        navLabel: "Lesson",
+        title: "Plant Growth Substances",
+        eyebrow: "Concept builder",
+        type: "lesson",
+        summary:
+          "Explore the apex experiments, auxin, gibberellin and cytokinin, phototropism, inhibitors, and artificial growth substances."
+      },
+      {
+        id: "exercise-1",
+        navLabel: "Exercise 1",
+        title: "Phototropism Lab",
+        eyebrow: "Simulation",
+        type: "simulation",
+        summary:
+          "Move the light and snip the apex to see how auxin bends a shoot, then solve four challenges."
+      },
+      {
+        id: "exercise-2",
+        navLabel: "Exercise 2",
+        title: "Which Growth Substance?",
+        eyebrow: "Sort and quiz",
+        type: "mixed-exercise",
+        summary:
+          "Sort each effect under the growth substance that causes it, then take the recap quiz."
+      },
+      {
+        id: "recap",
+        navLabel: "Recap",
+        title: "Plant Growth Recap",
+        eyebrow: "Key ideas",
+        type: "recap",
+        summary:
+          "The apex, the promoters and inhibitors, phototropism, and artificial substances in one quick card."
+      }
+    ]
   }
 ];

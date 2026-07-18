@@ -5272,3 +5272,285 @@ button.mt-node:hover {
     animation: none;
   }
 }
+
+/* =====================================================================
+   Chapter 7 — Plant Growth Substances
+   ===================================================================== */
+.lesson-hero.plant,
+.recap-card.plant {
+  border-color: #bbf7d0;
+  background: linear-gradient(140deg, #ecfdf3, #ffffff);
+}
+
+.lesson-hero.plant .eyebrow,
+.recap-card.plant .eyebrow {
+  color: var(--green, #15803d);
+}
+
+/* module-card illustration */
+.svg-plant-sun {
+  fill: #facc15;
+}
+.svg-plant-rays line {
+  stroke: #facc15;
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+.svg-plant-pot {
+  fill: #c2661c;
+}
+.svg-plant-stem {
+  fill: none;
+  stroke: #15803d;
+  stroke-width: 6;
+  stroke-linecap: round;
+}
+.svg-plant-leaf {
+  fill: #22c55e;
+}
+.svg-plant-bud {
+  fill: #16a34a;
+}
+
+/* animated hero sprigs */
+.plant-hero {
+  position: relative;
+  overflow: hidden;
+}
+.plant-hero-sprigs {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.plant-hero > :not(.plant-hero-sprigs) {
+  position: relative;
+  z-index: 1;
+}
+.plant-hero-sprigs .ps {
+  position: absolute;
+  font-size: 3rem;
+  opacity: 0.16;
+  animation: ps-sway 6s ease-in-out infinite;
+}
+.plant-hero-sprigs .ps1 { top: 18%; right: 22%; }
+.plant-hero-sprigs .ps2 { top: 52%; right: 9%; animation-delay: -2s; }
+.plant-hero-sprigs .ps3 { top: 24%; right: 40%; animation-delay: -3s; }
+
+@keyframes ps-sway {
+  0%, 100% { transform: rotate(-6deg) translateY(0); }
+  50% { transform: rotate(6deg) translateY(-6px); }
+}
+
+.plant-reveal {
+  animation: matter-rise 0.3s ease both;
+}
+
+/* the shared plant figure (lesson + lab) */
+.plant-figure {
+  width: 100%;
+  max-width: 260px;
+  height: auto;
+  background: linear-gradient(180deg, #f0fdf4, #ffffff);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+}
+.pf-sun-core { fill: #facc15; }
+.pf-ray {
+  stroke: #f59e0b;
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+.pf-pot { fill: #c2661c; }
+.pf-pot-rim { fill: #9a4a12; }
+.pf-stem {
+  stroke: #15803d;
+  stroke-width: 9;
+  stroke-linecap: round;
+  transition: d 0.5s ease;
+}
+.pf-auxin {
+  stroke: #f59e0b;
+  stroke-width: 16;
+  stroke-linecap: round;
+  opacity: 0.5;
+}
+.pf-leaf { fill: #22c55e; }
+.pf-bud { fill: #4ade80; }
+.pf-apex { fill: #16a34a; stroke: #bbf7d0; stroke-width: 3; }
+.pf-cut { fill: #b45309; }
+.pf-buds ellipse { animation: matter-rise 0.35s ease both; }
+
+/* lab + lesson interactive layout */
+.plant-lab {
+  display: grid;
+  gap: 1.2rem;
+  align-items: center;
+  justify-items: center;
+}
+@media (min-width: 640px) {
+  .plant-lab {
+    grid-template-columns: minmax(0, 260px) 1fr;
+    justify-items: stretch;
+  }
+}
+.plant-lab-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.lab-goal {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+  margin: 0.8rem 0 1rem;
+  padding: 0.8rem 1rem;
+  border-radius: 12px;
+  border: 1px solid #bbf7d0;
+  background: #f0fdf4;
+}
+.lab-goal p { margin: 0; }
+.lab-goal-tag {
+  flex-shrink: 0;
+  font-weight: 700;
+  color: var(--green-deep, #166534);
+}
+.lab-readout {
+  padding: 0.7rem 0.9rem;
+  border-radius: 12px;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  font-size: 0.92rem;
+  color: #713f12;
+}
+
+/* promoters vs inhibitors split */
+.pgs-split {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 560px) {
+  .pgs-split { grid-template-columns: 2fr 1fr; }
+}
+.pgs-col {
+  padding: 1rem 1.1rem;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+}
+.pgs-col h4 { margin: 0 0 0.2rem; }
+.pgs-col p { margin: 0 0 0.5rem; color: var(--muted); font-size: 0.9rem; }
+.pgs-col ul { margin: 0; padding-left: 1.1rem; }
+.pgs-col li { margin: 0.2rem 0; font-weight: 600; }
+.pgs-promote { border-color: #bbf7d0; background: #f0fdf4; }
+.pgs-inhibit { border-color: #fecaca; background: #fef2f2; }
+
+/* hormone detail panel */
+.hormone-panel {
+  margin-top: 1rem;
+  padding: 1.1rem 1.2rem;
+  border-radius: 16px;
+  border: 1px solid #bbf7d0;
+  background: linear-gradient(150deg, #f0fdf4, #ffffff);
+}
+.hormone-head {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 0.6rem;
+}
+.hormone-emoji { font-size: 2.4rem; line-height: 1; }
+.hormone-head h4 { margin: 0; }
+.hormone-tag {
+  display: inline-block;
+  margin-top: 0.2rem;
+  padding: 0.1rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.tag-promoter { background: #dcfce7; color: #166534; }
+.tag-inhibitor { background: #fee2e2; color: #991b1b; }
+.tag-other { background: #fef3c7; color: #92400e; }
+.hormone-made {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+/* apex experiment */
+.apex-lab {
+  display: grid;
+  gap: 1.2rem;
+  margin-top: 1rem;
+}
+@media (min-width: 640px) {
+  .apex-lab { grid-template-columns: 1fr 1fr; align-items: center; }
+}
+.apex-plants {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+}
+.apex-plants .plant-figure { max-width: 100%; }
+.apex-info p { margin: 0.4rem 0; }
+.apex-conclusion {
+  margin-top: 0.6rem;
+  font-weight: 600;
+  color: var(--green-deep, #166534);
+}
+
+/* artificial substances grid */
+.art-grid {
+  display: grid;
+  gap: 0.8rem;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 640px) {
+  .art-grid { grid-template-columns: 1fr 1fr; }
+}
+.art-card {
+  display: flex;
+  gap: 0.7rem;
+  align-items: flex-start;
+  padding: 0.8rem 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+}
+.art-emoji { font-size: 1.8rem; line-height: 1; }
+.art-card h4 { margin: 0 0 0.2rem; font-size: 1rem; }
+.art-card p { margin: 0; font-size: 0.9rem; color: var(--muted); }
+.art-full { font-weight: 400; font-size: 0.8rem; color: var(--muted); }
+
+/* exercise 2 five hormone bins */
+.plant-bins {
+  grid-template-columns: 1fr;
+}
+@media (min-width: 620px) {
+  .plant-bins { grid-template-columns: 1fr 1fr; }
+}
+@media (min-width: 900px) {
+  .plant-bins { grid-template-columns: repeat(5, 1fr); }
+}
+.sort-bin.bin-auxin { border-color: #bbf7d0; background: #f0fdf4; }
+.sort-bin.bin-gibberellin { border-color: #bfdbfe; background: #eff6ff; }
+.sort-bin.bin-cytokinin { border-color: #ddd6fe; background: #f5f3ff; }
+.sort-bin.bin-abscisic { border-color: #fecaca; background: #fef2f2; }
+.sort-bin.bin-ethene { border-color: #fde68a; background: #fffbeb; }
+
+.plant-sort .sort-bin li {
+  animation: matter-rise 0.3s ease both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .plant-hero-sprigs .ps,
+  .plant-reveal,
+  .pf-stem,
+  .pf-buds ellipse,
+  .plant-sort .sort-bin li {
+    animation: none;
+    transition: none;
+  }
+}

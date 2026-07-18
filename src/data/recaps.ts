@@ -216,5 +216,41 @@ export const recaps: Record<
           "Microbes cause disease (a pathogen spread by a vector to a host), spoil food, and can be used as biological weapons."
       }
     ]
+  },
+  "plant-growth": {
+    intro:
+      "What the apex does, the growth promoters and inhibitors, phototropism, and man-made substances in one place.",
+    points: [
+      {
+        term: "Plant growth substances",
+        detail:
+          "Organic chemicals made in the apex that control how a plant grows. Some promote growth, some inhibit it."
+      },
+      {
+        term: "The apex",
+        detail:
+          "The growing tip. Remove it and the plant stops gaining height and can't grow toward light — proof that growth substances are made there."
+      },
+      {
+        term: "Auxin",
+        detail:
+          "Made in shoot and root tips (natural auxin is IAA). It stretches cells so the shoot grows up, collects on the shaded side to bend the tip toward light (positive phototropism), and holds lateral buds back."
+      },
+      {
+        term: "Gibberellin & cytokinin",
+        detail:
+          "Gibberellin lengthens stems and grows fruit; cytokinin speeds cell division, stimulates seed germination, and delays ageing."
+      },
+      {
+        term: "Inhibitors & others",
+        detail:
+          "Abscisic acid closes stomata when water is short. Ethene ripens fruit and heals wounds. As leaves and fruits mature, falling growth substances form an abscission layer so they drop."
+      },
+      {
+        term: "Artificial substances",
+        detail:
+          "Man-made growth substances: 2,4-D and 2,4,5-T (weedicides), IAA/IBA (rooting), NAA (stops fruit drop, off-season pineapple flowering), Cytocell (off-season mango)."
+      }
+    ]
   }
 };

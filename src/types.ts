@@ -33,7 +33,8 @@ export type Theme =
   | "sensory-system"
   | "microbes"
   | "matter"
-  | "force";
+  | "force"
+  | "plant";
 
 export interface LearningModule {
   id: string;

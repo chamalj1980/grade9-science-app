@@ -106,10 +106,11 @@ export const chapters: Chapter[] = [
   },
   {
     n: 7,
-    title: "Reproduction in Plants",
+    title: "Plant Growth Substances",
     subject: "life",
-    blurb: "Flowers, pollination, seeds and how new plants begin.",
-    art: "flower"
+    blurb: "The chemicals a plant makes to control its growth — and the man-made ones farmers use.",
+    art: "flower",
+    moduleId: "plant-growth"
   },
   {
     n: 8,

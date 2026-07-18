@@ -101,6 +101,35 @@ export function ModuleIllustration({ theme }: ModuleIllustrationProps) {
     );
   }
 
+  if (theme === "plant") {
+    return (
+      <svg
+        className="module-illustration"
+        viewBox="0 0 180 120"
+        role="img"
+        aria-label="A seedling growing toward the sun"
+      >
+        {/* sun */}
+        <circle className="svg-plant-sun" cx="146" cy="30" r="14" />
+        <g className="svg-plant-rays">
+          <line x1="146" y1="6" x2="146" y2="12" />
+          <line x1="124" y1="30" x2="130" y2="30" />
+          <line x1="162" y1="30" x2="168" y2="30" />
+          <line x1="130" y1="14" x2="134" y2="18" />
+        </g>
+        {/* pot */}
+        <path className="svg-plant-pot" d="M56 104 L100 104 L94 118 L62 118 Z" />
+        {/* stem curving toward the sun */}
+        <path className="svg-plant-stem" d="M78 104 Q86 66 120 52" />
+        {/* leaves */}
+        <ellipse className="svg-plant-leaf" cx="70" cy="82" rx="14" ry="7" transform="rotate(-28 70 82)" />
+        <ellipse className="svg-plant-leaf" cx="98" cy="74" rx="14" ry="7" transform="rotate(24 98 74)" />
+        {/* apex bud */}
+        <circle className="svg-plant-bud" cx="120" cy="52" r="6" />
+      </svg>
+    );
+  }
+
   if (theme === "microbes") {
     return (
       <svg

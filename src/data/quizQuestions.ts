@@ -572,5 +572,91 @@ export const quizQuestions: QuizQuestion[] = [
     answer: 1,
     explanation: "Lactobacillus turns lactose into lactic acid, thickening and souring milk into yoghurt.",
     difficulty: "easy"
+  },
+
+  // ------------------------------------------------------------------
+  // Plant Growth Substances (chapter 7)
+  // ------------------------------------------------------------------
+  {
+    id: "pg-1",
+    moduleId: "plant-growth",
+    prompt: "Chemical substances a plant makes to control its own growth are called…",
+    options: [
+      "Plant growth substances",
+      "Minerals",
+      "Enzymes only",
+      "Pigments"
+    ],
+    answer: 0,
+    explanation: "Plant growth substances are organic chemicals, made in the apex, that regulate how a plant grows.",
+    difficulty: "easy"
+  },
+  {
+    id: "pg-2",
+    moduleId: "plant-growth",
+    prompt: "In which part of the plant are growth substances mainly made?",
+    options: ["The apex (growing tip)", "The old leaves", "The bark", "The dead wood"],
+    answer: 0,
+    explanation: "Cutting off the apex stops a plant gaining height, showing the growth substances are made there.",
+    difficulty: "easy"
+  },
+  {
+    id: "pg-3",
+    moduleId: "plant-growth",
+    prompt: "Which hormone makes a shoot bend toward light by collecting on its shaded side?",
+    options: ["Auxin", "Gibberellin", "Cytokinin", "Abscisic acid"],
+    answer: 0,
+    explanation: "Auxin gathers on the darker side, stretches those cells, and the tip curves toward the light.",
+    difficulty: "medium"
+  },
+  {
+    id: "pg-4",
+    moduleId: "plant-growth",
+    prompt: "A plant curving toward a one-directional light source shows…",
+    options: [
+      "Positive phototropic movement",
+      "Seed germination",
+      "Ripening",
+      "Wilting"
+    ],
+    answer: 0,
+    explanation: "Growing toward light is a positive phototropic movement, driven by auxin.",
+    difficulty: "medium"
+  },
+  {
+    id: "pg-5",
+    moduleId: "plant-growth",
+    prompt: "Which growth substance mainly speeds up cell division?",
+    options: ["Cytokinin", "Auxin", "Gibberellin", "Ethene"],
+    answer: 0,
+    explanation: "Cytokinin accelerates cell division, and also stimulates seed germination and delays ageing.",
+    difficulty: "medium"
+  },
+  {
+    id: "pg-6",
+    moduleId: "plant-growth",
+    prompt: "Which substance is a growth INHIBITOR that closes stomata when water is short?",
+    options: ["Abscisic acid", "Auxin", "Gibberellin", "Cytokinin"],
+    answer: 0,
+    explanation: "Abscisic acid closes the stomata to cut transpiration and save water.",
+    difficulty: "hard"
+  },
+  {
+    id: "pg-7",
+    moduleId: "plant-growth",
+    prompt: "Which gas-like substance is needed for the ripening of fruits?",
+    options: ["Ethene", "Auxin", "Oxygen", "Nitrogen"],
+    answer: 0,
+    explanation: "Ethene ripens fruit — the stored starch is turned into sugar — and helps heal wounds.",
+    difficulty: "medium"
+  },
+  {
+    id: "pg-8",
+    moduleId: "plant-growth",
+    prompt: "Which artificial growth substance is used as a broad-leaf weedicide in paddy fields?",
+    options: ["2,4-D", "IAA", "NAA", "Cytocell"],
+    answer: 0,
+    explanation: "2,4-D (2,4 Dichloro Phenoxyacetic Acid) kills broad-leaf weeds in paddy fields.",
+    difficulty: "hard"
   }
 ];
