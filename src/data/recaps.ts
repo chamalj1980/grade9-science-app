@@ -6,6 +6,36 @@ export const recaps: Record<
   string,
   { intro: string; points: RecapPoint[] }
 > = {
+  "force-basics": {
+    intro:
+      "What a force can do, how big it is, and how to draw it — in one place.",
+    points: [
+      {
+        term: "Force",
+        detail: "A push or a pull. It can move a resting object, stop a moving one, change its speed or direction, or change its shape."
+      },
+      {
+        term: "Magnitude",
+        detail: "How big a force is, measured in newtons (N) with a spring balance, whose spring stretches further for a bigger force."
+      },
+      {
+        term: "Weight",
+        detail: "The gravitational force the Earth pulls an object down with — a force, measured in newtons."
+      },
+      {
+        term: "Force is a vector",
+        detail: "It has both a magnitude and a direction. The point where it acts is the point of application."
+      },
+      {
+        term: "Drawing a force",
+        detail: "An arrow: its LENGTH shows the magnitude, its ARROW HEAD shows the direction, and the DOT at its start shows the point of application. A 10 N arrow is twice as long as a 5 N one."
+      },
+      {
+        term: "Working cleverly",
+        detail: "We change a force's direction or point of application to make everyday jobs easier, like fitting a handle to a cart."
+      }
+    ]
+  },
   "matter-properties": {
     intro:
       "How matter is classified, how symbols work, and what an atom is made of — in one place.",

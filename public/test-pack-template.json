@@ -1,0 +1,60 @@
+{
+  "id": "my-test-pack",
+  "title": "Term 2 mock paper",
+  "kind": "term",
+  "createdAt": 0,
+  "source": "teacher",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq",
+      "moduleId": "matter-properties",
+      "prompt": "Select the group which contains only pure metals.",
+      "options": [
+        "Iron, Lead, Steel",
+        "Brass, Iron, Copper",
+        "Copper, Iron, Gold",
+        "Nichrome, Iron, Zinc"
+      ],
+      "answer": 2,
+      "explanation": "Steel, brass and nichrome are alloys (mixtures), so only Copper, Iron and Gold are pure metals.",
+      "marks": 1,
+      "difficulty": "medium"
+    },
+    {
+      "id": "q2",
+      "type": "truefalse",
+      "moduleId": "micro-organisms",
+      "prompt": "Antibiotics are an effective treatment for illnesses caused by viruses.",
+      "answer": false,
+      "explanation": "Antibiotics work on bacteria and fungi, not viruses.",
+      "marks": 1,
+      "difficulty": "medium"
+    },
+    {
+      "id": "q3",
+      "type": "short",
+      "moduleId": "circulatory-system",
+      "prompt": "Name the straw-coloured liquid part of blood.",
+      "accepted": ["plasma", "blood plasma"],
+      "explanation": "Plasma carries the blood cells, nutrients and wastes.",
+      "marks": 1,
+      "difficulty": "easy"
+    },
+    {
+      "id": "q4",
+      "type": "essay",
+      "moduleId": "pressure-solids",
+      "prompt": "A camel has wide, flat feet. Explain why this stops it sinking into soft sand.",
+      "modelAnswer": "The camel's weight stays the same, but its wide feet spread that weight over a larger contact area. Since pressure = force / area, a larger area means less pressure on the sand, so it does not sink.",
+      "points": [
+        "States that pressure = force / area",
+        "Notes the weight (force) stays the same",
+        "Explains the wide feet increase the contact area",
+        "Concludes the larger area lowers the pressure"
+      ],
+      "marks": 4,
+      "difficulty": "hard"
+    }
+  ]
+}

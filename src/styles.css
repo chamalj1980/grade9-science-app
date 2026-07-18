@@ -4922,3 +4922,353 @@ button.mt-node:hover {
     animation: none;
   }
 }
+
+/* =====================================================================
+   Chapter 4 — Basic Concepts Associated with Force
+   ===================================================================== */
+.lesson-hero.force,
+.recap-card.force {
+  border-color: #c7d2fe;
+  background: linear-gradient(140deg, #eef0ff, #ffffff);
+}
+
+.lesson-hero.force .eyebrow,
+.recap-card.force .eyebrow {
+  color: var(--indigo, #4f46e5);
+}
+
+.svg-force-block {
+  fill: #6366f1;
+}
+.svg-force-ground {
+  stroke: #cbd5e1;
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+.svg-force-arrow {
+  stroke: #ea580c;
+  stroke-width: 7;
+  stroke-linecap: round;
+}
+.svg-force-head {
+  fill: #ea580c;
+}
+.svg-force-dot {
+  fill: #9a3412;
+}
+.svg-force-label {
+  fill: #9a3412;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.force-hero {
+  position: relative;
+  overflow: hidden;
+}
+.force-hero-arrows {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.force-hero > :not(.force-hero-arrows) {
+  position: relative;
+  z-index: 1;
+}
+.force-hero-arrows .fh {
+  position: absolute;
+  font-size: 3rem;
+  font-weight: 800;
+  color: var(--indigo, #4f46e5);
+  opacity: 0.12;
+  animation: fh-slide 6s ease-in-out infinite;
+}
+.force-hero-arrows .fh1 { top: 18%; right: 24%; }
+.force-hero-arrows .fh2 { top: 55%; right: 10%; animation-delay: -2s; }
+.force-hero-arrows .fh3 { top: 30%; right: 40%; animation-delay: -4s; }
+
+@keyframes fh-slide {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(14px, -6px); }
+}
+
+.force-reveal {
+  animation: matter-rise 0.3s ease both;
+}
+
+/* effect demo */
+.effect-demo {
+  position: relative;
+  height: 70px;
+  margin-bottom: 0.6rem;
+  border-radius: 12px;
+  background: #f5f7ff;
+  overflow: hidden;
+}
+.ed-ball {
+  position: absolute;
+  top: 26px;
+  left: 20px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #ea580c;
+}
+.ed-arrow {
+  position: absolute;
+  top: 34px;
+  left: 8px;
+  width: 0;
+  height: 0;
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  border-left: 12px solid #4f46e5;
+}
+.ed-hand {
+  position: absolute;
+  top: 6px;
+  left: 22px;
+  width: 22px;
+  height: 16px;
+  border-radius: 6px 6px 2px 2px;
+  background: #4f46e5;
+}
+.demo-move .ed-ball { animation: ed-move 1.8s ease-in-out infinite; }
+.demo-stop .ed-ball { animation: ed-stop 1.8s ease-in-out infinite; }
+.demo-speed .ed-ball { animation: ed-speed 1.6s ease-in infinite; }
+.demo-direction .ed-ball { animation: ed-dir 2.4s ease-in-out infinite; }
+.demo-shape .ed-ball { animation: ed-shape 1.4s ease-in-out infinite; }
+.demo-shape .ed-hand { animation: ed-press 1.4s ease-in-out infinite; }
+
+@keyframes ed-move { 0% { left: 20px; } 60%, 100% { left: 200px; } }
+@keyframes ed-stop { 0% { left: 200px; } 60%, 100% { left: 120px; } }
+@keyframes ed-speed { 0% { left: 20px; } 100% { left: 240px; } }
+@keyframes ed-dir {
+  0% { left: 20px; top: 26px; }
+  45% { left: 130px; top: 26px; }
+  100% { left: 200px; top: 6px; }
+}
+@keyframes ed-shape {
+  0%, 100% { transform: scaleY(1); top: 26px; }
+  50% { transform: scaleY(0.5); top: 38px; }
+}
+@keyframes ed-press {
+  0%, 100% { top: 6px; }
+  50% { top: 24px; }
+}
+
+/* spring balance */
+.spring-lab {
+  display: grid;
+  gap: 1.25rem;
+  align-items: center;
+  margin-top: 0.75rem;
+}
+@media (min-width: 640px) {
+  .spring-lab {
+    grid-template-columns: 140px 1fr;
+  }
+}
+.spring-balance {
+  width: 120px;
+  justify-self: center;
+}
+.sb-body { fill: #eef0ff; stroke: #c7d2fe; stroke-width: 2; }
+.sb-hook-top { stroke: #64748b; stroke-width: 3; stroke-linecap: round; }
+.sb-spring { stroke: #4f46e5; stroke-width: 3; stroke-dasharray: 3 4; }
+.sb-pointer { stroke: #ea580c; stroke-width: 3; stroke-linecap: round; }
+.sb-reading { fill: #9a3412; font-size: 12px; font-weight: 800; }
+.sb-thread { stroke: #94a3b8; stroke-width: 1.5; }
+.sb-weight { fill: #6366f1; }
+
+.spring-controls {
+  display: grid;
+  gap: 0.6rem;
+}
+.spring-objects-label {
+  margin: 0.2rem 0 0;
+  font-weight: 700;
+  font-size: 0.88rem;
+}
+.spring-objects {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.45rem;
+}
+.spring-objects button {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #ffffff;
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-align: left;
+}
+.spring-objects button.is-active {
+  border-color: var(--indigo, #4f46e5);
+  background: #eef0ff;
+}
+.spring-objects .so-n {
+  margin-left: auto;
+  font-weight: 800;
+  color: var(--indigo, #4f46e5);
+  font-variant-numeric: tabular-nums;
+}
+
+/* force arrow + draw */
+.force-arrow {
+  width: 100%;
+  max-width: 320px;
+  justify-self: center;
+  background: #f5f7ff;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+.fa-object { fill: #cbd5e1; stroke: #94a3b8; stroke-width: 2; }
+.fa-line { stroke: #ea580c; stroke-width: 5; stroke-linecap: round; }
+.fa-head { fill: #ea580c; }
+.fa-point { fill: #9a3412; }
+.fa-mag { fill: #9a3412; font-size: 14px; font-weight: 800; }
+.fa-part { fill: var(--muted); font-size: 10px; font-weight: 700; }
+.fa-empty { fill: var(--muted); font-size: 12px; font-weight: 700; }
+
+.force-draw {
+  display: grid;
+  gap: 1.25rem;
+  align-items: start;
+  margin-top: 0.75rem;
+}
+@media (min-width: 720px) {
+  .force-draw {
+    grid-template-columns: minmax(240px, 320px) 1fr;
+  }
+}
+.force-draw-controls {
+  display: grid;
+  gap: 0.6rem;
+}
+.dir-buttons {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+  gap: 0.4rem;
+}
+.dir-buttons button {
+  padding: 0.5rem 0.6rem;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #ffffff;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+.dir-buttons button.is-active {
+  border-color: var(--indigo, #4f46e5);
+  background: #eef0ff;
+  color: var(--indigo-deep, #4338ca);
+}
+.dir-buttons button:disabled {
+  opacity: 0.5;
+}
+.graph-legend {
+  margin: 0.3rem 0 0;
+  padding-left: 1.1rem;
+  font-size: 0.85rem;
+  line-height: 1.55;
+}
+
+/* easing cards */
+.easing-grid {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+@media (min-width: 620px) {
+  .easing-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.easing-card {
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #ffffff;
+}
+.easing-card h4 { margin: 0 0 0.4rem; }
+.easing-problem { margin: 0 0 0.4rem; font-size: 0.88rem; color: var(--muted); }
+.easing-fix { margin: 0; font-size: 0.9rem; line-height: 1.5; }
+.easing-tag {
+  display: inline-block;
+  margin-top: 0.4rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  background: #eef0ff;
+  color: var(--indigo-deep, #4338ca);
+}
+
+/* exercise 1 target */
+.force-target {
+  display: grid;
+  justify-items: center;
+  gap: 0.15rem;
+  padding: 0.9rem;
+  margin: 0.75rem 0;
+  border: 2px dashed var(--indigo, #4f46e5);
+  border-radius: 14px;
+  background: #eef0ff;
+  text-align: center;
+}
+.ft-label {
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+.ft-value {
+  font-size: 2.2rem;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--indigo-deep, #4338ca);
+}
+.ft-dir { font-weight: 800; }
+.ft-point { font-size: 0.85rem; color: var(--muted); }
+
+/* exercise 2 five bins */
+.force-bins {
+  grid-template-columns: 1fr;
+}
+@media (min-width: 620px) {
+  .force-bins {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (min-width: 900px) {
+  .force-bins {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+.sort-bin.bin-move { border-color: #bbf7d0; background: #f0fdf4; }
+.sort-bin.bin-stop { border-color: #fecaca; background: #fef2f2; }
+.sort-bin.bin-speed { border-color: #fde68a; background: #fffbeb; }
+.sort-bin.bin-direction { border-color: #c7d2fe; background: #eef0ff; }
+.sort-bin.bin-shape { border-color: #f5d0fe; background: #fdf4ff; }
+
+.force-sort .sort-bin li {
+  animation: matter-rise 0.3s ease both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .force-hero-arrows .fh,
+  .force-reveal,
+  .effect-demo .ed-ball,
+  .effect-demo .ed-hand,
+  .force-sort .sort-bin li {
+    animation: none;
+  }
+}
