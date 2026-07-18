@@ -5,6 +5,9 @@ import { CirculatoryLesson } from "./circulatory/CirculatoryLesson";
 import { HeartSimulation } from "./circulatory/HeartSimulation";
 import { LabelTheHeart } from "./circulatory/LabelTheHeart";
 import { TransfusionLab } from "./circulatory/TransfusionLab";
+import { DrawTheForce } from "./force/DrawTheForce";
+import { ForceLesson } from "./force/ForceLesson";
+import { ForceSortAndQuiz } from "./force/ForceSortAndQuiz";
 import { PressureLesson } from "./pressure/PressureLesson";
 import { PressurePlayground } from "./pressure/PressurePlayground";
 import { PressureSortAndCalc } from "./pressure/PressureSortAndCalc";
@@ -44,6 +47,18 @@ export function renderSection(
           onProgress={progressProps.onProgress}
         />
       );
+    }
+  }
+
+  if (module.id === "force-basics") {
+    if (section.id === "lesson") {
+      return <ForceLesson onProgress={progressProps.onProgress} />;
+    }
+    if (section.id === "exercise-1") {
+      return <DrawTheForce onProgress={progressProps.onProgress} />;
+    }
+    if (section.id === "exercise-2") {
+      return <ForceSortAndQuiz onProgress={progressProps.onProgress} />;
     }
   }
 

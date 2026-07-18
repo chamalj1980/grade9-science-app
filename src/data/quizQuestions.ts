@@ -17,6 +17,112 @@ export interface QuizQuestion {
 
 export const quizQuestions: QuizQuestion[] = [
   // ------------------------------------------------------------------
+  // Basic Concepts Associated with Force (chapter 4)
+  // ------------------------------------------------------------------
+  {
+    id: "fo-1",
+    moduleId: "force-basics",
+    prompt: "A force is best described as…",
+    options: ["A push or a pull", "Only a push", "A type of energy", "The weight of an object"],
+    answer: 0,
+    explanation: "A force is simply a push or a pull applied to an object.",
+    difficulty: "easy"
+  },
+  {
+    id: "fo-2",
+    moduleId: "force-basics",
+    prompt: "The SI unit used to measure the magnitude of a force is the…",
+    options: ["Kilogram (kg)", "Newton (N)", "Pascal (Pa)", "Joule (J)"],
+    answer: 1,
+    explanation: "Force is measured in newtons (N). Spring balances in the lab are calibrated in N.",
+    difficulty: "easy"
+  },
+  {
+    id: "fo-3",
+    moduleId: "force-basics",
+    prompt: "Force is a vector quantity because it has…",
+    options: [
+      "only a magnitude",
+      "only a direction",
+      "a magnitude and a direction",
+      "a point of application only"
+    ],
+    answer: 2,
+    explanation:
+      "A vector has both a magnitude and a direction — and a force has both, so it is a vector.",
+    difficulty: "medium"
+  },
+  {
+    id: "fo-4",
+    moduleId: "force-basics",
+    prompt: "Which instrument measures the magnitude of a force?",
+    options: ["A stopwatch", "A measuring cylinder", "A Newton spring balance", "A thermometer"],
+    answer: 2,
+    explanation:
+      "A spring balance's spring stretches in proportion to the force, and the scale reads it in newtons.",
+    difficulty: "easy"
+  },
+  {
+    id: "fo-5",
+    moduleId: "force-basics",
+    prompt: "When a force is drawn as an arrow, the LENGTH of the arrow shows the…",
+    options: [
+      "point of application",
+      "magnitude of the force",
+      "direction of the force",
+      "speed of the object"
+    ],
+    answer: 1,
+    explanation:
+      "Length = magnitude (a 10 N arrow is twice as long as a 5 N one). The arrow head shows direction; the dot shows the point of application.",
+    difficulty: "medium"
+  },
+  {
+    id: "fo-6",
+    moduleId: "force-basics",
+    prompt: "Catching a moving cricket ball shows a force being used to…",
+    options: [
+      "start something moving",
+      "stop something moving",
+      "change the shape of an object",
+      "change the direction of motion"
+    ],
+    answer: 1,
+    explanation: "Your hands apply a force that stops the ball's motion.",
+    difficulty: "medium"
+  },
+  {
+    id: "fo-7",
+    moduleId: "force-basics",
+    prompt: "The weight of an object is…",
+    options: [
+      "the amount of matter in it",
+      "the gravitational force the Earth pulls it with",
+      "its size",
+      "always measured in kilograms only"
+    ],
+    answer: 1,
+    explanation:
+      "Weight is the gravitational force pulling an object down — a force, measured in newtons.",
+    difficulty: "medium"
+  },
+  {
+    id: "fo-8",
+    moduleId: "force-basics",
+    prompt: "Fitting a handle to a cart so you can push higher up mainly changes the force's…",
+    options: [
+      "magnitude",
+      "point of application",
+      "unit",
+      "weight"
+    ],
+    answer: 1,
+    explanation:
+      "Moving where the force is applied changes its point of application, making the job easier.",
+    difficulty: "hard"
+  },
+
+  // ------------------------------------------------------------------
   // Nature and Properties of Matter (chapter 3)
   // ------------------------------------------------------------------
   {

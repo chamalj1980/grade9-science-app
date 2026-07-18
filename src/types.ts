@@ -32,7 +32,8 @@ export type Theme =
   | "circulatory"
   | "sensory-system"
   | "microbes"
-  | "matter";
+  | "matter"
+  | "force";
 
 export interface LearningModule {
   id: string;

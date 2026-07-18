@@ -43,6 +43,38 @@ export function ModuleIllustration({ theme }: ModuleIllustrationProps) {
     );
   }
 
+  if (theme === "force") {
+    return (
+      <svg
+        className="module-illustration"
+        viewBox="0 0 180 120"
+        role="img"
+        aria-label="A force arrow pushing a block"
+      >
+        <defs>
+          <marker id="force-head" markerWidth="8" markerHeight="8" refX="5" refY="4" orient="auto">
+            <path d="M0 0 L8 4 L0 8 Z" className="svg-force-head" />
+          </marker>
+        </defs>
+        {/* the block being pushed */}
+        <rect x="96" y="52" width="52" height="52" rx="8" className="svg-force-block" />
+        {/* ground */}
+        <line x1="20" y1="106" x2="160" y2="106" className="svg-force-ground" />
+        {/* the force arrow */}
+        <line
+          x1="30"
+          y1="78"
+          x2="92"
+          y2="78"
+          className="svg-force-arrow"
+          markerEnd="url(#force-head)"
+        />
+        <circle cx="30" cy="78" r="5" className="svg-force-dot" />
+        <text x="52" y="70" className="svg-force-label">F</text>
+      </svg>
+    );
+  }
+
   if (theme === "matter") {
     return (
       <svg

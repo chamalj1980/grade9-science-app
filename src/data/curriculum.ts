@@ -82,10 +82,11 @@ export const chapters: Chapter[] = [
   },
   {
     n: 4,
-    title: "Photosynthesis",
-    subject: "life",
-    blurb: "How green plants capture sunlight and turn it into food.",
-    art: "photosynthesis"
+    title: "Basic Concepts Associated with Force",
+    subject: "energy",
+    blurb: "What a force can do, how we measure it, and how to draw it as a vector.",
+    art: "motion",
+    moduleId: "force-basics"
   },
   {
     n: 5,

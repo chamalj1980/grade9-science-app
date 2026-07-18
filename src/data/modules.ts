@@ -50,6 +50,54 @@ export const modules: LearningModule[] = [
     ]
   },
   {
+    id: "force-basics",
+    chapter: 4,
+    title: "Basic Concepts Associated with Force",
+    shortTitle: "Force",
+    icon: "💪",
+    theme: "force",
+    summary:
+      "Discover what a force can do, measure its size in newtons, and draw it as a vector.",
+    sections: [
+      {
+        id: "lesson",
+        navLabel: "Lesson",
+        title: "Basic Concepts Associated with Force",
+        eyebrow: "Concept builder",
+        type: "lesson",
+        summary:
+          "Explore the five effects of a force, the spring balance, force as a vector, and how to draw one."
+      },
+      {
+        id: "exercise-1",
+        navLabel: "Exercise 1",
+        title: "Draw the Force",
+        eyebrow: "Vector practice",
+        type: "simulation",
+        summary:
+          "Set an arrow's length and direction to match a target force, level by level."
+      },
+      {
+        id: "exercise-2",
+        navLabel: "Exercise 2",
+        title: "What Does the Force Do?",
+        eyebrow: "Sort and quiz",
+        type: "mixed-exercise",
+        summary:
+          "Sort everyday actions by the effect of their force, then take the recap quiz."
+      },
+      {
+        id: "recap",
+        navLabel: "Recap",
+        title: "Force Recap",
+        eyebrow: "Key ideas",
+        type: "recap",
+        summary:
+          "Effects of a force, magnitude, direction and graphical representation in one card."
+      }
+    ]
+  },
+  {
     id: "pressure-solids",
     chapter: 5,
     title: "Pressure Exerted by Solids",
