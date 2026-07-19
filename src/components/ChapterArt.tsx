@@ -17,6 +17,7 @@ export function ChapterArt({ art }: ChapterArtProps) {
   if (art === "senses") return <ModuleIllustration theme="sensory-system" />;
   if (art === "pressure") return <ModuleIllustration theme="pressure" />;
   if (art === "heart") return <ModuleIllustration theme="circulatory" />;
+  if (art === "movement") return <ModuleIllustration theme="movement" />;
 
   return (
     <svg className="module-illustration" viewBox="0 0 180 120" role="img" aria-label={artLabels[art]}>
@@ -44,11 +45,15 @@ const artLabels: Record<ChapterArtId, string> = {
   light: "A prism splitting light",
   sound: "A speaker with sound waves",
   eco: "A tree by a pond",
-  space: "The Sun and a ringed planet"
+  space: "The Sun and a ringed planet",
+  movement: "A flexing arm"
 };
 
 // Each emblem is a small group of shapes. Kept compact and recognisable.
-const EMBLEMS: Record<Exclude<ChapterArtId, "microbes" | "senses" | "pressure" | "heart">, ReactElement> = {
+const EMBLEMS: Record<
+  Exclude<ChapterArtId, "microbes" | "senses" | "pressure" | "heart" | "movement">,
+  ReactElement
+> = {
   digestion: (
     <g>
       <path

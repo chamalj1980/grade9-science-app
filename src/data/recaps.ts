@@ -6,6 +6,44 @@ export const recaps: Record<
   string,
   { intro: string; points: RecapPoint[] }
 > = {
+  "support-movement": {
+    intro:
+      "How animals move, how bones and muscles work, and how plants move — in one place.",
+    points: [
+      {
+        term: "Movement & locomotion",
+        detail: "A movement is a change of position in response to a stimulus. Locomotion is the whole organism moving from place to place."
+      },
+      {
+        term: "Animal appendages",
+        detail: "Amoeba uses pseudopodia, Euglena a flagellum, Paramecium cilia; limbs, wings and flippers are used by larger animals; snails use a muscular foot and worms and snakes use body muscles."
+      },
+      {
+        term: "Bones & muscles",
+        detail: "Invertebrates move with muscles; vertebrates use bones and muscles together. A muscle can contract, relax and return to its length — and it can only pull, so muscles work in antagonistic pairs."
+      },
+      {
+        term: "The elbow joint",
+        detail: "The biceps contracts to bend the arm (pulling the radius); the triceps contracts to straighten it (pulling the ulna). Tendons join muscle to bone."
+      },
+      {
+        term: "Plant support",
+        detail: "Soft plants stay erect through water (turgor) and wilt when dry; woody plants stay rigid because of cellulose and lignin."
+      },
+      {
+        term: "Tropic movements",
+        detail: "Growth linked to the stimulus direction, caused by growth substances. Roots show positive geotropism and hydrotropism; stems show negative geotropism and positive phototropism; tendrils show thigmotropism; pollen tubes show chemotropism."
+      },
+      {
+        term: "Nastic movements",
+        detail: "A fixed-direction response, whatever the stimulus direction — a turgor change in the pulvinus, not growth. Mimosa folds on touch (haptonastic) or a shock (seismonastic); leaves 'sleep' in the dark (nyctinastic); flowers open at sunrise (photonastic)."
+      },
+      {
+        term: "In-situ conservation",
+        detail: "Because plants can't move away from danger, we conserve them in their own habitat — for example in strictly reserved forests protecting ebony, satinwood and vitex."
+      }
+    ]
+  },
   "force-basics": {
     intro:
       "What a force can do, how big it is, and how to draw it — in one place.",

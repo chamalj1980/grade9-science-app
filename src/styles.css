@@ -5272,3 +5272,183 @@ button.mt-node:hover {
     animation: none;
   }
 }
+
+/* =====================================================================
+   Chapter 8 — Support and Movements of Organisms
+   ===================================================================== */
+.lesson-hero.movement,
+.recap-card.movement {
+  border-color: #bbf7d0;
+  background: linear-gradient(140deg, #ecfdf3, #ffffff);
+}
+
+.lesson-hero.movement .eyebrow,
+.recap-card.movement .eyebrow {
+  color: var(--green-deep, #166534);
+}
+
+.svg-mv-bone { fill: #e2e8f0; stroke: #94a3b8; stroke-width: 2; }
+.svg-mv-muscle { fill: #f97316; }
+.svg-mv-fist { fill: #fbbf24; stroke: #b45309; stroke-width: 2; }
+.svg-mv-joint { fill: #64748b; }
+
+.movement-hero { position: relative; overflow: hidden; }
+.mv-runners { position: absolute; inset: 0; pointer-events: none; }
+.movement-hero > :not(.mv-runners) { position: relative; z-index: 1; }
+.mv-runners .mvr {
+  position: absolute;
+  font-size: 2.4rem;
+  opacity: 0.16;
+  animation: mvr-run 7s linear infinite;
+}
+.mv-runners .mvr1 { top: 20%; left: -10%; }
+.mv-runners .mvr2 { top: 55%; left: -10%; animation-delay: -2.4s; font-size: 2.8rem; }
+.mv-runners .mvr3 { top: 34%; left: -10%; animation-delay: -4.8s; }
+@keyframes mvr-run {
+  from { transform: translateX(0); }
+  to { transform: translateX(130vw); }
+}
+
+.movement-reveal { animation: matter-rise 0.3s ease both; }
+
+.mv-group-tag {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.66rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  background: var(--life-soft, #e6f6ec);
+  color: var(--green-deep, #166534);
+  vertical-align: middle;
+}
+
+.elbow-lab,
+.photo-lab,
+.mimosa-lab {
+  display: grid;
+  gap: 1.25rem;
+  align-items: start;
+  margin-top: 0.75rem;
+}
+@media (min-width: 720px) {
+  .elbow-lab,
+  .photo-lab,
+  .mimosa-lab {
+    grid-template-columns: minmax(180px, 240px) 1fr;
+  }
+}
+
+.elbow-figure {
+  width: 100%;
+  max-width: 220px;
+  justify-self: center;
+  background: #ecfdf3;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+.el-bone { fill: #f1f5f9; stroke: #94a3b8; stroke-width: 2; }
+.el-joint { fill: #64748b; }
+.el-hand { fill: #fbbf24; stroke: #b45309; stroke-width: 2; }
+.el-muscle {
+  fill: #fca5a5;
+  transition: rx 0.5s ease, ry 0.5s ease, fill 0.3s ease;
+}
+.el-muscle.is-contracted { fill: #ef4444; }
+.el-forearm { transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); }
+
+.elbow-controls { display: grid; gap: 0.75rem; }
+.drill-check.is-on,
+.drill-next.is-on {
+  outline: 3px solid var(--focus);
+}
+.muscle-features {
+  margin: 0.25rem 0 0;
+  padding-left: 1.1rem;
+  font-size: 0.86rem;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+.support-columns {
+  display: grid;
+  gap: 0.85rem;
+  margin-top: 0.5rem;
+}
+@media (min-width: 640px) {
+  .support-columns { grid-template-columns: 1fr 1fr; }
+}
+.support-card {
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+.support-card.soft { background: #ecfdf3; border-color: #bbf7d0; }
+.support-card.woody { background: #fef7ec; border-color: #fcd9a8; }
+.support-card h4 { margin: 0 0 0.4rem; }
+.support-card p { margin: 0; font-size: 0.9rem; line-height: 1.55; }
+
+.photo-figure {
+  width: 100%;
+  max-width: 260px;
+  justify-self: center;
+  background: linear-gradient(#e0f2fe, #ecfdf3);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+.pt-sun { transition: transform 0.6s ease; }
+.pt-sun-core { fill: #fbbf24; }
+.pt-ray { stroke: #f59e0b; stroke-width: 3; stroke-linecap: round; }
+.pt-pot { fill: #c2704a; }
+.pt-soil { fill: #6b4423; }
+.pt-stem { fill: none; stroke: #16a34a; stroke-width: 8; stroke-linecap: round; }
+.pt-leaf { fill: #22c55e; }
+.pt-roots { fill: none; stroke: #a16207; stroke-width: 3; stroke-linecap: round; }
+.photo-controls { display: grid; gap: 0.5rem; }
+
+.mimosa-figure {
+  width: 100%;
+  max-width: 240px;
+  justify-self: center;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+}
+.mi-sky { fill: #ecfdf3; transition: fill 0.5s ease; }
+.mimosa-figure.is-night .mi-sky { fill: #1e293b; }
+.mi-stem { fill: none; stroke: #15803d; stroke-width: 7; stroke-linecap: round; }
+.mi-petiole { stroke: #16a34a; stroke-width: 4; stroke-linecap: round; }
+.mi-leaf {
+  fill: #22c55e;
+  transition: transform 0.4s ease;
+}
+.mimosa-figure.is-folded .mi-leaf.up { transform: rotate(72deg); }
+.mimosa-figure.is-folded .mi-leaf.down { transform: rotate(-72deg); }
+.mimosa-controls { display: grid; gap: 0.6rem; }
+
+.movement-bins {
+  grid-template-columns: 1fr;
+}
+@media (min-width: 620px) {
+  .movement-bins { grid-template-columns: 1fr 1fr; }
+}
+.sort-bin.bin-tropic { border-color: #bbf7d0; background: #f0fdf4; }
+.sort-bin.bin-nastic { border-color: #ddd6fe; background: #f5f3ff; }
+.movement-sort .sort-bin li { animation: matter-rise 0.3s ease both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .mv-runners .mvr,
+  .movement-reveal,
+  .el-forearm,
+  .el-muscle,
+  .pt-sun,
+  .pt-stem,
+  .mi-leaf,
+  .mi-sky,
+  .movement-sort .sort-bin li {
+    animation: none;
+    transition: none;
+  }
+}

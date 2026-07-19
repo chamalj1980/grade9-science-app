@@ -98,6 +98,54 @@ export const modules: LearningModule[] = [
     ]
   },
   {
+    id: "support-movement",
+    chapter: 8,
+    title: "Support and Movements of Organisms",
+    shortTitle: "Movement",
+    icon: "🏃",
+    theme: "movement",
+    summary:
+      "How animals and plants move and hold themselves up — muscles, the elbow joint, tropisms and nastic movements.",
+    sections: [
+      {
+        id: "lesson",
+        navLabel: "Lesson",
+        title: "Support and Movements of Organisms",
+        eyebrow: "Concept builder",
+        type: "lesson",
+        summary:
+          "Explore how animals move, flex an interactive elbow, and watch plants bend to light and fold at a touch."
+      },
+      {
+        id: "exercise-1",
+        navLabel: "Exercise 1",
+        title: "Match the Mover",
+        eyebrow: "Matching practice",
+        type: "labeling",
+        summary:
+          "Match each animal to the appendage it uses to move, level by level."
+      },
+      {
+        id: "exercise-2",
+        navLabel: "Exercise 2",
+        title: "Tropic or Nastic?",
+        eyebrow: "Sort and quiz",
+        type: "mixed-exercise",
+        summary:
+          "Sort plant movements into tropic and nastic, then take the recap quiz."
+      },
+      {
+        id: "recap",
+        navLabel: "Recap",
+        title: "Movement Recap",
+        eyebrow: "Key ideas",
+        type: "recap",
+        summary:
+          "Animal locomotion, muscles and joints, and plant movements in one card."
+      }
+    ]
+  },
+  {
     id: "pressure-solids",
     chapter: 5,
     title: "Pressure Exerted by Solids",

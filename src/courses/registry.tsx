@@ -2,6 +2,9 @@ import { PlaceholderCard } from "../components/PlaceholderCard";
 import { recaps } from "../data/recaps";
 import type { LearningModule, LearningSection } from "../types";
 import { CirculatoryLesson } from "./circulatory/CirculatoryLesson";
+import { MatchTheMover } from "./movement/MatchTheMover";
+import { MovementLesson } from "./movement/MovementLesson";
+import { MovementSortAndQuiz } from "./movement/MovementSortAndQuiz";
 import { HeartSimulation } from "./circulatory/HeartSimulation";
 import { LabelTheHeart } from "./circulatory/LabelTheHeart";
 import { TransfusionLab } from "./circulatory/TransfusionLab";
@@ -47,6 +50,18 @@ export function renderSection(
           onProgress={progressProps.onProgress}
         />
       );
+    }
+  }
+
+  if (module.id === "support-movement") {
+    if (section.id === "lesson") {
+      return <MovementLesson onProgress={progressProps.onProgress} />;
+    }
+    if (section.id === "exercise-1") {
+      return <MatchTheMover onProgress={progressProps.onProgress} />;
+    }
+    if (section.id === "exercise-2") {
+      return <MovementSortAndQuiz onProgress={progressProps.onProgress} />;
     }
   }
 
