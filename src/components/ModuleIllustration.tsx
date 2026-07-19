@@ -75,6 +75,29 @@ export function ModuleIllustration({ theme }: ModuleIllustrationProps) {
     );
   }
 
+  if (theme === "movement") {
+    return (
+      <svg
+        className="module-illustration"
+        viewBox="0 0 180 120"
+        role="img"
+        aria-label="A flexing arm showing a muscle"
+      >
+        {/* upper arm */}
+        <rect x="44" y="30" width="20" height="46" rx="10" className="svg-mv-bone" />
+        {/* bicep bulge */}
+        <ellipse cx="54" cy="52" rx="16" ry="20" className="svg-mv-muscle" />
+        {/* forearm, bent up */}
+        <rect x="54" y="58" width="20" height="52" rx="10" className="svg-mv-bone" transform="rotate(-115 64 66)" />
+        {/* fist */}
+        <circle cx="112" cy="40" r="14" className="svg-mv-fist" />
+        {/* joints */}
+        <circle cx="54" cy="34" r="6" className="svg-mv-joint" />
+        <circle cx="64" cy="66" r="6" className="svg-mv-joint" />
+      </svg>
+    );
+  }
+
   if (theme === "matter") {
     return (
       <svg

@@ -34,7 +34,8 @@ export type Theme =
   | "microbes"
   | "matter"
   | "force"
-  | "plant";
+  | "plant"
+  | "movement";
 
 export interface LearningModule {
   id: string;

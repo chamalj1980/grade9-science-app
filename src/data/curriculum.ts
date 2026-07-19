@@ -43,7 +43,8 @@ export type ChapterArtId =
   | "light"
   | "sound"
   | "eco"
-  | "space";
+  | "space"
+  | "movement";
 
 export interface Chapter {
   n: number;
@@ -114,10 +115,11 @@ export const chapters: Chapter[] = [
   },
   {
     n: 8,
-    title: "Classification of Matter",
-    subject: "matter",
-    blurb: "Elements, compounds and mixtures all around us.",
-    art: "matter"
+    title: "Support and Movements of Organisms",
+    subject: "life",
+    blurb: "How animals and plants move — muscles, joints, tropisms and the touchy Mimosa.",
+    art: "movement",
+    moduleId: "support-movement"
   },
   {
     n: 9,

@@ -17,6 +17,102 @@ export interface QuizQuestion {
 
 export const quizQuestions: QuizQuestion[] = [
   // ------------------------------------------------------------------
+  // Support and Movements of Organisms (chapter 8)
+  // ------------------------------------------------------------------
+  {
+    id: "mv-1",
+    moduleId: "support-movement",
+    prompt: "Which appendage does an Amoeba use to move?",
+    options: ["Cilia", "Flagellum", "Pseudopodia", "Limbs"],
+    answer: 2,
+    explanation: "Amoeba pushes out finger-like 'false feet' called pseudopodia to creep along.",
+    difficulty: "easy"
+  },
+  {
+    id: "mv-2",
+    moduleId: "support-movement",
+    prompt: "Paramecium moves using…",
+    options: ["Cilia", "A flagellum", "A muscular foot", "Wings"],
+    answer: 0,
+    explanation: "Paramecium is covered in tiny hair-like cilia that beat to move it through water.",
+    difficulty: "medium"
+  },
+  {
+    id: "mv-3",
+    moduleId: "support-movement",
+    prompt: "Human movements need…",
+    options: ["only bones", "only muscles", "both bones and muscles", "neither"],
+    answer: 2,
+    explanation: "Vertebrates like us move using muscles pulling on bones together.",
+    difficulty: "easy"
+  },
+  {
+    id: "mv-4",
+    moduleId: "support-movement",
+    prompt: "At the elbow, which muscle contracts to BEND (lift) the arm?",
+    options: ["The triceps", "The biceps", "The humerus", "The tendon"],
+    answer: 1,
+    explanation: "The biceps contracts and pulls the radius, bending the arm; the triceps relaxes.",
+    difficulty: "medium"
+  },
+  {
+    id: "mv-5",
+    moduleId: "support-movement",
+    prompt: "What keeps a soft, non-woody plant standing upright?",
+    options: [
+      "Cellulose and lignin",
+      "Water filling its cells (turgor)",
+      "Its roots only",
+      "Air pressure"
+    ],
+    answer: 1,
+    explanation: "Soft plants stay erect through water/turgor and wilt when they dry out. Woody plants use cellulose and lignin.",
+    difficulty: "medium"
+  },
+  {
+    id: "mv-6",
+    moduleId: "support-movement",
+    prompt: "A stem growing towards light is an example of…",
+    options: [
+      "positive phototropism",
+      "negative geotropism",
+      "a haptonastic movement",
+      "a nyctinastic movement"
+    ],
+    answer: 0,
+    explanation: "Growth towards light is positive phototropism — a tropic movement.",
+    difficulty: "medium"
+  },
+  {
+    id: "mv-7",
+    moduleId: "support-movement",
+    prompt: "Mimosa leaves folding the instant they are touched is a…",
+    options: [
+      "nyctinastic movement",
+      "haptonastic movement",
+      "positive geotropic movement",
+      "photonastic movement"
+    ],
+    answer: 1,
+    explanation: "A response to touch, in a fixed direction, is a haptonastic (nastic) movement — a turgor change, not growth.",
+    difficulty: "hard"
+  },
+  {
+    id: "mv-8",
+    moduleId: "support-movement",
+    prompt: "How does a tropic movement differ from a nastic movement?",
+    options: [
+      "A tropic movement is faster",
+      "A tropic movement's direction is linked to the stimulus; a nastic one is fixed",
+      "A nastic movement is caused by growth substances",
+      "There is no difference"
+    ],
+    answer: 1,
+    explanation: "Tropic = growth whose direction depends on the stimulus. Nastic = a fixed response (usually a turgor change), whatever the stimulus direction.",
+    difficulty: "hard"
+  },
+
+  // ------------------------------------------------------------------
   // Basic Concepts Associated with Force (chapter 4)
   // ------------------------------------------------------------------
   {
