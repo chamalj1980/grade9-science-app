@@ -5733,3 +5733,317 @@ button.mt-node:hover {
     transition: none;
   }
 }
+
+/* =====================================================================
+   Chapter 9 — The Evolutionary Process
+   ===================================================================== */
+.lesson-hero.evolution,
+.recap-card.evolution {
+  border-color: #e7d3b1;
+  background: linear-gradient(140deg, #fbf3e6, #ffffff);
+}
+.lesson-hero.evolution .eyebrow,
+.recap-card.evolution .eyebrow {
+  color: #92400e;
+}
+
+/* module illustration (fossil) */
+.svg-evo-rock { fill: #d6c3a5; stroke: #a18660; stroke-width: 3; }
+.svg-evo-bones { fill: none; stroke: #6b4f2a; stroke-width: 4; stroke-linecap: round; }
+.svg-evo-tail { fill: #6b4f2a; }
+.svg-evo-eye { fill: #6b4f2a; }
+
+/* animated hero */
+.evo-hero { position: relative; overflow: hidden; }
+.evo-swirl { position: absolute; inset: 0; pointer-events: none; }
+.evo-hero > :not(.evo-swirl) { position: relative; z-index: 1; }
+.evo-swirl .es {
+  position: absolute;
+  font-size: 2.2rem;
+  opacity: 0.16;
+  animation: es-float 8s ease-in-out infinite;
+}
+.evo-swirl .es1 { top: 22%; right: 30%; }
+.evo-swirl .es2 { top: 55%; right: 20%; animation-delay: -2s; font-size: 2.6rem; }
+.evo-swirl .es3 { top: 30%; right: 10%; animation-delay: -4s; }
+.evo-swirl .es4 { top: 62%; right: 38%; animation-delay: -6s; }
+@keyframes es-float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-10px) rotate(8deg); }
+}
+
+.evo-reveal { animation: matter-rise 0.3s ease both; }
+
+/* theory cards */
+.theory-pair {
+  display: grid;
+  gap: 0.85rem;
+  margin-top: 0.75rem;
+}
+@media (min-width: 640px) { .theory-pair { grid-template-columns: 1fr 1fr; } }
+.theory-card {
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fbf3e6;
+}
+.theory-card h4 { margin: 0 0 0.4rem; }
+.theory-card p { margin: 0; font-size: 0.9rem; line-height: 1.55; }
+.theory-tag {
+  display: inline-block;
+  margin-left: 0.4rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.64rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  vertical-align: middle;
+}
+.theory-tag.first-scientific { background: #fef3c7; color: #92400e; }
+.theory-tag.modern { background: #dbeafe; color: #1e40af; }
+.theory-verdict {
+  display: inline-block;
+  margin-left: 0.4rem;
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  vertical-align: middle;
+}
+.theory-verdict.yes { background: var(--life-soft, #e6f6ec); color: var(--life, #16a34a); }
+.theory-verdict.no { background: #fee2e2; color: #b91c1c; }
+
+.evo-facts {
+  display: grid;
+  gap: 0.6rem;
+  margin-top: 0.85rem;
+}
+@media (min-width: 620px) { .evo-facts { grid-template-columns: 1fr 1fr; } }
+.evo-fact {
+  display: flex;
+  gap: 0.7rem;
+  align-items: flex-start;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #ffffff;
+}
+.ef-emoji { font-size: 1.5rem; }
+.evo-fact strong { display: block; font-size: 0.92rem; }
+.evo-fact span { font-size: 0.82rem; color: var(--muted); line-height: 1.45; }
+
+.scientist-strip {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 0.85rem;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 620px) { .scientist-strip { grid-template-columns: 1fr 1fr; } }
+.scientist-card {
+  padding: 0.6rem 0.8rem;
+  border-left: 3px solid #92400e;
+  border-radius: 0 10px 10px 0;
+  background: #fbf3e6;
+}
+.scientist-card strong { display: block; font-size: 0.9rem; }
+.scientist-card span { font-size: 0.82rem; color: var(--muted); }
+
+/* march of life */
+.march-strip {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding: 0.5rem 0 0.75rem;
+  margin: 0.75rem 0 0;
+  list-style: none;
+  counter-reset: none;
+}
+.march-strip li {
+  flex: 0 0 auto;
+  width: 118px;
+  display: grid;
+  justify-items: center;
+  gap: 0.3rem;
+  padding: 0.7rem 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fbf3e6;
+  text-align: center;
+  position: relative;
+  animation: matter-rise 0.4s ease both;
+}
+.march-strip li:not(:last-child)::after {
+  content: "→";
+  position: absolute;
+  right: -0.55rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #92400e;
+  font-weight: 800;
+}
+.ms-emoji { font-size: 1.8rem; }
+.ms-label { font-size: 0.72rem; font-weight: 600; line-height: 1.25; }
+
+/* evidence */
+.evidence-grid {
+  display: grid;
+  gap: 0.6rem;
+  margin-top: 0.5rem;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 620px) { .evidence-grid { grid-template-columns: repeat(3, 1fr); } }
+.evidence-card {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.8rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #ffffff;
+  text-align: center;
+}
+.ev-emoji { font-size: 1.6rem; }
+.evidence-card strong { font-size: 0.9rem; }
+.evidence-card span { font-size: 0.8rem; color: var(--muted); line-height: 1.4; }
+
+/* fossil stepper */
+.fossil-stepper {
+  display: grid;
+  gap: 1rem;
+  align-items: center;
+  margin-top: 0.75rem;
+}
+@media (min-width: 620px) { .fossil-stepper { grid-template-columns: 150px 1fr; } }
+.fossil-stage {
+  display: grid;
+  justify-items: center;
+  gap: 0.35rem;
+  padding: 1.1rem;
+  border-radius: 14px;
+  background: linear-gradient(#fbf3e6, #efe0c6);
+  border: 1px solid #e7d3b1;
+}
+.fs-emoji { font-size: 3rem; }
+.fs-num { font-size: 0.72rem; font-weight: 800; color: #92400e; text-transform: uppercase; letter-spacing: 0.04em; }
+.fossil-copy h4 { margin: 0 0 0.35rem; }
+.fossil-copy p { margin: 0 0 0.6rem; font-size: 0.9rem; line-height: 1.5; }
+.fossil-dots { display: flex; gap: 0.4rem; margin-bottom: 0.6rem; }
+.fossil-dots button {
+  width: 14px; height: 14px; min-height: auto; padding: 0;
+  border-radius: 50%;
+  border: 2px solid #d6c3a5;
+  background: #ffffff;
+}
+.fossil-dots button.is-active { background: #92400e; border-color: #92400e; }
+
+.living-title { margin: 1rem 0 0.35rem; }
+.living-grid {
+  display: grid;
+  gap: 0.6rem;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+}
+.living-card {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #ffffff;
+  text-align: center;
+}
+.lf-emoji { font-size: 1.6rem; }
+.living-card strong { font-size: 0.86rem; }
+.living-card span { font-size: 0.76rem; color: var(--muted); line-height: 1.4; }
+
+.darwin-card {
+  display: flex;
+  gap: 0.85rem;
+  align-items: center;
+  margin-top: 0.6rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid #e7d3b1;
+  border-radius: 14px;
+  background: #fbf3e6;
+}
+.dc-emoji { font-size: 2.2rem; }
+.darwin-card div { font-size: 0.92rem; line-height: 1.55; }
+
+/* ---- Exercise 1: timeline of life ---- */
+.tl-strip {
+  display: grid;
+  gap: 0.5rem;
+  padding: 0;
+  margin: 0.75rem 0 1rem;
+  list-style: none;
+  counter-reset: none;
+}
+.tl-slot {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.5rem 0.7rem;
+  border: 2px dashed var(--line);
+  border-radius: 12px;
+  background: #fbf3e6;
+  min-height: 52px;
+}
+.tl-slot.filled { border-style: solid; background: #ffffff; }
+.tl-slot.ok { border-color: var(--green); background: #e7f6ec; }
+.tl-slot.no { border-color: #dc2626; background: #fdeaea; }
+.tl-num {
+  display: grid;
+  place-items: center;
+  width: 26px; height: 26px;
+  flex: none;
+  border-radius: 8px;
+  background: #92400e;
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.8rem;
+}
+.tl-placed {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: auto;
+  padding: 0.25rem 0;
+  background: none;
+  font-weight: 600;
+  text-align: left;
+}
+.tl-mark { margin-left: auto; }
+.tl-empty { color: var(--muted); font-size: 0.85rem; }
+.tl-pool {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+.tl-chip {
+  padding: 0.6rem 0.85rem;
+  border: 2px solid #e7d3b1;
+  border-radius: 12px;
+  background: #ffffff;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+.tl-chip:hover { border-color: #92400e; transform: translateY(-1px); }
+
+/* ---- Exercise 2: true/false bins ---- */
+.evolution-bins { grid-template-columns: 1fr; }
+@media (min-width: 620px) { .evolution-bins { grid-template-columns: 1fr 1fr; } }
+.sort-bin.bin-true { border-color: #bbf7d0; background: #f0fdf4; }
+.sort-bin.bin-false { border-color: #fecaca; background: #fef2f2; }
+.evolution-sort .sort-bin li { animation: matter-rise 0.3s ease both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .evo-swirl .es,
+  .evo-reveal,
+  .march-strip li,
+  .tl-chip,
+  .evolution-sort .sort-bin li {
+    animation: none;
+    transition: none;
+  }
+}

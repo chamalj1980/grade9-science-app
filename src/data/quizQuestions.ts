@@ -17,6 +17,97 @@ export interface QuizQuestion {
 
 export const quizQuestions: QuizQuestion[] = [
   // ------------------------------------------------------------------
+  // The Evolutionary Process (chapter 9)
+  // ------------------------------------------------------------------
+  {
+    id: "ev-1",
+    moduleId: "evolution",
+    prompt: "About how long ago is the Earth believed to have formed?",
+    options: ["4.5 billion years", "3.5 million years", "5 000 years", "54 million years"],
+    answer: 0,
+    explanation: "The Earth formed about 4.5 billion years ago; life appeared about 3.5 billion years ago.",
+    difficulty: "easy"
+  },
+  {
+    id: "ev-2",
+    moduleId: "evolution",
+    prompt: "The first scientific theory of the origin of the solar system was the…",
+    options: ["Big Bang theory", "Nebular theory", "Cosmozoic theory", "Special creation"],
+    answer: 1,
+    explanation: "The Nebular theory came first; the Big Bang theory is the modern explanation.",
+    difficulty: "medium"
+  },
+  {
+    id: "ev-3",
+    moduleId: "evolution",
+    prompt: "Which gas was ABSENT from the early Earth's atmosphere?",
+    options: ["Carbon dioxide", "Methane", "Oxygen", "Hydrogen sulphide"],
+    answer: 2,
+    explanation: "The early atmosphere had CO₂, CH₄ and H₂S — the absence of oxygen is a key fact.",
+    difficulty: "medium"
+  },
+  {
+    id: "ev-4",
+    moduleId: "evolution",
+    prompt: "The accepted theory of the origin of life today is…",
+    options: [
+      "special creation",
+      "spontaneous generation",
+      "the cosmozoic theory",
+      "bio-chemical evolution"
+    ],
+    answer: 3,
+    explanation: "Bio-chemical evolution (the primordial soup) is accepted — proposed by Haldane & Oparin, proved by Stanley Miller.",
+    difficulty: "medium"
+  },
+  {
+    id: "ev-5",
+    moduleId: "evolution",
+    prompt: "Who disproved the spontaneous generation theory?",
+    options: ["Charles Darwin", "Louis Pasteur", "Stanley Miller", "Ernest Rutherford"],
+    answer: 1,
+    explanation: "Louis Pasteur's swan-neck flask experiment showed life does not appear from non-living things by itself.",
+    difficulty: "medium"
+  },
+  {
+    id: "ev-6",
+    moduleId: "evolution",
+    prompt: "Which shows the correct order of evolution, earliest first?",
+    options: [
+      "Fish → bacteria → amphibians → reptiles",
+      "Bacteria → algae → fish → amphibians → reptiles",
+      "Reptiles → fish → bacteria → birds",
+      "Algae → fish → bacteria → mammals"
+    ],
+    answer: 1,
+    explanation: "Life went unicellular bacteria → algae → multicellular → fish → amphibians → reptiles → birds and mammals.",
+    difficulty: "hard"
+  },
+  {
+    id: "ev-7",
+    moduleId: "evolution",
+    prompt: "A 'living fossil', such as the Coelacanth, is an organism that…",
+    options: [
+      "is known only from fossils",
+      "has survived almost unchanged for millions of years",
+      "changes rapidly over time",
+      "lived before the Earth formed"
+    ],
+    answer: 1,
+    explanation: "Living fossils like the Coelacanth and Lingula have hardly changed over millions of years.",
+    difficulty: "medium"
+  },
+  {
+    id: "ev-8",
+    moduleId: "evolution",
+    prompt: "Who is considered the father of evolution?",
+    options: ["Louis Pasteur", "Charles Darwin", "John Dalton", "Stanley Miller"],
+    answer: 1,
+    explanation: "Charles Darwin put forward the theory of natural selection — the accepted explanation of how evolution works.",
+    difficulty: "easy"
+  },
+
+  // ------------------------------------------------------------------
   // Support and Movements of Organisms (chapter 8)
   // ------------------------------------------------------------------
   {

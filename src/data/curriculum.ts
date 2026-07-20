@@ -44,7 +44,8 @@ export type ChapterArtId =
   | "sound"
   | "eco"
   | "space"
-  | "movement";
+  | "movement"
+  | "evolution";
 
 export interface Chapter {
   n: number;
@@ -123,10 +124,11 @@ export const chapters: Chapter[] = [
   },
   {
     n: 9,
-    title: "Atomic Structure",
-    subject: "matter",
-    blurb: "Inside the atom — protons, neutrons and electron shells.",
-    art: "atom"
+    title: "The Evolutionary Process",
+    subject: "life",
+    blurb: "How the Earth and life began, the sequence of life, fossils and natural selection.",
+    art: "evolution",
+    moduleId: "evolution"
   },
   {
     n: 10,

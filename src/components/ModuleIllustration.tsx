@@ -98,6 +98,30 @@ export function ModuleIllustration({ theme }: ModuleIllustrationProps) {
     );
   }
 
+  if (theme === "evolution") {
+    return (
+      <svg
+        className="module-illustration"
+        viewBox="0 0 180 120"
+        role="img"
+        aria-label="A fish fossil in a rock slab"
+      >
+        {/* rock slab */}
+        <rect x="24" y="24" width="132" height="72" rx="10" className="svg-evo-rock" />
+        {/* fish skeleton fossil */}
+        <g className="svg-evo-bones">
+          <path d="M52 60q40-26 76 0q-36 26-76 0Z" />
+          <path d="M128 60l22-12v24Z" className="svg-evo-tail" />
+          <path d="M70 49v22" />
+          <path d="M84 45v30" />
+          <path d="M98 45v30" />
+          <path d="M112 49v22" />
+        </g>
+        <circle cx="62" cy="58" r="3.5" className="svg-evo-eye" />
+      </svg>
+    );
+  }
+
   if (theme === "matter") {
     return (
       <svg

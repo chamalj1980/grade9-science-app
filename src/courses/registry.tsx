@@ -2,6 +2,9 @@ import { PlaceholderCard } from "../components/PlaceholderCard";
 import { recaps } from "../data/recaps";
 import type { LearningModule, LearningSection } from "../types";
 import { CirculatoryLesson } from "./circulatory/CirculatoryLesson";
+import { EvolutionLesson } from "./evolution/EvolutionLesson";
+import { TimelineOfLife } from "./evolution/TimelineOfLife";
+import { EvolutionSortAndQuiz } from "./evolution/EvolutionSortAndQuiz";
 import { MatchTheMover } from "./movement/MatchTheMover";
 import { MovementLesson } from "./movement/MovementLesson";
 import { MovementSortAndQuiz } from "./movement/MovementSortAndQuiz";
@@ -53,6 +56,18 @@ export function renderSection(
           onProgress={progressProps.onProgress}
         />
       );
+    }
+  }
+
+  if (module.id === "evolution") {
+    if (section.id === "lesson") {
+      return <EvolutionLesson onProgress={progressProps.onProgress} />;
+    }
+    if (section.id === "exercise-1") {
+      return <TimelineOfLife onProgress={progressProps.onProgress} />;
+    }
+    if (section.id === "exercise-2") {
+      return <EvolutionSortAndQuiz onProgress={progressProps.onProgress} />;
     }
   }
 

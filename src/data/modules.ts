@@ -146,6 +146,54 @@ export const modules: LearningModule[] = [
     ]
   },
   {
+    id: "evolution",
+    chapter: 9,
+    title: "The Evolutionary Process",
+    shortTitle: "Evolution",
+    icon: "🧬",
+    theme: "evolution",
+    summary:
+      "Trace the origin of the Earth and life, the theories, the sequence of life, fossils and natural selection.",
+    sections: [
+      {
+        id: "lesson",
+        navLabel: "Lesson",
+        title: "The Evolutionary Process",
+        eyebrow: "Concept builder",
+        type: "lesson",
+        summary:
+          "Explore the origin of the Earth and life, the theories, the march of life, fossils, and natural selection."
+      },
+      {
+        id: "exercise-1",
+        navLabel: "Exercise 1",
+        title: "Timeline of Life",
+        eyebrow: "Ordering challenge",
+        type: "simulation",
+        summary:
+          "Build the timeline of life — arrange the stages in order, earliest first, level by level."
+      },
+      {
+        id: "exercise-2",
+        navLabel: "Exercise 2",
+        title: "Fact or Myth?",
+        eyebrow: "Sort and quiz",
+        type: "mixed-exercise",
+        summary:
+          "Judge each statement about evolution as true or false, then take the recap quiz."
+      },
+      {
+        id: "recap",
+        navLabel: "Recap",
+        title: "Evolution Recap",
+        eyebrow: "Key ideas",
+        type: "recap",
+        summary:
+          "Origins, theories, the sequence of life, fossils and bio-diversity in one card."
+      }
+    ]
+  },
+  {
     id: "pressure-solids",
     chapter: 5,
     title: "Pressure Exerted by Solids",

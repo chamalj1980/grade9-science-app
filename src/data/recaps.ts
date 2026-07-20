@@ -6,6 +6,42 @@ export const recaps: Record<
   string,
   { intro: string; points: RecapPoint[] }
 > = {
+  evolution: {
+    intro:
+      "The origins, the theories, the sequence of life, and the evidence in one place.",
+    points: [
+      {
+        term: "Origin of the Earth",
+        detail:
+          "About 4.5 billion years ago. The Nebular theory was the first scientific idea; the Big Bang theory is the modern one. The early atmosphere had CO₂, CH₄ and H₂S but NO oxygen; rain formed the oceans."
+      },
+      {
+        term: "Origin of life",
+        detail:
+          "About 3.5 billion years ago. Of the theories (special creation, spontaneous generation, cosmozoic, bio-chemical), bio-chemical evolution is accepted — the first cell formed in the 'primordial soup'."
+      },
+      {
+        term: "Key scientists",
+        detail:
+          "Louis Pasteur disproved spontaneous generation; Haldane & Oparin proposed and Stanley Miller proved bio-chemical evolution; Charles Darwin gave the theory of natural selection."
+      },
+      {
+        term: "The sequence of life",
+        detail:
+          "Unicellular bacteria → unicellular algae → multicellular organisms → fish → amphibians → reptiles → birds and mammals. This gradual change from simple to complex is evolution."
+      },
+      {
+        term: "Fossils",
+        detail:
+          "The preserved remains, part or trace of a dead organism — the main evidence for evolution. In rock layers the oldest are at the bottom; ¹⁴C dates them. Living fossils (Coelacanth, Lingula) are barely changed."
+      },
+      {
+        term: "Bio-diversity",
+        detail:
+          "Competition and natural selection establish the best-suited organisms; speciation creates new species. Together these build the bio-diversity of life."
+      }
+    ]
+  },
   "support-movement": {
     intro:
       "How animals move, how bones and muscles work, and how plants move — in one place.",
