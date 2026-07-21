@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { BlockGallery } from "./components/BlockGallery";
 import { HomeDashboard } from "./components/HomeDashboard";
 import { ModuleNav } from "./components/ModuleNav";
 import { ModulesOverview } from "./components/ModulesOverview";
@@ -23,6 +24,7 @@ type Screen =
   | { name: "modules" }
   | { name: "quiz" }
   | { name: "teacher" }
+  | { name: "blocks" }
   | { name: "progress" }
   | { name: "module"; moduleId: string; sectionId: SectionId };
 
@@ -134,6 +136,13 @@ function App() {
             >
               Teacher
             </button>
+            <button
+              type="button"
+              aria-current={screen.name === "blocks" ? "page" : undefined}
+              onClick={() => setScreen({ name: "blocks" })}
+            >
+              Blocks
+            </button>
           </nav>
         </div>
       </header>
@@ -159,6 +168,8 @@ function App() {
         {screen.name === "quiz" && <QuizArena modules={modules} />}
 
         {screen.name === "teacher" && <TeacherStudio modules={modules} />}
+
+        {screen.name === "blocks" && <BlockGallery />}
 
         {screen.name === "progress" && (
           <ProgressSummary

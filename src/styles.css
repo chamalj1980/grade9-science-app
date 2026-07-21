@@ -6047,3 +6047,214 @@ button.mt-node:hover {
     transition: none;
   }
 }
+
+/* ---- Block Gallery (admin / teacher block reference) ---- */
+.gallery {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 4rem;
+}
+.gallery-hero {
+  background: linear-gradient(135deg, #eef4ff, #f3f0ff);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 1.75rem;
+  margin-bottom: 1.5rem;
+}
+.gallery-hero h1 {
+  margin: 0.2rem 0 0.5rem;
+  font-size: 1.85rem;
+}
+.gallery-hero p {
+  margin: 0;
+  max-width: 62ch;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.gallery-stats {
+  display: flex;
+  gap: 1.25rem;
+  margin-top: 1.1rem;
+  flex-wrap: wrap;
+}
+.gallery-stats span {
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+.gallery-stats strong {
+  font-size: 1.15rem;
+  color: var(--ink);
+  margin-right: 0.25rem;
+}
+.gallery-filter {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.75rem;
+}
+.gallery-filter button {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--muted);
+  border-radius: 999px;
+  padding: 0.4rem 0.95rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.gallery-filter button.is-active {
+  background: var(--indigo);
+  border-color: var(--indigo);
+  color: #fff;
+}
+.gallery-group {
+  margin-bottom: 2.5rem;
+}
+.gallery-group-head h2 {
+  margin: 0 0 0.15rem;
+  font-size: 1.25rem;
+}
+.gallery-group-head p {
+  margin: 0 0 1.1rem;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+.gallery-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.1rem;
+}
+@media (min-width: 860px) {
+  .gallery-grid { grid-template-columns: 1fr 1fr; }
+}
+.block-card {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+  padding: 1.1rem 1.1rem 1.2rem;
+  box-shadow: 0 6px 18px rgba(23, 32, 27, 0.05);
+  display: flex;
+  flex-direction: column;
+}
+.block-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+.block-card-head h3 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+.block-card-head code {
+  font-size: 0.75rem;
+  color: var(--indigo);
+  background: #eef0fd;
+  padding: 0.1rem 0.4rem;
+  border-radius: 6px;
+}
+.block-card-tags {
+  display: flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+}
+.tag {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  background: #eef2f0;
+  color: var(--muted);
+}
+.tag-scored {
+  background: #dcfce7;
+  color: #166534;
+}
+.block-card-desc {
+  margin: 0.8rem 0 0.4rem;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+.block-card-when {
+  margin: 0 0 0.9rem;
+  font-size: 0.84rem;
+  color: var(--muted);
+}
+.block-card-when strong {
+  color: var(--ink);
+}
+.block-card-preview {
+  position: relative;
+  border: 1px dashed var(--line);
+  border-radius: 12px;
+  background: var(--page);
+  padding: 1.5rem 0.85rem 0.85rem;
+  margin-top: auto;
+}
+.preview-label {
+  position: absolute;
+  top: 0.45rem;
+  left: 0.7rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+.block-card-preview .lesson {
+  margin: 0;
+}
+.block-card-preview .lesson-block,
+.block-card-preview .sort-panel,
+.block-card-preview .lesson-finish {
+  margin: 0;
+  padding: 0;
+  border: none;
+  box-shadow: none;
+  background: transparent;
+}
+.planned-columns {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.1rem;
+}
+@media (min-width: 720px) {
+  .planned-columns { grid-template-columns: 1fr 1fr; }
+}
+@media (min-width: 1000px) {
+  .planned-columns { grid-template-columns: repeat(4, 1fr); }
+}
+.planned-column {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+  padding: 1rem;
+}
+.planned-column h3 {
+  margin: 0 0 0.6rem;
+  font-size: 0.95rem;
+  color: var(--indigo);
+}
+.planned-column ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.planned-column li {
+  display: flex;
+  flex-direction: column;
+}
+.planned-column li strong {
+  font-size: 0.85rem;
+}
+.planned-column li span {
+  font-size: 0.76rem;
+  color: var(--muted);
+  line-height: 1.4;
+}
