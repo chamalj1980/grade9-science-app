@@ -17,6 +17,97 @@ export interface QuizQuestion {
 
 export const quizQuestions: QuizQuestion[] = [
   // ------------------------------------------------------------------
+  // Electrolysis (chapter 10)
+  // ------------------------------------------------------------------
+  {
+    id: "el-1",
+    moduleId: "electrolysis",
+    prompt: "Which of these is an electrolyte?",
+    options: [
+      "Distilled water",
+      "Sugar dissolved in water",
+      "Sodium chloride dissolved in water",
+      "Grease dissolved in kerosene"
+    ],
+    answer: 2,
+    explanation: "An electrolyte conducts because it has mobile ions — salt solution does.",
+    difficulty: "easy"
+  },
+  {
+    id: "el-2",
+    moduleId: "electrolysis",
+    prompt: "A liquid conducts electricity only if it contains…",
+    options: ["mobile ions", "mobile electrons", "dissolved oxygen", "water molecules"],
+    answer: 0,
+    explanation: "Electrolytes conduct through mobile ions; without them a liquid does not conduct.",
+    difficulty: "easy"
+  },
+  {
+    id: "el-3",
+    moduleId: "electrolysis",
+    prompt: "Which statement about sodium chloride is correct?",
+    options: [
+      "Solid NaCl conducts electricity",
+      "Fused NaCl does not conduct",
+      "An aqueous NaCl solution conducts electricity",
+      "Solid NaCl contains mobile ions"
+    ],
+    answer: 2,
+    explanation: "In solution the ions are free to move, so aqueous NaCl conducts; solid NaCl does not.",
+    difficulty: "medium"
+  },
+  {
+    id: "el-4",
+    moduleId: "electrolysis",
+    prompt: "In the electrolysis of acidified water, the gas at the negative electrode is…",
+    options: ["Oxygen", "Hydrogen", "Carbon dioxide", "Chlorine"],
+    answer: 1,
+    explanation: "Hydrogen forms at the negative electrode (about twice the volume); oxygen at the positive.",
+    difficulty: "medium"
+  },
+  {
+    id: "el-5",
+    moduleId: "electrolysis",
+    prompt: "A glowing splint reignites in the gas from the positive electrode. The gas is…",
+    options: ["Hydrogen", "Oxygen", "Nitrogen", "Carbon dioxide"],
+    answer: 1,
+    explanation: "Oxygen relights a glowing splint; hydrogen burns with a squeaky 'pop'.",
+    difficulty: "medium"
+  },
+  {
+    id: "el-6",
+    moduleId: "electrolysis",
+    prompt: "Which pair are inert electrodes?",
+    options: ["Copper and iron", "Carbon and platinum", "Zinc and tin", "Sodium and aluminium"],
+    answer: 1,
+    explanation: "Inert electrodes do not react with the electrolyte — carbon (graphite) and platinum.",
+    difficulty: "medium"
+  },
+  {
+    id: "el-7",
+    moduleId: "electrolysis",
+    prompt: "To electroplate a copper ring with silver, the ring must be the…",
+    options: ["positive electrode", "negative electrode", "electrolyte", "inert electrode"],
+    answer: 1,
+    explanation: "The object being coated is the negative electrode; the plating metal is the positive electrode.",
+    difficulty: "hard"
+  },
+  {
+    id: "el-8",
+    moduleId: "electrolysis",
+    prompt: "A high-quality electroplating is produced by…",
+    options: [
+      "a concentrated solution and a high current",
+      "a dilute solution and a low current",
+      "heating the object strongly",
+      "using distilled water as the electrolyte"
+    ],
+    answer: 1,
+    explanation: "A slow change — dilute solution, low current — gives a thin, even, shiny coat.",
+    difficulty: "hard"
+  },
+
+  // ------------------------------------------------------------------
   // The Evolutionary Process (chapter 9)
   // ------------------------------------------------------------------
   {

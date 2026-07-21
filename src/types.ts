@@ -36,7 +36,8 @@ export type Theme =
   | "force"
   | "plant"
   | "movement"
-  | "evolution";
+  | "evolution"
+  | "electrolysis";
 
 export interface LearningModule {
   id: string;

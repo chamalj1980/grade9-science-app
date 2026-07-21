@@ -62,8 +62,12 @@ export function renderSection(
   if (schemaChapters[module.id]) {
     const contentSection = getChapterSection(module.id, section.id);
     if (contentSection) {
+      // Key by module+section so switching sections remounts with fresh block state —
+      // otherwise two sections that share a block type (e.g. both exercises use sortBins)
+      // would have React reuse the same component instance and leak its state.
       return (
         <SchemaSection
+          key={`${module.id}-${section.id}`}
           section={contentSection}
           theme={schemaChapters[module.id].theme}
           onProgress={progressProps.onProgress}

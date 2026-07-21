@@ -6,6 +6,42 @@ export const recaps: Record<
   string,
   { intro: string; points: RecapPoint[] }
 > = {
+  electrolysis: {
+    intro:
+      "Why liquids conduct, what a current does to them, and how we plate metals — in one place.",
+    points: [
+      {
+        term: "Electrolytes & non-electrolytes",
+        detail:
+          "Liquids that conduct (electrolytes) contain mobile ions; those that don't (non-electrolytes) have none. Salt solution, copper sulphate and acidified water conduct; distilled water and kerosene do not."
+      },
+      {
+        term: "Ionic compounds",
+        detail:
+          "Ionic solids (NaCl, CuSO₄) hold ions, but in the solid state they can't move — so solids don't conduct. Dissolved in water or melted (fused), the ions are free and the compound conducts."
+      },
+      {
+        term: "Electrolysis",
+        detail:
+          "Passing a current through an electrolyte causes a chemical change that splits it into simpler substances. Electrodes carry the current in and out; inert electrodes (carbon, platinum) don't react."
+      },
+      {
+        term: "Splitting water",
+        detail:
+          "Electrolysing acidified water gives hydrogen at the negative electrode (about twice the volume, burns with a 'pop') and oxygen at the positive electrode (relights a glowing splint)."
+      },
+      {
+        term: "Electroplating",
+        detail:
+          "Coating one metal with another by electrolysis. The plating metal is the positive electrode, the object is the negative electrode, and the electrolyte is a salt of the plating metal."
+      },
+      {
+        term: "Quality & uses",
+        detail:
+          "A slow change — a dilute solution and a low current — gives a thin, even, shiny coat. Electrolysis also extracts reactive metals (sodium, aluminium) and makes caustic soda."
+      }
+    ]
+  },
   evolution: {
     intro:
       "The origins, the theories, the sequence of life, and the evidence in one place.",

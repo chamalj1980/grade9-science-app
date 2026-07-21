@@ -132,7 +132,8 @@ export const chapters: Chapter[] = [
     title: "Electrolysis",
     subject: "matter",
     blurb: "Using electricity to split compounds into their elements.",
-    art: "ph"
+    art: "ph",
+    moduleId: "electrolysis"
   },
   {
     n: 11,

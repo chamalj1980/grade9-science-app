@@ -458,5 +458,53 @@ export const modules: LearningModule[] = [
           "The apex, the promoters and inhibitors, phototropism, and artificial substances in one quick card."
       }
     ]
+  },
+  {
+    id: "electrolysis",
+    chapter: 10,
+    title: "Electrolysis",
+    shortTitle: "Electrolysis",
+    icon: "⚡",
+    theme: "electrolysis",
+    summary:
+      "Discover why some liquids carry electricity, how a current splits compounds, and how electroplating coats one metal with another.",
+    sections: [
+      {
+        id: "lesson",
+        navLabel: "Lesson",
+        title: "Electrolysis",
+        eyebrow: "Concept builder",
+        type: "lesson",
+        summary:
+          "Electrolytes and ions, the states of ionic compounds, electrolysis of copper sulphate and water, and electroplating."
+      },
+      {
+        id: "exercise-1",
+        navLabel: "Exercise 1",
+        title: "Electrolyte or Not?",
+        eyebrow: "Sorting challenge",
+        type: "mixed-exercise",
+        summary:
+          "Sort liquids into electrolytes and non-electrolytes by whether they conduct electricity."
+      },
+      {
+        id: "exercise-2",
+        navLabel: "Exercise 2",
+        title: "Fact or Myth?",
+        eyebrow: "Sort and quiz",
+        type: "mixed-exercise",
+        summary:
+          "Judge statements about electrolysis as true or false, then take the recap quiz."
+      },
+      {
+        id: "recap",
+        navLabel: "Recap",
+        title: "Electrolysis Recap",
+        eyebrow: "Key ideas",
+        type: "recap",
+        summary:
+          "Electrolytes, ionic states, electrolysis, splitting water and electroplating in one card."
+      }
+    ]
   }
 ];

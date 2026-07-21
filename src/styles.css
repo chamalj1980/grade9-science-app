@@ -6258,3 +6258,23 @@ button.mt-node:hover {
   color: var(--muted);
   line-height: 1.4;
 }
+
+
+/* =====================================================================
+   Chapter 10 — Electrolysis
+   ===================================================================== */
+.lesson-hero.electrolysis,
+.recap-card.electrolysis {
+  border-color: #bcd7e6;
+  background: linear-gradient(140deg, #e8f6fb, #ffffff);
+}
+.lesson-hero.electrolysis .eyebrow,
+.recap-card.electrolysis .eyebrow {
+  color: #0e7490;
+}
+
+/* Sort bins used by Chapter 10 (and shared true/false bins used elsewhere) */
+.sort-bin.bin-true { border-color: #bbf7d0; background: #f0fdf4; }
+.sort-bin.bin-false { border-color: #fecaca; background: #fef2f2; }
+.sort-bin.bin-electrolyte { border-color: #bae6fd; background: #f0f9ff; }
+.sort-bin.bin-nonelectrolyte { border-color: #e5e7eb; background: #f9fafb; }
