@@ -75,6 +75,12 @@ export const evolutionChapter: ChapterContent = {
                   body: "Evaporated water condensed into clouds and fell as heavy rain for years. This mineral-rich water collected in low lands to form the oceans."
                 }
               ]
+            },
+            {
+              type: "figure",
+              art: "primordial-earth",
+              caption:
+                "The young Earth: volcanic, lit by lightning, and cooling under endless rain that pooled into the first oceans — the 'primordial soup'."
             }
           ]
         },
@@ -181,6 +187,12 @@ export const evolutionChapter: ChapterContent = {
                 { id: "birds", emoji: "🦅", label: "Birds and mammals" }
               ],
               note: "Humans evolved about 12 million years ago; modern humans about 5 million years ago."
+            },
+            {
+              type: "figure",
+              art: "tree-of-life",
+              caption:
+                "The tree of life: every group traces back to a single common ancestor, branching over billions of years into plants, fish, amphibians, reptiles, birds and mammals."
             }
           ]
         },
@@ -250,6 +262,55 @@ export const evolutionChapter: ChapterContent = {
               type: "callout",
               variant: "key",
               body: "In layered rock, the deepest layers are oldest — so the oldest fossils lie at the bottom. Radioactive carbon (¹⁴C) is used to find a fossil's age."
+            },
+            {
+              type: "hotspotDiagram",
+              art: "rock-strata",
+              heading: "🪨 Read the rock layers",
+              intro:
+                "Rock settles in layers, newest on top — so the deeper a fossil, the older it is. Tap each fossil:",
+              hotspots: [
+                {
+                  id: "leaf",
+                  x: 25,
+                  y: 26,
+                  emoji: "🍃",
+                  label: "Leaf — a young layer",
+                  body: "Near the top, so young. Land plants appear late in the fossil record."
+                },
+                {
+                  id: "bone",
+                  x: 70,
+                  y: 43,
+                  emoji: "🦴",
+                  label: "Bone",
+                  body: "A land-animal bone — higher up, and younger than the sea creatures below it."
+                },
+                {
+                  id: "fish",
+                  x: 32,
+                  y: 59,
+                  emoji: "🐟",
+                  label: "Fish",
+                  body: "Fish came before land animals, so they lie in deeper, older rock."
+                },
+                {
+                  id: "ammonite",
+                  x: 72,
+                  y: 76,
+                  emoji: "🐚",
+                  label: "Ammonite shell",
+                  body: "A coiled sea shell from deep, old rock."
+                },
+                {
+                  id: "trilobite",
+                  x: 38,
+                  y: 92,
+                  emoji: "🐛",
+                  label: "Trilobite — the oldest layer",
+                  body: "Right at the bottom, so the oldest. Trilobites are among the earliest animals with hard shells."
+                }
+              ]
             },
             {
               type: "cardGrid",

@@ -1,5 +1,7 @@
 import type { Block } from "./schema";
 import { Callout, CardGrid, Prose, SequenceStrip, TermList } from "./blocks/Presentational";
+import { Figure } from "./blocks/Figure";
+import { HotspotDiagram } from "./blocks/HotspotDiagram";
 import { RevealTabs } from "./blocks/RevealTabs";
 import { Stepper } from "./blocks/Stepper";
 import { OrderTimeline } from "./blocks/OrderTimeline";
@@ -23,10 +25,14 @@ export function BlockView({ block, blockId }: { block: Block; blockId: string })
       return <SequenceStrip block={block} />;
     case "termList":
       return <TermList block={block} />;
+    case "figure":
+      return <Figure block={block} />;
     case "revealTabs":
       return <RevealTabs block={block} />;
     case "stepper":
       return <Stepper block={block} />;
+    case "hotspotDiagram":
+      return <HotspotDiagram block={block} />;
     case "orderTimeline":
       return <OrderTimeline block={block} blockId={blockId} />;
     case "sortBins":

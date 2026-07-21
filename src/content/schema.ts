@@ -72,7 +72,38 @@ export interface TermListBlock {
   terms: { term: string; meaning: string }[];
 }
 
+// ---- Visual blocks ----
+
+// A hand-drawn SVG illustration (from src/content/illustrations.tsx) with an optional
+// caption. `art` is the illustration id; `size` caps the rendered width.
+export interface FigureBlock {
+  type: "figure";
+  art: string;
+  heading?: string; // optional h4 sub-heading
+  caption?: RichText;
+  size?: "small" | "medium" | "large"; // default medium
+}
+
 // ---- Interactive-to-explore blocks (not scored) ----
+
+// An illustration with clickable hotspots; tapping a marker reveals its label + detail.
+// The visual analogue of revealTabs — great for diagrams, apparatus and specimens.
+// `x`/`y` are percentages of the illustration box (0–100).
+export interface HotspotDiagramBlock {
+  type: "hotspotDiagram";
+  art: string; // base illustration id
+  heading?: string;
+  intro?: RichText;
+  defaultId?: string;
+  hotspots: {
+    id: string;
+    x: number;
+    y: number;
+    emoji?: string;
+    label: string;
+    body?: RichText;
+  }[];
+}
 
 // Button row that reveals a detail panel — the life-theory explorer.
 export interface RevealTabsBlock {
@@ -142,8 +173,10 @@ export type Block =
   | CardGridBlock
   | SequenceStripBlock
   | TermListBlock
+  | FigureBlock
   | RevealTabsBlock
   | StepperBlock
+  | HotspotDiagramBlock
   | OrderTimelineBlock
   | SortBinsBlock
   | McqBlock

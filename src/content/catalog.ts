@@ -106,6 +106,20 @@ export const blockCatalog: BlockCatalogEntry[] = [
       ]
     }
   },
+  {
+    type: "figure",
+    name: "Figure",
+    category: "presentational",
+    scored: false,
+    domains: ["general", "science"],
+    description: "A hand-drawn SVG illustration from the library, with an optional caption.",
+    whenToUse: "A diagram, scene or specimen that a photo or drawing explains best.",
+    sample: {
+      type: "figure",
+      art: "tree-of-life",
+      caption: "The tree of life branching from a common ancestor."
+    }
+  },
 
   // ---- Interactive (explore, not scored) ----
   {
@@ -156,6 +170,26 @@ export const blockCatalog: BlockCatalogEntry[] = [
         { emoji: "🫗", title: "Fill the beaker", body: "Pour in 100 ml of water." },
         { emoji: "🔥", title: "Heat gently", body: "Warm it until small bubbles form." },
         { emoji: "☁️", title: "Observe", body: "Watch the water turn into vapour." }
+      ]
+    }
+  },
+  {
+    type: "hotspotDiagram",
+    name: "Hotspot diagram",
+    category: "interactive",
+    scored: false,
+    domains: ["general", "science"],
+    description: "An illustration with clickable markers; tapping one reveals its detail.",
+    whenToUse: "Label the parts of a diagram, apparatus or specimen — explore by tapping.",
+    previewClass: "lesson-block",
+    sample: {
+      type: "hotspotDiagram",
+      art: "rock-strata",
+      intro: "Tap a fossil to see how deep it lies.",
+      hotspots: [
+        { id: "leaf", x: 25, y: 26, emoji: "🍃", label: "Leaf — young layer", body: "Near the top, so young." },
+        { id: "fish", x: 32, y: 59, emoji: "🐟", label: "Fish", body: "Deeper, so older." },
+        { id: "trilobite", x: 38, y: 92, emoji: "🐛", label: "Trilobite — oldest", body: "At the bottom, so the oldest." }
       ]
     }
   },
@@ -262,14 +296,12 @@ export interface PlannedBlock {
 
 export const plannedBlocks: PlannedBlock[] = [
   // General
-  { name: "Image / figure", domain: "general", description: "A captioned illustration or photo." },
   { name: "Video", domain: "general", description: "An embedded lesson video clip." },
   { name: "Table", domain: "general", description: "Rows and columns of structured data." },
   { name: "Accordion", domain: "general", description: "Collapsible FAQ-style sections." },
   { name: "Flashcards", domain: "general", description: "Flip cards for self-testing recall." },
   { name: "Match pairs", domain: "general", description: "Draw lines between matching items." },
   // Science
-  { name: "Hotspot label", domain: "science", description: "Label the parts of a diagram." },
   { name: "Simulation", domain: "science", description: "Slider-driven interactive model (like the heart/pressure sims)." },
   { name: "Data chart", domain: "science", description: "Plot and read experimental data." },
   { name: "Classification tree", domain: "science", description: "Branch organisms/matter into groups." },
