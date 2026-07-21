@@ -1,10 +1,7 @@
 // The full Grade 9 science course as a flat list of all 19 chapters, used by the home
-// page (Discovery Deck). Four chapters are already built as interactive modules and link
-// to `modules.ts` via `moduleId`; the remaining fifteen are placeholders shown as
+// page (Discovery Deck). Nine chapters are already built as interactive modules and link
+// to `modules.ts` via `moduleId`; the remaining ten are placeholders shown as
 // "coming soon". Chapters are grouped into four subject areas for filtering.
-//
-// NOTE: the titles and subject grouping of the not-yet-built chapters are a proposed
-// arrangement — swap in the official syllabus names/order when confirmed.
 
 export type Subject = "life" | "matter" | "energy" | "planet";
 
@@ -132,72 +129,72 @@ export const chapters: Chapter[] = [
   },
   {
     n: 10,
-    title: "Chemical Bonding",
+    title: "Electrolysis",
     subject: "matter",
-    blurb: "How atoms join together into ionic and covalent bonds.",
-    art: "bond"
-  },
-  {
-    n: 11,
-    title: "Acids, Bases and Salts",
-    subject: "matter",
-    blurb: "The pH scale, indicators and neutralisation reactions.",
+    blurb: "Using electricity to split compounds into their elements.",
     art: "ph"
   },
   {
-    n: 12,
-    title: "Metals and Non-metals",
+    n: 11,
+    title: "Density",
     subject: "matter",
-    blurb: "Their properties, reactions and everyday uses.",
+    blurb: "Mass packed into a space — why some things float and others sink.",
     art: "metal"
   },
   {
+    n: 12,
+    title: "Bio-diversity",
+    subject: "life",
+    blurb: "The huge variety of living things, and why protecting it matters.",
+    art: "flower"
+  },
+  {
     n: 13,
-    title: "Force and Motion",
-    subject: "energy",
-    blurb: "Speed, acceleration and Newton's ideas about motion.",
-    art: "motion"
+    title: "Artificial Environment and Green Concept",
+    subject: "planet",
+    blurb: "Building and living in ways that work with nature, not against it.",
+    art: "photosynthesis"
   },
   {
     n: 14,
-    title: "Electricity and Circuits",
+    title: "Reflection and Refraction of Waves",
     subject: "energy",
-    blurb: "Current, voltage, resistance and simple circuits.",
-    art: "circuit"
-  },
-  {
-    n: 15,
-    title: "Magnetism",
-    subject: "energy",
-    blurb: "Magnets, magnetic fields and electromagnets.",
-    art: "magnet"
-  },
-  {
-    n: 16,
-    title: "Light and Reflection",
-    subject: "energy",
-    blurb: "Rays, mirrors, refraction and how a prism makes a rainbow.",
+    blurb: "How light and sound bounce off and bend through different materials.",
     art: "light"
   },
   {
-    n: 17,
-    title: "Sound and Waves",
+    n: 15,
+    title: "Simple Machines",
     subject: "energy",
-    blurb: "Vibrations, pitch, loudness and how sound travels.",
-    art: "sound"
+    blurb: "Levers, pulleys, wheels and ramps that make work easier.",
+    art: "motion"
+  },
+  {
+    n: 16,
+    title: "Nanotechnology and its Applications",
+    subject: "matter",
+    blurb: "Science at the scale of atoms — and where we already use it.",
+    art: "bond"
+  },
+  {
+    n: 17,
+    title: "Lightning Accidents",
+    subject: "energy",
+    blurb: "How lightning strikes, the damage it does, and how to stay safe.",
+    art: "circuit"
   },
   {
     n: 18,
-    title: "Ecosystems and Environment",
+    title: "Natural Disasters",
     subject: "planet",
-    blurb: "Food chains, habitats and protecting the natural world.",
+    blurb: "Floods, landslides and cyclones — and how we prepare for them.",
     art: "eco"
   },
   {
     n: 19,
-    title: "The Solar System",
+    title: "Sustainable use of Natural Resources",
     subject: "planet",
-    blurb: "The Sun, planets, moons and our place in space.",
+    blurb: "Using water, soil, forests and energy without using them up.",
     art: "space"
   }
 ];
