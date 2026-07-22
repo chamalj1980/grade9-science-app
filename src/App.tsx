@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { BlockGallery } from "./components/BlockGallery";
+import { DesignStudio } from "./components/DesignStudio";
 import { HomeDashboard } from "./components/HomeDashboard";
 import { ModuleNav } from "./components/ModuleNav";
 import { ModulesOverview } from "./components/ModulesOverview";
@@ -25,6 +26,7 @@ type Screen =
   | { name: "quiz" }
   | { name: "teacher" }
   | { name: "blocks" }
+  | { name: "design" }
   | { name: "progress" }
   | { name: "module"; moduleId: string; sectionId: SectionId };
 
@@ -143,6 +145,13 @@ function App() {
             >
               Blocks
             </button>
+            <button
+              type="button"
+              aria-current={screen.name === "design" ? "page" : undefined}
+              onClick={() => setScreen({ name: "design" })}
+            >
+              Design
+            </button>
           </nav>
         </div>
       </header>
@@ -170,6 +179,8 @@ function App() {
         {screen.name === "teacher" && <TeacherStudio modules={modules} />}
 
         {screen.name === "blocks" && <BlockGallery />}
+
+        {screen.name === "design" && <DesignStudio />}
 
         {screen.name === "progress" && (
           <ProgressSummary
