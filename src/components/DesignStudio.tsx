@@ -3,6 +3,7 @@ import { blockCatalog } from "../content/catalog";
 import type { Block, BlockType, ContentGroup, ContentSection } from "../content/schema";
 import { SchemaSection } from "../content/SchemaSection";
 import { emptyLesson, loadDraft, saveDraft } from "../utils/drafts";
+import { AiDraftPanel } from "./design/AiDraftPanel";
 import { BlockForm } from "./design/blockForms";
 import { createStarterBlock, editableBlockTypes } from "./design/starters";
 
@@ -16,6 +17,7 @@ const blockName: Record<string, string> = Object.fromEntries(
 export function DesignStudio() {
   const [section, setSection] = useState<ContentSection>(() => loadDraft());
   const [saved, setSaved] = useState(true);
+  const [showAi, setShowAi] = useState(false);
 
   useEffect(() => {
     saveDraft(section);
@@ -81,6 +83,13 @@ export function DesignStudio() {
           <h1 id="studio-title">Lesson editor</h1>
         </div>
         <div className="studio-actions">
+          <button
+            type="button"
+            className="studio-ai"
+            onClick={() => setShowAi((value) => !value)}
+          >
+            ✨ Draft with AI
+          </button>
           <span className={`studio-saved ${saved ? "is-saved" : ""}`}>
             {saved ? "Draft saved" : "Saving…"}
           </span>
@@ -97,6 +106,16 @@ export function DesignStudio() {
           </button>
         </div>
       </header>
+
+      {showAi && (
+        <AiDraftPanel
+          onClose={() => setShowAi(false)}
+          onLoad={(draft) => {
+            edit(draft);
+            setShowAi(false);
+          }}
+        />
+      )}
 
       <div className="studio-panes">
         {/* ---- Editor ---- */}
