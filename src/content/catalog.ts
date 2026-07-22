@@ -112,7 +112,8 @@ export const blockCatalog: BlockCatalogEntry[] = [
     category: "presentational",
     scored: false,
     domains: ["general", "science"],
-    description: "A hand-drawn SVG illustration from the library, with an optional caption.",
+    description:
+      "An SVG illustration with an optional caption — either a library asset or inline AI/teacher-authored SVG.",
     whenToUse: "A diagram, scene or specimen that a photo or drawing explains best.",
     sample: {
       type: "figure",

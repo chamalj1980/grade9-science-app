@@ -116,6 +116,35 @@ export const electrolysisChapter: ChapterContent = {
               ]
             },
             {
+              type: "figure",
+              size: "medium",
+              alt: "An electrolysis cell: two carbon electrodes in copper sulphate solution wired to a battery.",
+              caption:
+                "An electrolysis cell. The current drives **copper** onto the negative electrode and releases **oxygen** at the positive one.",
+              svg: `<svg viewBox="0 0 240 200" xmlns="http://www.w3.org/2000/svg">
+  <rect x="86" y="10" width="68" height="20" rx="4" fill="#1f2937"/>
+  <rect x="154" y="15" width="5" height="10" fill="#1f2937"/>
+  <text x="95" y="24" font-size="12" fill="#fbbf24" font-weight="bold">+</text>
+  <text x="135" y="24" font-size="12" fill="#93c5fd" font-weight="bold">−</text>
+  <path d="M96 30 V38 H92 V44" fill="none" stroke="#374151" stroke-width="2"/>
+  <path d="M144 30 V38 H148 V44" fill="none" stroke="#374151" stroke-width="2"/>
+  <path d="M46 58 L46 162 Q46 172 56 172 L184 172 Q194 172 194 162 L194 58" fill="none" stroke="#94a3b8" stroke-width="3" stroke-linecap="round"/>
+  <path d="M50 92 Q120 84 190 92 L190 166 Q120 174 50 166 Z" fill="#bfdbfe"/>
+  <path d="M50 92 Q120 84 190 92" fill="none" stroke="#60a5fa" stroke-width="2"/>
+  <rect x="88" y="44" width="9" height="106" rx="2" fill="#475569"/>
+  <text x="80" y="41" font-size="14" fill="#b91c1c" font-weight="bold">+</text>
+  <circle cx="86" cy="104" r="3" fill="#eff6ff" stroke="#60a5fa"/>
+  <circle cx="99" cy="116" r="2.5" fill="#eff6ff" stroke="#60a5fa"/>
+  <circle cx="88" cy="128" r="3.4" fill="#eff6ff" stroke="#60a5fa"/>
+  <text x="66" y="122" font-size="9" fill="#1d4ed8">O₂</text>
+  <rect x="143" y="44" width="9" height="106" rx="2" fill="#475569"/>
+  <rect x="140" y="96" width="15" height="54" rx="2" fill="#c2660c"/>
+  <text x="156" y="41" font-size="14" fill="#1d4ed8" font-weight="bold">−</text>
+  <text x="159" y="122" font-size="9" fill="#7c2d12">Cu</text>
+  <text x="120" y="192" font-size="9" fill="#475569" text-anchor="middle">Copper sulphate solution</text>
+</svg>`
+            },
+            {
               type: "cardGrid",
               variant: "facts",
               cards: [

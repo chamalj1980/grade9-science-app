@@ -74,11 +74,15 @@ export interface TermListBlock {
 
 // ---- Visual blocks ----
 
-// A hand-drawn SVG illustration (from src/content/illustrations.tsx) with an optional
-// caption. `art` is the illustration id; `size` caps the rendered width.
+// An SVG illustration with an optional caption. Supply EITHER `art` (an id from the
+// hand-drawn registry in src/content/illustrations.tsx) OR `svg` (inline SVG markup —
+// the form an AI author or teacher produces, stored as data). Inline markup is sanitized
+// before rendering; give it an `alt` for accessibility. `size` caps the rendered width.
 export interface FigureBlock {
   type: "figure";
-  art: string;
+  art?: string; // registry illustration id
+  svg?: string; // OR inline SVG markup (authored/AI-generated)
+  alt?: string; // accessibility label for inline svg
   heading?: string; // optional h4 sub-heading
   caption?: RichText;
   size?: "small" | "medium" | "large"; // default medium

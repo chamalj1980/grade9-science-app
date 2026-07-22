@@ -6281,10 +6281,14 @@ button.mt-node:hover {
 
 
 /* ---- Visual blocks: figure + hotspot diagram ---- */
-.ill {
+.ill,
+.figure-inline svg {
   display: block;
   width: 100%;
   height: auto;
+}
+.figure-inline {
+  line-height: 0;
 }
 
 .figure-heading {
