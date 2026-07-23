@@ -6,17 +6,19 @@ the code is the source of truth.
 
 ## Contents
 
+- [`functional-architecture.md`](functional-architecture.md) — actors, core loops
+  (Learn / Assess / Author / Compete), content taxonomy & dimensions, modes; current-vs-target.
+- [`technical-architecture.md`](technical-architecture.md) — C4 context + container view,
+  the recommended stack, data flows, the AI pipeline, and cross-cutting concerns.
 - [`data-model.md`](data-model.md) — the domain/data model: entities, relationships, and
-  the storage decisions that are hardest to change after launch. **Start here.**
+  the storage decisions that are hardest to change after launch.
+- [`roadmap.md`](roadmap.md) — phased milestones, the MVP/launch cut, and the explicit
+  "not now" list.
 - [`adr/`](adr/) — Architecture Decision Records: short, dated, one-decision-each notes
   capturing *why*, so settled calls aren't re-litigated.
 
-## Planned (not yet written)
-
-- `functional-architecture.md` — roles, core loops (Learn / Assess / Author / Compete),
-  content taxonomy, modes; current-vs-target.
-- `technical-architecture.md` — C4 Container view, stack, AI pipeline, hosting/offline.
-- `roadmap.md` — phased milestones, the MVP/launch cut, and the explicit "not now" list.
+Suggested reading order: functional → technical → data model → roadmap, with the ADRs as
+the rationale behind each.
 
 ## How to use these
 
