@@ -2,10 +2,13 @@ import { useState } from "react";
 import { buildCopyablePrompt } from "../../ai/authoringPrompt";
 import { parseDraft } from "../../ai/draftValidation";
 import { generateDraftViaApi } from "../../ai/generateDraft";
+import { DEFAULT_MODEL, MODEL_OPTIONS } from "../../ai/models";
+import { extractPdfText } from "../../ai/pdfText";
 import { SAMPLE_DRAFT_JSON } from "../../ai/sampleDraft";
 import type { ContentSection } from "../../content/schema";
 
 const KEY_STORE = "grade9-anthropic-key";
+const MODEL_STORE = "grade9-draft-model";
 
 // The AI-draft flow. Safe default (no backend, no key): assemble the prompt → run it in
 // Claude → paste the JSON back → validate → load into the editor. An optional direct API
@@ -26,7 +29,11 @@ export function AiDraftPanel({
   const [apiKey, setApiKey] = useState(
     () => (typeof window === "undefined" ? "" : window.localStorage.getItem(KEY_STORE) ?? "")
   );
+  const [model, setModel] = useState(
+    () => (typeof window === "undefined" ? DEFAULT_MODEL : window.localStorage.getItem(MODEL_STORE) ?? DEFAULT_MODEL)
+  );
   const [busy, setBusy] = useState(false);
+  const [extracting, setExtracting] = useState(false);
 
   function review(text: string) {
     const result = parseDraft(text);
@@ -47,8 +54,27 @@ export function AiDraftPanel({
     }
   }
 
-  async function readFile(file: File) {
-    setChapterText(await file.text());
+  async function handleFile(file: File) {
+    setErrors([]);
+    const isPdf = file.type === "application/pdf" || /\.pdf$/i.test(file.name);
+    if (!isPdf) {
+      setChapterText(await file.text());
+      return;
+    }
+    setExtracting(true);
+    try {
+      const text = await extractPdfText(file);
+      if (!text) {
+        setErrors([
+          "No text found in that PDF — it may be scanned images. Paste the text instead."
+        ]);
+      }
+      setChapterText(text);
+    } catch (error) {
+      setErrors([`Couldn't read the PDF: ${(error as Error).message}`]);
+    } finally {
+      setExtracting(false);
+    }
   }
 
   async function generate() {
@@ -57,7 +83,8 @@ export function AiDraftPanel({
     setBusy(true);
     try {
       window.localStorage.setItem(KEY_STORE, apiKey);
-      const output = await generateDraftViaApi(chapterText, apiKey);
+      window.localStorage.setItem(MODEL_STORE, model);
+      const output = await generateDraftViaApi(chapterText, apiKey, model);
       setJsonText(output);
       review(output);
     } catch (error) {
@@ -92,13 +119,14 @@ export function AiDraftPanel({
               onChange={(event) => setChapterText(event.target.value)}
             />
             <label className="ai-file">
-              Upload a .txt file
+              {extracting ? "Extracting PDF…" : "Upload a PDF or .txt file"}
               <input
                 type="file"
-                accept=".txt,.md,text/plain,text/markdown"
+                accept=".pdf,.txt,.md,application/pdf,text/plain,text/markdown"
+                disabled={extracting}
                 onChange={(event) => {
                   const file = event.target.files?.[0];
-                  if (file) readFile(file);
+                  if (file) handleFile(file);
                 }}
               />
             </label>
@@ -133,6 +161,23 @@ export function AiDraftPanel({
             </div>
             {showApi && (
               <div className="ai-api">
+                <label className="ai-model">
+                  <span className="df-label">Model</span>
+                  <select
+                    className="df-select"
+                    value={model}
+                    onChange={(event) => setModel(event.target.value)}
+                  >
+                    {MODEL_OPTIONS.map((option) => (
+                      <option key={option.id} value={option.id}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <p className="ai-hint">
+                  {MODEL_OPTIONS.find((option) => option.id === model)?.note}
+                </p>
                 <input
                   className="df-input"
                   type="password"
@@ -146,7 +191,9 @@ export function AiDraftPanel({
                   onClick={generate}
                   disabled={busy || !chapterText.trim() || !apiKey.trim()}
                 >
-                  {busy ? "Generating…" : "Generate with Opus 4.8"}
+                  {busy
+                    ? "Generating…"
+                    : `Generate with ${MODEL_OPTIONS.find((o) => o.id === model)?.label ?? "AI"}`}
                 </button>
                 <p className="ai-warn-note">
                   Dev/preview only — never ship a key in a browser app; use a server proxy

@@ -6835,3 +6835,5 @@ button.mt-node:hover {
   background: #fef3c7;
   color: #92400e;
 }
+
+.ai-model { display: flex; flex-direction: column; gap: 0.25rem; }

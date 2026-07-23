@@ -3,7 +3,6 @@
 // same prompt whether a teacher runs it in Claude by hand or a server proxy calls the API.
 // Keep the block reference here in sync with schema.ts as block types evolve.
 
-export const DRAFT_MODEL = "claude-opus-4-8";
 export const DRAFT_MAX_TOKENS = 16000;
 
 // Concise JSON shapes + when-to-use for the blocks the AI may emit. A lean subset that

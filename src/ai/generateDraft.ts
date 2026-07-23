@@ -1,4 +1,5 @@
-import { buildDraftPrompt, DRAFT_MAX_TOKENS, DRAFT_MODEL } from "./authoringPrompt";
+import { buildDraftPrompt, DRAFT_MAX_TOKENS } from "./authoringPrompt";
+import { DEFAULT_MODEL } from "./models";
 
 // OPTIONAL direct call to the Anthropic Messages API from the browser. This is a
 // DEV/PREVIEW convenience for a single author using their OWN key — it is NOT how a
@@ -7,7 +8,8 @@ import { buildDraftPrompt, DRAFT_MAX_TOKENS, DRAFT_MODEL } from "./authoringProm
 // (assemble prompt → run in Claude → paste JSON back) is the safe default in the UI.
 export async function generateDraftViaApi(
   chapterText: string,
-  apiKey: string
+  apiKey: string,
+  model: string = DEFAULT_MODEL
 ): Promise<string> {
   const { system, user } = buildDraftPrompt(chapterText);
 
@@ -21,7 +23,7 @@ export async function generateDraftViaApi(
       "anthropic-dangerous-direct-browser-access": "true"
     },
     body: JSON.stringify({
-      model: DRAFT_MODEL,
+      model,
       max_tokens: DRAFT_MAX_TOKENS,
       system,
       messages: [{ role: "user", content: user }]
