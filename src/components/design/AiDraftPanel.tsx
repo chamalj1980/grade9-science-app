@@ -4,7 +4,11 @@ import {
   DEFAULT_RECAP_INSTRUCTION,
   EXERCISE_TYPES,
   MAX_EXERCISES,
+  clampCount,
+  defaultCountFor,
   defaultDraftOptions,
+  exerciseTypeOption,
+  normalizeDraftOptions,
   type DraftOptions,
   type ExerciseType
 } from "../../ai/draftOptions";
@@ -50,7 +54,8 @@ export function AiDraftPanel({
     if (typeof window === "undefined") return defaultDraftOptions();
     try {
       const raw = window.localStorage.getItem(OPTIONS_STORE);
-      return raw ? (JSON.parse(raw) as DraftOptions) : defaultDraftOptions();
+      // normalize handles older saved options that had no per-exercise size
+      return raw ? normalizeDraftOptions(JSON.parse(raw)) : defaultDraftOptions();
     } catch {
       return defaultDraftOptions();
     }
@@ -117,10 +122,22 @@ export function AiDraftPanel({
     }
   }
 
-  function setExercise(index: number, type: ExerciseType) {
+  // Changing the type resets the size to that type's sensible default.
+  function setExerciseType(index: number, type: ExerciseType) {
     setOptions({
       ...options,
-      exercises: options.exercises.map((value, i) => (i === index ? type : value))
+      exercises: options.exercises.map((spec, i) =>
+        i === index ? { type, count: defaultCountFor(type) } : spec
+      )
+    });
+  }
+
+  function setExerciseCount(index: number, count: number) {
+    setOptions({
+      ...options,
+      exercises: options.exercises.map((spec, i) =>
+        i === index ? { ...spec, count: clampCount(spec.type, count) } : spec
+      )
     });
   }
 
@@ -172,42 +189,64 @@ export function AiDraftPanel({
 
             <span className="df-label">Exercises</span>
             {options.exercises.length === 0 && <p className="ai-hint">No exercises — lesson only.</p>}
-            {options.exercises.map((type, index) => (
-              <div key={index} className="ai-exercise-row">
-                <span className="ai-exercise-num">{index + 1}</span>
-                <select
-                  className="df-select"
-                  aria-label={`Exercise ${index + 1} type`}
-                  value={type}
-                  onChange={(event) => setExercise(index, event.target.value as ExerciseType)}
-                >
-                  {EXERCISE_TYPES.map((option) => (
-                    <option key={option.id} value={option.id}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-                <button
-                  type="button"
-                  className="df-remove"
-                  aria-label={`Remove exercise ${index + 1}`}
-                  onClick={() =>
-                    setOptions({
-                      ...options,
-                      exercises: options.exercises.filter((_, i) => i !== index)
-                    })
-                  }
-                >
-                  ✕
-                </button>
-              </div>
-            ))}
+            {options.exercises.map((spec, index) => {
+              const option = exerciseTypeOption(spec.type);
+              return (
+                <div key={index} className="ai-exercise-row">
+                  <span className="ai-exercise-num">{index + 1}</span>
+                  <select
+                    className="df-select"
+                    aria-label={`Exercise ${index + 1} type`}
+                    value={spec.type}
+                    onChange={(event) =>
+                      setExerciseType(index, event.target.value as ExerciseType)
+                    }
+                  >
+                    {EXERCISE_TYPES.map((entry) => (
+                      <option key={entry.id} value={entry.id}>
+                        {entry.label}
+                      </option>
+                    ))}
+                  </select>
+                  <input
+                    className="df-input ai-count"
+                    type="number"
+                    inputMode="numeric"
+                    min={option.min}
+                    max={option.max}
+                    aria-label={`Number of ${option.countLabel} in exercise ${index + 1}`}
+                    value={spec.count}
+                    onChange={(event) => setExerciseCount(index, Number(event.target.value))}
+                  />
+                  <span className="ai-count-unit">{option.countLabel}</span>
+                  <button
+                    type="button"
+                    className="df-remove"
+                    aria-label={`Remove exercise ${index + 1}`}
+                    onClick={() =>
+                      setOptions({
+                        ...options,
+                        exercises: options.exercises.filter((_, i) => i !== index)
+                      })
+                    }
+                  >
+                    ✕
+                  </button>
+                </div>
+              );
+            })}
             {options.exercises.length < MAX_EXERCISES && (
               <button
                 type="button"
                 className="df-add"
                 onClick={() =>
-                  setOptions({ ...options, exercises: [...options.exercises, "mcq"] })
+                  setOptions({
+                    ...options,
+                    exercises: [
+                      ...options.exercises,
+                      { type: "mcq", count: defaultCountFor("mcq") }
+                    ]
+                  })
                 }
               >
                 + exercise

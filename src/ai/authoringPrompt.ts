@@ -7,7 +7,7 @@
 // per-request spec (chapter text, how many exercises, recap brief) goes in the USER message.
 // Keep the block reference in sync with schema.ts as block types evolve.
 
-import { exerciseTypeLabel, type DraftOptions } from "./draftOptions";
+import { exerciseTypeOption, type DraftOptions } from "./draftOptions";
 
 export const DRAFT_MAX_TOKENS = 16000;
 
@@ -90,6 +90,7 @@ RULES:
 - Section order: the "lesson" first, then each requested "exercise" in order, then the "recap" (if requested).
 - The LESSON has 4–7 groups, each a clear sub-topic with an emoji heading. Use "prose" for explanation, "cardGrid" for comparisons/lists, a "termList" group for key words, and a "figure" where a diagram genuinely helps.
 - Each EXERCISE section contains ONE group holding ONE block of exactly the type requested for it (optionally preceded by a one-line "prose" intro). Build it from the chapter's real content.
+- Build each exercise at exactly the requested SIZE: for "mcq" that is the number of questions; for "sortBins" the number of items to sort (choose 2–4 sensible bins from the content); for "orderTimeline" the number of steps in the round.
 - Answer keys must be CORRECT: "answer" is the 0-based index of the right option; every sortBins item's "binId" must match a declared bin id; an orderTimeline "order" array must be in the true correct sequence.
 - The RECAP follows the teacher's recap brief exactly (see the request), using termList / prose / callout blocks.
 - Grade 9 reading level. Short sentences. Wrap the most important terms in **bold**.
@@ -106,9 +107,10 @@ function buildSpec(options: DraftOptions): string {
     lines.push("- Exercises: none");
   } else {
     lines.push(`- Exercises: ${options.exercises.length}`);
-    options.exercises.forEach((type, index) => {
+    options.exercises.forEach((spec, index) => {
+      const option = exerciseTypeOption(spec.type);
       lines.push(
-        `   ${index + 1}. type "${type}" — ${exerciseTypeLabel(type)}`
+        `   ${index + 1}. type "${spec.type}" — ${option.label} — exactly ${spec.count} ${option.countLabel}`
       );
     });
   }

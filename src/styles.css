@@ -6934,3 +6934,14 @@ button.mt-node:hover {
   font-weight: 600;
   margin-top: 0.6rem;
 }
+.ai-count {
+  width: 4.2rem;
+  flex-shrink: 0;
+  text-align: center;
+}
+.ai-count-unit {
+  font-size: 0.78rem;
+  color: var(--muted);
+  flex-shrink: 0;
+  min-width: 4.2rem;
+}
