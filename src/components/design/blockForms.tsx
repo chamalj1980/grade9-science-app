@@ -5,7 +5,10 @@ import type {
   CardGridBlock,
   FigureBlock,
   McqBlock,
-  ProseBlock
+  OrderTimelineBlock,
+  ProseBlock,
+  SortBinsBlock,
+  TermListBlock
 } from "../../content/schema";
 import { uid } from "./starters";
 
@@ -36,6 +39,12 @@ export function BlockForm({
       return <FigureForm block={block} onChange={onChange} />;
     case "mcq":
       return <McqForm block={block} onChange={onChange} />;
+    case "termList":
+      return <TermListForm block={block} onChange={onChange} />;
+    case "sortBins":
+      return <SortBinsForm block={block} onChange={onChange} />;
+    case "orderTimeline":
+      return <OrderTimelineForm block={block} onChange={onChange} />;
     default:
       return (
         <p className="df-todo">
@@ -447,6 +456,326 @@ function McqForm({
         }
       >
         + question
+      </button>
+    </>
+  );
+}
+
+// ---- Term list (recap) ----
+function TermListForm({
+  block,
+  onChange
+}: {
+  block: TermListBlock;
+  onChange: (block: TermListBlock) => void;
+}) {
+  function updateTerm(index: number, patch: Partial<TermListBlock["terms"][number]>) {
+    onChange({
+      ...block,
+      terms: replaceAt(block.terms, index, { ...block.terms[index], ...patch })
+    });
+  }
+  return (
+    <>
+      <span className="df-label">Terms</span>
+      <div className="df-cards">
+        {block.terms.map((term, index) => (
+          <div key={index} className="df-card">
+            <div className="df-mini-row">
+              <input
+                className="df-input"
+                aria-label="Term"
+                placeholder="Term"
+                value={term.term}
+                onChange={(event) => updateTerm(index, { term: event.target.value })}
+              />
+              {block.terms.length > 1 && (
+                <button
+                  type="button"
+                  className="df-remove"
+                  aria-label="Remove term"
+                  onClick={() => onChange({ ...block, terms: removeAt(block.terms, index) })}
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+            <textarea
+              className="df-textarea"
+              rows={2}
+              aria-label="Meaning"
+              placeholder="Meaning"
+              value={term.meaning}
+              onChange={(event) => updateTerm(index, { meaning: event.target.value })}
+            />
+          </div>
+        ))}
+      </div>
+      <button
+        type="button"
+        className="df-add"
+        onClick={() =>
+          onChange({ ...block, terms: [...block.terms, { term: "New term", meaning: "" }] })
+        }
+      >
+        + term
+      </button>
+    </>
+  );
+}
+
+// ---- Sort into bins (exercise) ----
+function SortBinsForm({
+  block,
+  onChange
+}: {
+  block: SortBinsBlock;
+  onChange: (block: SortBinsBlock) => void;
+}) {
+  function updateBin(index: number, patch: Partial<SortBinsBlock["bins"][number]>) {
+    onChange({ ...block, bins: replaceAt(block.bins, index, { ...block.bins[index], ...patch }) });
+  }
+  function updateItem(index: number, patch: Partial<SortBinsBlock["items"][number]>) {
+    onChange({ ...block, items: replaceAt(block.items, index, { ...block.items[index], ...patch }) });
+  }
+  function removeBin(index: number) {
+    const removed = block.bins[index];
+    const remaining = removeAt(block.bins, index);
+    const fallback = remaining[0]?.id ?? "";
+    // Reassign any items that pointed at the removed bin.
+    const items = block.items.map((item) =>
+      item.binId === removed.id ? { ...item, binId: fallback } : item
+    );
+    onChange({ ...block, bins: remaining, items });
+  }
+
+  return (
+    <>
+      <label className="df-field">
+        <span className="df-label">Title</span>
+        <input
+          className="df-input"
+          value={block.title ?? ""}
+          onChange={(event) => onChange({ ...block, title: event.target.value || undefined })}
+        />
+      </label>
+
+      <span className="df-label">Bins (the groups to sort into)</span>
+      <div className="df-cards">
+        {block.bins.map((bin, index) => (
+          <div key={bin.id} className="df-mini-row">
+            <input
+              className="df-input df-emoji"
+              aria-label="Bin emoji"
+              placeholder="🗂️"
+              value={bin.emoji}
+              onChange={(event) => updateBin(index, { emoji: event.target.value })}
+            />
+            <input
+              className="df-input"
+              aria-label="Bin title"
+              placeholder="Group name"
+              value={bin.title}
+              onChange={(event) => updateBin(index, { title: event.target.value })}
+            />
+            {block.bins.length > 2 && (
+              <button
+                type="button"
+                className="df-remove"
+                aria-label="Remove bin"
+                onClick={() => removeBin(index)}
+              >
+                ✕
+              </button>
+            )}
+          </div>
+        ))}
+      </div>
+      <button
+        type="button"
+        className="df-add"
+        onClick={() =>
+          onChange({
+            ...block,
+            bins: [...block.bins, { id: uid("bin"), title: "New group", emoji: "📦" }]
+          })
+        }
+      >
+        + bin
+      </button>
+
+      <span className="df-label" style={{ marginTop: "0.6rem" }}>
+        Items (each goes in one bin)
+      </span>
+      <div className="df-cards">
+        {block.items.map((item, index) => (
+          <div key={item.id} className="df-mini-row">
+            <input
+              className="df-input"
+              aria-label="Item text"
+              placeholder="Item"
+              value={item.text}
+              onChange={(event) => updateItem(index, { text: event.target.value })}
+            />
+            <select
+              className="df-select"
+              aria-label="Correct bin"
+              value={item.binId}
+              onChange={(event) => updateItem(index, { binId: event.target.value })}
+            >
+              {block.bins.map((bin) => (
+                <option key={bin.id} value={bin.id}>
+                  {bin.title}
+                </option>
+              ))}
+            </select>
+            {block.items.length > 1 && (
+              <button
+                type="button"
+                className="df-remove"
+                aria-label="Remove item"
+                onClick={() => onChange({ ...block, items: removeAt(block.items, index) })}
+              >
+                ✕
+              </button>
+            )}
+          </div>
+        ))}
+      </div>
+      <button
+        type="button"
+        className="df-add"
+        onClick={() =>
+          onChange({
+            ...block,
+            items: [...block.items, { id: uid("it"), text: "New item", binId: block.bins[0]?.id ?? "" }]
+          })
+        }
+      >
+        + item
+      </button>
+    </>
+  );
+}
+
+// ---- Order timeline (exercise) ----
+function OrderTimelineForm({
+  block,
+  onChange
+}: {
+  block: OrderTimelineBlock;
+  onChange: (block: OrderTimelineBlock) => void;
+}) {
+  type Round = OrderTimelineBlock["rounds"][number];
+  function updateRound(index: number, patch: Partial<Round>) {
+    onChange({ ...block, rounds: replaceAt(block.rounds, index, { ...block.rounds[index], ...patch }) });
+  }
+  function updateItem(rIndex: number, iIndex: number, patch: Partial<Round["order"][number]>) {
+    const round = block.rounds[rIndex];
+    updateRound(rIndex, {
+      order: replaceAt(round.order, iIndex, { ...round.order[iIndex], ...patch })
+    });
+  }
+
+  return (
+    <>
+      <p className="df-sub">Items are listed in the correct order (first to last).</p>
+      <div className="df-cards">
+        {block.rounds.map((round, rIndex) => (
+          <div key={round.id} className="df-card">
+            <div className="df-mini-row">
+              <input
+                className="df-input"
+                aria-label="Round title"
+                placeholder="Round title"
+                value={round.title}
+                onChange={(event) => updateRound(rIndex, { title: event.target.value })}
+              />
+              {block.rounds.length > 1 && (
+                <button
+                  type="button"
+                  className="df-remove"
+                  aria-label="Remove round"
+                  onClick={() => onChange({ ...block, rounds: removeAt(block.rounds, rIndex) })}
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+            <input
+              className="df-input"
+              aria-label="Prompt"
+              placeholder="Prompt (e.g. Arrange these, earliest first)"
+              value={round.prompt}
+              onChange={(event) => updateRound(rIndex, { prompt: event.target.value })}
+            />
+            <span className="df-sub">Items in correct order</span>
+            {round.order.map((item, iIndex) => (
+              <div key={item.id} className="df-mini-row">
+                <input
+                  className="df-input df-emoji"
+                  aria-label="Item emoji"
+                  placeholder="🔹"
+                  value={item.emoji}
+                  onChange={(event) => updateItem(rIndex, iIndex, { emoji: event.target.value })}
+                />
+                <input
+                  className="df-input"
+                  aria-label="Item label"
+                  placeholder="Label"
+                  value={item.label}
+                  onChange={(event) => updateItem(rIndex, iIndex, { label: event.target.value })}
+                />
+                {round.order.length > 2 && (
+                  <button
+                    type="button"
+                    className="df-remove"
+                    aria-label="Remove item"
+                    onClick={() =>
+                      updateRound(rIndex, { order: removeAt(round.order, iIndex) })
+                    }
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+            ))}
+            <button
+              type="button"
+              className="df-add"
+              onClick={() =>
+                updateRound(rIndex, {
+                  order: [...round.order, { id: uid("o"), emoji: "🔹", label: "New step" }]
+                })
+              }
+            >
+              + item
+            </button>
+          </div>
+        ))}
+      </div>
+      <button
+        type="button"
+        className="df-add"
+        onClick={() =>
+          onChange({
+            ...block,
+            rounds: [
+              ...block.rounds,
+              {
+                id: uid("round"),
+                title: "New round",
+                prompt: "Arrange them in order.",
+                order: [
+                  { id: uid("o"), emoji: "1️⃣", label: "First" },
+                  { id: uid("o"), emoji: "2️⃣", label: "Second" }
+                ]
+              }
+            ]
+          })
+        }
+      >
+        + round
       </button>
     </>
   );

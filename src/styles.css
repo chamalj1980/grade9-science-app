@@ -6837,3 +6837,71 @@ button.mt-node:hover {
 }
 
 .ai-model { display: flex; flex-direction: column; gap: 0.25rem; }
+
+/* ---- Design Studio: multi-section (tabs, kinds) ---- */
+.studio-chapter-title {
+  display: block;
+  max-width: 640px;
+  margin: 0 auto 0.9rem;
+}
+.studio-tabs {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--line);
+}
+.studio-tab {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--muted);
+  border-radius: 999px;
+  padding: 0.35rem 0.9rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.studio-tab.is-active {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #fff;
+}
+.studio-tab-add {
+  display: inline-flex;
+  gap: 0.3rem;
+  margin-left: auto;
+}
+.studio-tab-add button {
+  border: 1px dashed var(--line);
+  background: transparent;
+  color: var(--muted);
+  border-radius: 999px;
+  padding: 0.3rem 0.7rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.studio-tab-add button:hover {
+  border-color: var(--indigo);
+  color: var(--indigo);
+}
+.studio-section-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.studio-kind {
+  flex-shrink: 0;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+}
+.kind-lesson { background: #dbeafe; color: #1e40af; }
+.kind-exercise { background: #dcfce7; color: #166534; }
+.kind-recap { background: #fef3c7; color: #92400e; }

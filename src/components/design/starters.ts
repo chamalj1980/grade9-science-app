@@ -1,15 +1,5 @@
 import type { Block, BlockType } from "../../content/schema";
 
-// Block types the Lesson editor can currently create and edit with a structured form.
-// The palette only offers these; more are added as their forms are built.
-export const editableBlockTypes: BlockType[] = [
-  "prose",
-  "callout",
-  "cardGrid",
-  "figure",
-  "mcq"
-];
-
 let counter = 0;
 
 // Stable-enough unique id for authored items (mcq questions, etc.). Not cryptographic —
@@ -41,6 +31,43 @@ export function createStarterBlock(type: BlockType): Block {
         title: "Quick check",
         questions: [
           { id: uid("q"), prompt: "Your question?", options: ["Option A", "Option B"], answer: 0 }
+        ]
+      };
+    case "termList":
+      return {
+        type: "termList",
+        terms: [{ term: "New term", meaning: "What it means." }]
+      };
+    case "sortBins": {
+      const binA = uid("bin");
+      const binB = uid("bin");
+      return {
+        type: "sortBins",
+        title: "Sort into groups",
+        bins: [
+          { id: binA, title: "Group A", emoji: "🅰️" },
+          { id: binB, title: "Group B", emoji: "🅱️" }
+        ],
+        items: [
+          { id: uid("it"), text: "First item", binId: binA },
+          { id: uid("it"), text: "Second item", binId: binB }
+        ]
+      };
+    }
+    case "orderTimeline":
+      return {
+        type: "orderTimeline",
+        rounds: [
+          {
+            id: uid("round"),
+            title: "Put these in order",
+            prompt: "Arrange them, first to last.",
+            order: [
+              { id: uid("o"), emoji: "1️⃣", label: "First" },
+              { id: uid("o"), emoji: "2️⃣", label: "Second" },
+              { id: uid("o"), emoji: "3️⃣", label: "Third" }
+            ]
+          }
         ]
       };
     default:
