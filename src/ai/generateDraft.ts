@@ -1,4 +1,5 @@
 import { buildDraftPrompt, DRAFT_MAX_TOKENS } from "./authoringPrompt";
+import type { DraftOptions } from "./draftOptions";
 import { DEFAULT_MODEL } from "./models";
 
 // OPTIONAL direct call to the Anthropic Messages API from the browser. This is a
@@ -9,9 +10,10 @@ import { DEFAULT_MODEL } from "./models";
 export async function generateDraftViaApi(
   chapterText: string,
   apiKey: string,
-  model: string = DEFAULT_MODEL
+  model: string = DEFAULT_MODEL,
+  options: DraftOptions
 ): Promise<string> {
-  const { system, user } = buildDraftPrompt(chapterText);
+  const { system, user } = buildDraftPrompt(chapterText, options);
 
   const response = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",

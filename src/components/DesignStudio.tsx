@@ -5,11 +5,12 @@ import { SchemaSection } from "../content/SchemaSection";
 import { emptyChapter, loadDraft, saveDraft, starterSection } from "../utils/drafts";
 import { AiDraftPanel } from "./design/AiDraftPanel";
 import { BlockForm } from "./design/blockForms";
-import { createStarterBlock, uid } from "./design/starters";
+import { createStarterBlock } from "./design/starters";
 import {
   PALETTE_BY_KIND,
   sectionKindLabel,
   toContentSection,
+  type ChapterDraft,
   type SectionKind
 } from "./design/types";
 
@@ -106,23 +107,11 @@ export function DesignStudio() {
     updateGroup(gi, { blocks: active.groups[gi].blocks.filter((_, i) => i !== bi) });
   }
 
-  // ---- AI draft → the chapter's lesson section ----
-  function loadAiLesson(section: ContentSection) {
-    const es = {
-      key: uid("sec"),
-      kind: "lesson" as const,
-      label: "Lesson",
-      hero: section.hero,
-      wrapperClass: section.wrapperClass,
-      groups: section.groups
-    };
-    const lessonIndex = draft.sections.findIndex((s) => s.kind === "lesson");
-    const sections =
-      lessonIndex >= 0
-        ? draft.sections.map((s, i) => (i === lessonIndex ? es : s))
-        : [es, ...draft.sections];
-    edit(sections, section.hero.title || draft.title);
-    setActiveKey(es.key);
+  // ---- AI draft → replaces the whole chapter (lesson + exercises + recap) ----
+  function loadAiChapter(next: ChapterDraft) {
+    setSaved(false);
+    setDraft(next);
+    setActiveKey(next.sections[0]?.key ?? "");
     setShowAi(false);
   }
 
@@ -159,7 +148,7 @@ export function DesignStudio() {
         </div>
       </header>
 
-      {showAi && <AiDraftPanel onClose={() => setShowAi(false)} onLoad={loadAiLesson} />}
+      {showAi && <AiDraftPanel onClose={() => setShowAi(false)} onLoad={loadAiChapter} />}
 
       <label className="studio-chapter-title">
         <span className="df-label">Chapter title</span>

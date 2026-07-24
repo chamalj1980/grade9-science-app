@@ -6905,3 +6905,32 @@ button.mt-node:hover {
 .kind-lesson { background: #dbeafe; color: #1e40af; }
 .kind-exercise { background: #dcfce7; color: #166534; }
 .kind-recap { background: #fef3c7; color: #92400e; }
+
+/* ---- AI panel: what-to-build controls ---- */
+.ai-exercise-row {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-bottom: 0.35rem;
+}
+.ai-exercise-num {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--line);
+  color: var(--ink);
+  font-size: 0.7rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ai-check {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-top: 0.6rem;
+}
